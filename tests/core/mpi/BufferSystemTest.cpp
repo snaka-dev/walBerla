@@ -301,6 +301,90 @@ void gatherUsingAsymmetricCommunication(const bool useIProbe)
 }
 
 
+/**
+ * Test for communication when only the number of receives is known but not the ranks.
+ */
+
+void unknownRanksAllToAll()
+{
+   const int rank         = MPIManager::instance()->worldRank();
+   const int numProcesses = MPIManager::instance()->numProcesses();
+
+   WALBERLA_CHECK_GREATER_EQUAL(numProcesses, 3);
+
+   BufferSystem bs(MPI_COMM_WORLD, 42);
+
+   for (auto targetRank = 0; targetRank < numProcesses; ++targetRank)
+   {
+      auto& sb = bs.sendBuffer(targetRank);
+      for (int i = 0; i < rank + 1; ++i)
+         sb << rank;
+   }
+
+   //we await numProcesses messages on every rank
+   bs.setReceiverInfo(numProcesses);
+   //equivalent to
+   //bs.setReceiverInfoFromSendBufferState(false, true);
+   
+   bs.sendAll();
+
+   auto numReceives = 0;
+   for (auto it = bs.begin(); it != bs.end(); ++it)
+   {
+      WALBERLA_CHECK_EQUAL(it.buffer().size(), (it.rank() + 1) * 4);
+      for (int i = 0; i < it.rank() + 1; ++i)
+      {
+         int received = -1;
+         it.buffer() >> received;
+         WALBERLA_CHECK_EQUAL(received, it.rank());
+      }
+      ++numReceives;
+   }
+   WALBERLA_CHECK_EQUAL(numReceives, numProcesses);
+}
+void unknownRanksAllToLower()
+{
+   const int rank         = MPIManager::instance()->worldRank();
+   const int numProcesses = MPIManager::instance()->numProcesses();
+
+   WALBERLA_CHECK_GREATER_EQUAL(numProcesses, 3);
+
+   BufferSystem bs(MPI_COMM_WORLD, 42);
+
+   for (auto targetRank = 0; targetRank < rank + 1; ++targetRank)
+   {
+      auto& sb = bs.sendBuffer(targetRank);
+      for (int i = 0; i < rank + 1; ++i)
+         sb << rank;
+   }
+
+   //we await numProcesses messages on every rank
+   bs.setReceiverInfo(numProcesses);
+   //equivalent to
+   //std::set<mpi::MPIRank> recvs;
+   //for (auto targetRank = numProcesses - 1; targetRank >=rank; --targetRank)
+   //{
+   //   recvs.emplace(targetRank);
+   //}
+   //bs.setReceiverInfo(recvs, true);
+   
+   bs.sendAll();
+
+   auto numReceives = 0;
+   for (auto it = bs.begin(); it != bs.end(); ++it)
+   {
+      WALBERLA_CHECK_EQUAL(it.buffer().size(), (it.rank() + 1) * 4);
+      for (int i = 0; i < it.rank() + 1; ++i)
+      {
+         int received = -1;
+         it.buffer() >> received;
+         WALBERLA_CHECK_EQUAL(received, it.rank());
+      }
+      ++numReceives;
+   }
+   WALBERLA_CHECK_EQUAL(numReceives, numProcesses - rank);
+}
+
 void selfSend()
 {
    int rank          = MPIManager::instance()->worldRank();
@@ -394,6 +478,12 @@ int main(int argc, char**argv)
    WALBERLA_LOG_INFO_ON_ROOT("Testing Gather Operation...");
    gatherUsingAsymmetricCommunication(false);
    gatherUsingAsymmetricCommunication(true);
+
+   WALBERLA_LOG_INFO_ON_ROOT("Testing Unknown Sender Ranks...");
+   WALBERLA_LOG_INFO_ON_ROOT("AllToAll...");
+   unknownRanksAllToAll();
+   WALBERLA_LOG_INFO_ON_ROOT("AllToLower...");
+   unknownRanksAllToLower();
 
    WALBERLA_LOG_INFO_ON_ROOT("Testing self-send...");
    selfSend();

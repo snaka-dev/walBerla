@@ -220,6 +220,20 @@ void GenericBufferSystem<Rb, Sb>::setReceiverInfo( const std::set<MPIRank> & ran
 
 
 //**********************************************************************************************************************
+/*! Sets receiver information, when the number of receives is known but the ranks are unknown
+*
+* \param numReceives number of expected messages
+*/
+//**********************************************************************************************************************
+template< typename Rb, typename Sb>
+void GenericBufferSystem<Rb, Sb>::setReceiverInfo( const int numReceives )
+{
+   WALBERLA_ABORT("NOT IMPLEMENTED!");
+}
+
+
+
+//**********************************************************************************************************************
 /*! Sets receiver information, when message sizes are known
 *
 * \param ranksToRecvFrom  Map containing all ranks, where messages are received from, as keys

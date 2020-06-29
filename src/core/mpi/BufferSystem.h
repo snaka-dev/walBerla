@@ -129,6 +129,7 @@ public:
    template<typename RankIter> void setReceiverInfo( RankIter begin, RankIter end,              bool changingSize );
    template<typename Range>    void setReceiverInfo( const Range & range,                       bool changingSize );
               void setReceiverInfo( const std::set<MPIRank> & ranksToRecvFrom, bool changingSize );
+              void setReceiverInfo( const int numReceives );
 
    void setReceiverInfo( const std::map<MPIRank,MPISize> & ranksToRecvFrom );
    void setReceiverInfoFromSendBufferState( bool useSizeFromSendBuffers, bool changingSize );
