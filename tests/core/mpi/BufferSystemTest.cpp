@@ -307,6 +307,17 @@ void gatherUsingAsymmetricCommunication(const bool useIProbe)
 
 void unknownRanksAllToAll()
 {
+   // The unknown-sender communication is more vulnerable when
+   // tags of other MPI communication routines are equal since
+   // it processes messages with MPI_ANY_SOURCE
+   //
+   // Therefore this barrier makes sure that previous tests
+   // do not impose race-conditions.
+   //
+   // This is safer than specifying "unique" tags, since
+   // tags are never "unique" :)
+   WALBERLA_MPI_BARRIER();
+
    const int rank         = MPIManager::instance()->worldRank();
    const int numProcesses = MPIManager::instance()->numProcesses();
 
@@ -331,6 +342,7 @@ void unknownRanksAllToAll()
    auto numReceives = 0;
    for (auto it = bs.begin(); it != bs.end(); ++it)
    {
+      WALBERLA_LOG_INFO( "Sender rank: " << it.rank() << ", msg size: " << it.buffer().size() );
       WALBERLA_CHECK_EQUAL(it.buffer().size(), (it.rank() + 1) * 4);
       for (int i = 0; i < it.rank() + 1; ++i)
       {
@@ -344,6 +356,17 @@ void unknownRanksAllToAll()
 }
 void unknownRanksAllToLower()
 {
+   // The unknown-sender communication is more vulnerable when
+   // tags of other MPI communication routines are equal since
+   // it processes messages with MPI_ANY_SOURCE
+   //
+   // Therefore this barrier makes sure that previous tests
+   // do not impose race-conditions.
+   //
+   // This is safer than specifying "unique" tags, since
+   // tags are never "unique" :)
+   WALBERLA_MPI_BARRIER();
+
    const int rank         = MPIManager::instance()->worldRank();
    const int numProcesses = MPIManager::instance()->numProcesses();
 
@@ -358,8 +381,8 @@ void unknownRanksAllToLower()
          sb << rank;
    }
 
-   //we await numProcesses messages on every rank
-   bs.setReceiverInfo(numProcesses);
+   //we await numProcesses - rank messages on every rank
+   bs.setReceiverInfo(numProcesses - rank);
    //equivalent to
    //std::set<mpi::MPIRank> recvs;
    //for (auto targetRank = numProcesses - 1; targetRank >=rank; --targetRank)
@@ -456,6 +479,7 @@ int main(int argc, char**argv)
    debug::enterTestMode();
 
    auto mpiManager = MPIManager::instance();
+   mpiManager->useWorldComm();
    int numProcesses  = mpiManager->numProcesses();
 
    if(numProcesses <= 2)
