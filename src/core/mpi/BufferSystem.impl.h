@@ -23,6 +23,7 @@
 #include "core/mpi/MPIManager.h"
 #include "core/debug/CheckFunctions.h"
 
+#include <algorithm>
 
 namespace walberla {
 namespace mpi {
@@ -128,10 +129,12 @@ GenericBufferSystem<Rb, Sb>::GenericBufferSystem( const MPI_Comm & communicator,
    : knownSizeComm_  ( communicator, tag ),
      unknownSizeComm_( communicator, tag ),
      unknownSizeCommIProbe_( communicator, tag ),
+     unknownSizeAndSenderCommIProbe_( communicator, tag, false ),
      noMPIComm_( communicator, tag ),
      currentComm_    ( nullptr ),
      sizeChangesEverytime_( true ),
-     communicationRunning_( false )
+     communicationRunning_( false ),
+     senderKnown_( true )
 {
 }
 
@@ -140,10 +143,12 @@ GenericBufferSystem<Rb, Sb>::GenericBufferSystem( const GenericBufferSystem &oth
    : knownSizeComm_  ( other.knownSizeComm_.getCommunicator(), other.knownSizeComm_.getTag() ),
      unknownSizeComm_( other.knownSizeComm_.getCommunicator(), other.knownSizeComm_.getTag() ),
      unknownSizeCommIProbe_( other.knownSizeComm_.getCommunicator(), other.knownSizeComm_.getTag() ),
+     unknownSizeAndSenderCommIProbe_( other.knownSizeComm_.getCommunicator(), other.knownSizeComm_.getTag(), false ),
      noMPIComm_      ( other.knownSizeComm_.getCommunicator(), other.knownSizeComm_.getTag() ),
      currentComm_ ( nullptr ),
      sizeChangesEverytime_( other.sizeChangesEverytime_ ),
      communicationRunning_( other.communicationRunning_ ),
+     senderKnown_( true ),
      recvInfos_( other.recvInfos_ ),
      sendInfos_( other.sendInfos_ )
 {
@@ -154,6 +159,8 @@ GenericBufferSystem<Rb, Sb>::GenericBufferSystem( const GenericBufferSystem &oth
       currentComm_ = &unknownSizeComm_;
    else if ( other.currentComm_ == &other.unknownSizeCommIProbe_ )
       currentComm_ = &unknownSizeCommIProbe_;
+   else if ( other.currentComm_ == &other.unknownSizeAndSenderCommIProbe_ )
+      currentComm_ = &unknownSizeAndSenderCommIProbe_;
    else if ( other.currentComm_ == &other.noMPIComm_ )
       currentComm_ = &noMPIComm_;
    else
@@ -167,6 +174,7 @@ GenericBufferSystem<Rb, Sb> & GenericBufferSystem<Rb, Sb>::operator=( const Gene
 
    sizeChangesEverytime_ = other.sizeChangesEverytime_;
    communicationRunning_ = other.communicationRunning_;
+   senderKnown_ = other.senderKnown_;
    recvInfos_ = other.recvInfos_;
    sendInfos_ = other.sendInfos_;
 
@@ -176,6 +184,8 @@ GenericBufferSystem<Rb, Sb> & GenericBufferSystem<Rb, Sb>::operator=( const Gene
       currentComm_ = &unknownSizeComm_;
    else if ( other.currentComm_ == &other.unknownSizeCommIProbe_ )
       currentComm_ = &unknownSizeCommIProbe_;
+   else if ( other.currentComm_ == &other.unknownSizeAndSenderCommIProbe_ )
+      currentComm_ = &unknownSizeAndSenderCommIProbe_;
    else if ( other.currentComm_ == &other.noMPIComm_ )
       currentComm_ = &noMPIComm_;
    else
@@ -228,7 +238,20 @@ void GenericBufferSystem<Rb, Sb>::setReceiverInfo( const std::set<MPIRank> & ran
 template< typename Rb, typename Sb>
 void GenericBufferSystem<Rb, Sb>::setReceiverInfo( const int numReceives )
 {
-   WALBERLA_ABORT("NOT IMPLEMENTED!");
+   WALBERLA_ASSERT( ! communicationRunning_ );
+
+   recvInfos_.clear();
+   for ( MPIRank sender = 0; sender < numReceives; sender++ )
+   {
+      recvInfos_[ - 1 - sender ].size = INVALID_SIZE;
+   }
+
+   // "any sender"-communication is only supported via IProbe
+   useIProbe( true );
+
+   sizeChangesEverytime_ = true;
+   senderKnown_          = false;
+   setCommunicationType( false );
 }
 
 
@@ -526,12 +549,21 @@ void GenericBufferSystem<Rb, Sb>::setCommunicationType( const bool knownSize )
 
    WALBERLA_MPI_SECTION()
    {
-      if( knownSize )
-         currentComm_ = &knownSizeComm_;
-      else if ( useIProbe_ )
-         currentComm_ = &unknownSizeCommIProbe_;
+      if ( senderKnown_ )
+      {
+         if (knownSize)
+            currentComm_ = &knownSizeComm_;
+         else if (useIProbe_)
+            currentComm_ = &unknownSizeCommIProbe_;
+         else
+            currentComm_ = &unknownSizeComm_;
+      }
       else
-         currentComm_ = &unknownSizeComm_;
+      {
+         WALBERLA_CHECK( useIProbe_, "Unknown sender communication is currently only supported with IProbe-based "
+                                     "communication." )
+         currentComm_ = &unknownSizeAndSenderCommIProbe_;
+      }
    }
 }
 

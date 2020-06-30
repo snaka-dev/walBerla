@@ -233,12 +233,13 @@ protected:
    internal::KnownSizeCommunication<RecvBuffer_T, SendBuffer_T>         knownSizeComm_;
    internal::UnknownSizeCommunication<RecvBuffer_T, SendBuffer_T>       unknownSizeComm_;
    internal::UnknownSizeCommunicationIProbe<RecvBuffer_T, SendBuffer_T> unknownSizeCommIProbe_;
+   internal::UnknownSizeCommunicationIProbe<RecvBuffer_T, SendBuffer_T> unknownSizeAndSenderCommIProbe_;
    internal::NoMPICommunication<RecvBuffer_T, SendBuffer_T>             noMPIComm_;
    internal::AbstractCommunication<RecvBuffer_T, SendBuffer_T> *        currentComm_;  //< after receiver setup, this points to unknown- or knownSizeComm_
 
    bool sizeChangesEverytime_; //< if set to true, the receiveSizeUnknown_ is set to true before communicating
    bool communicationRunning_; //< indicates if a communication step is currently running
-
+   bool senderKnown_;          //< if false, the sender ranks are unknown before receiving
 
    /// Info about the message to be received from a certain rank:
    /// information holds the buffer and, if known, the message size

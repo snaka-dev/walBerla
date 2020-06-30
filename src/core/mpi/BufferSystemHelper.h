@@ -167,8 +167,9 @@ namespace internal {
    public:
       using typename AbstractCommunication<RecvBuffer_T, SendBuffer_T>::ReceiveInfo;
 
-      UnknownSizeCommunicationIProbe( const MPI_Comm & communicator, int tag = 0 )
-           :  AbstractCommunication<RecvBuffer_T, SendBuffer_T>( communicator, tag ), sending_(false), receiving_(false) {}
+      UnknownSizeCommunicationIProbe( const MPI_Comm & communicator, int tag = 0, bool senderKnown = true )
+           :  AbstractCommunication<RecvBuffer_T, SendBuffer_T>( communicator, tag ), sending_(false), receiving_(false),
+              senderKnown_( senderKnown ) {}
 
       virtual ~UnknownSizeCommunicationIProbe() {}
 
@@ -184,6 +185,7 @@ namespace internal {
       bool sending_;
       bool receiving_;
       int  pendingReceives_;
+      bool senderKnown_;
 
       std::vector<MPI_Request> sendRequests_;
    };

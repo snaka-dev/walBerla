@@ -352,6 +352,7 @@ MPIRank UnknownSizeCommunication<Rb, Sb>::waitForNextReceive( std::map<MPIRank, 
 //======================================================================================================================
 //
 //  Unknown Size Communication (IProbe method)
+//  Can also be used if there are unknown sender ranks.
 //
 //======================================================================================================================
 
@@ -438,15 +439,29 @@ MPIRank UnknownSizeCommunicationIProbe<Rb, Sb>::waitForNextReceive( std::map<MPI
 
          if (recvInfo.size != INVALID_SIZE) continue;
 
+         const MPIRank iprobeSender  = senderKnown_ ? sender : MPI_ANY_SOURCE;
+
          int probeFlag;
          MPI_Status probeStatus;
-         MPI_Iprobe( sender,
+         MPI_Iprobe( iprobeSender,
                      this->tag_,
                      this->communicator_,
                      &probeFlag,
                      &probeStatus);
          if (probeFlag)
          {
+            const MPIRank actualSender = probeStatus.MPI_SOURCE;
+
+            if ( !senderKnown_ )
+            {
+               recvInfos.erase( sender );
+               recvInfo = recvInfos[actualSender];
+            }
+            else
+            {
+               WALBERLA_ASSERT_EQUAL( sender, actualSender );
+            }
+
             int count = 0;
             MPI_Get_count( &probeStatus, MPI_BYTE, &count );
             //WALBERLA_LOG_DEVEL("received " << count << " from " << sender);
@@ -457,14 +472,14 @@ MPIRank UnknownSizeCommunicationIProbe<Rb, Sb>::waitForNextReceive( std::map<MPI
             MPI_Recv( recvInfo.buffer.ptr(),      // where to store received size
                       count,                      // size of expected message
                       MPI_BYTE,                   // type
-                      sender,                     // rank of sender process
+                      actualSender,               // rank of sender process
                       this->tag_,                 // message tag
                       this->communicator_,        // communicator
                       &recvStatus                 // request, needed for wait
                       );
 
             --pendingReceives_;
-            return sender;
+            return actualSender;
          }
       }
    }
@@ -534,6 +549,7 @@ MPIRank NoMPICommunication<Rb, Sb>::waitForNextReceive( std::map<MPIRank, Receiv
    received_ = true;
    return 0;
 }
+
 
 
 
