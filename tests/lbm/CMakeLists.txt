@@ -91,4 +91,21 @@ waLBerla_generate_target_from_python(NAME FieldLayoutAndVectorizationTestGenerat
                                                FieldLayoutAndVectorizationTest_ZYXF_NoVec_LatticeModel.cpp FieldLayoutAndVectorizationTest_ZYXF_NoVec_LatticeModel.h )
 waLBerla_compile_test( FILES codegen/FieldLayoutAndVectorizationTest.cpp DEPENDS FieldLayoutAndVectorizationTestGenerated)
 
+
+set( configs D3Q19_SRT_INCOMP D3Q19_SRT_COMP D3Q27_SRT_INCOMP D3Q27_SRT_COMP D3Q27_TRT_INCOMP D3Q19_MRT_COMP )
+list( APPEND RefinementTargets "" )
+
+foreach( config ${configs} )
+    waLBerla_generate_target_from_python(NAME CodeGenerationRefinementGenerated_${config}
+            CODEGEN_CFG ${config}
+            FILE codegen/CodeGenerationRefinement.py
+            OUT_FILES CodeGenerationRefinement_${config}_LatticeModel.cpp CodeGenerationRefinement_${config}_LatticeModel.h
+            )
+    list( APPEND RefinementTargets CodeGenerationRefinementGenerated_${config} )
+endforeach()
+
+waLBerla_compile_test( FILES codegen/CodeGenerationRefinement.cpp DEPENDS ${RefinementTargets} )
+
+
+
 endif()
