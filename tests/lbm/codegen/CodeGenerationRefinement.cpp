@@ -249,13 +249,16 @@ WalberlaBoundaryHandling<LatticeModel_T>::operator()( IBlock * const block, cons
    CellInterval west( domainBB.xMin(), domainBB.yMin(), domainBB.zMin(),
                       domainBB.xMin() + ghost - cell_idx_c(1), domainBB.yMax(), domainBB.zMax());
 
-   for(auto cell : west) {
-      const cell_idx_t x = cell.x();
-      const cell_idx_t y = cell.y();
-      const cell_idx_t z = cell.z();
+   Cell offset(0,0,0);
+   storage->transformBlockLocalToGlobalCell(offset, *block);
 
-      Cell globalCell;
-      storage->transformBlockLocalToGlobalCell(globalCell, *block, cell);
+   //NOTE this for loop assumes west.empty()=false to avoid strict-overflow warning for gcc_7_hybrid
+   for( auto cellIt = cell::CellIntervalIterator(west, west.min()); cellIt != west.end(); ++cellIt ) {
+      const cell_idx_t x = cellIt->x();
+      const cell_idx_t y = cellIt->y();
+      const cell_idx_t z = cellIt->z();
+
+      Cell globalCell = *cellIt + offset;
 
       const real_t coordY = globalCell[1] + 0.5 * storage->dy(level);
 
