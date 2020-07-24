@@ -70,3 +70,6 @@ CMakeDefs.h
 /walberla-config.cmake
 /cmake-build-debug/
 /cmake-build-release/
+
+# setup.py
+python/*.egg-info
