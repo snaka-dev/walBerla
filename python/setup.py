@@ -3,7 +3,7 @@
 # install package localy with 'pip install -e .'
 
 from setuptools import setup
-setup(name='pystencils_walberla',
+setup(name='walberla_codegen',
       version='1.0',
       description='Python packages for WaLBerla kernel generation',
       keywords='walberla pystencils lbmpy',
