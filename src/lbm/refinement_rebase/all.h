@@ -22,19 +22,11 @@
 
 #pragma once
 
-#include "BlockForestEvaluation.h"
-#include "PerformanceEvaluation.h"
-#include "PerformanceLogger.h"
-
-#include "blockforest/all.h"
-#include "boundary/all.h"
-#include "communication/all.h"
-#include "evaluations/all.h"
-#include "field/all.h"
-#include "geometry/all.h"
-#include "gui/all.h"
-#include "lattice_model/all.h"
-#include "refinement/all.h"
-#include "refinement_rebase/all.h"
-#include "sweeps/all.h"
-#include "vtk/all.h"
+#include "BoundarySetup.h"
+#include "PdfFieldPackInfo.h"
+#include "PdfFieldSyncPackInfo.h"
+#include "RefinementFunctorWrapper.h"
+#include "TimeStep.h"
+#include "TimeStepPdfPackInfo.h"
+#include "TimeTracker.h"
+#include "VorticityBasedLevelDetermination.h"

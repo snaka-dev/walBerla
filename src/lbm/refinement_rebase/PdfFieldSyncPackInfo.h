@@ -13,28 +13,32 @@
 //  You should have received a copy of the GNU General Public License along
 //  with waLBerla (see COPYING.txt). If not, see <http://www.gnu.org/licenses/>.
 //
-//! \file all.h
+//! \file PdfFieldSyncPackInfo.h
 //! \ingroup lbm
-//! \author Christian Godenschwager <christian.godenschwager@fau.de>
-//! \brief Collective header file for module lbm
+//! \author Florian Schornbaum <florian.schornbaum@fau.de>
 //
 //======================================================================================================================
 
 #pragma once
 
-#include "BlockForestEvaluation.h"
-#include "PerformanceEvaluation.h"
-#include "PerformanceLogger.h"
+#include "lbm/field/PdfField.h"
+#include "field/refinement/PackInfo.h"
 
-#include "blockforest/all.h"
-#include "boundary/all.h"
-#include "communication/all.h"
-#include "evaluations/all.h"
-#include "field/all.h"
-#include "geometry/all.h"
-#include "gui/all.h"
-#include "lattice_model/all.h"
-#include "refinement/all.h"
-#include "refinement_rebase/all.h"
-#include "sweeps/all.h"
-#include "vtk/all.h"
+
+namespace walberla {
+namespace lbm {
+namespace refinement {
+
+template <typename LatticeModel_T>
+class PdfFieldSyncPackInfo : public field::refinement::PackInfo< PdfField<LatticeModel_T>, typename LatticeModel_T::Stencil >
+{
+public:
+   PdfFieldSyncPackInfo( const BlockDataID & fieldId )
+   : field::refinement::PackInfo< PdfField<LatticeModel_T>, typename LatticeModel_T::Stencil >( fieldId )
+   {
+   }
+};
+
+} // namespace refinement
+} // namespace lbm
+} // namespace walberla

@@ -92,7 +92,8 @@ waLBerla_generate_target_from_python(NAME FieldLayoutAndVectorizationTestGenerat
 waLBerla_compile_test( FILES codegen/FieldLayoutAndVectorizationTest.cpp DEPENDS FieldLayoutAndVectorizationTestGenerated)
 
 
-set( configs D3Q19_SRT_INCOMP D3Q19_SRT_COMP D3Q27_SRT_INCOMP D3Q27_SRT_COMP D3Q27_TRT_INCOMP D3Q19_MRT_COMP )
+# set( configs D3Q19_SRT_INCOMP D3Q19_SRT_COMP D3Q27_SRT_INCOMP D3Q27_SRT_COMP D3Q27_TRT_INCOMP D3Q19_MRT_COMP )
+set( configs D3Q19_SRT_INCOMP )
 list( APPEND RefinementTargets "" )
 
 foreach( config ${configs} )

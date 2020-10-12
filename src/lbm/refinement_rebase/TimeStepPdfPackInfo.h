@@ -13,28 +13,32 @@
 //  You should have received a copy of the GNU General Public License along
 //  with waLBerla (see COPYING.txt). If not, see <http://www.gnu.org/licenses/>.
 //
-//! \file all.h
+//! \file TimeStep.h
 //! \ingroup lbm
 //! \author Christian Godenschwager <christian.godenschwager@fau.de>
-//! \brief Collective header file for module lbm
 //
 //======================================================================================================================
 
 #pragma once
 
-#include "BlockForestEvaluation.h"
-#include "PerformanceEvaluation.h"
-#include "PerformanceLogger.h"
+#include "blockforest/communication/NonUniformPackInfo.h"
 
-#include "blockforest/all.h"
-#include "boundary/all.h"
-#include "communication/all.h"
-#include "evaluations/all.h"
-#include "field/all.h"
-#include "geometry/all.h"
-#include "gui/all.h"
-#include "lattice_model/all.h"
-#include "refinement/all.h"
-#include "refinement_rebase/all.h"
-#include "sweeps/all.h"
-#include "vtk/all.h"
+namespace walberla {
+namespace lbm {
+namespace refinement {
+
+
+class TimeStepPdfPackInfo : public blockforest::communication::NonUniformPackInfo
+{
+public:
+   virtual bool optimizedEqualLevelCommunication() const = 0;
+   virtual void optimizeEqualLevelCommunication( const bool value = true ) = 0;
+
+   virtual bool optimizedForLinearExplosion() const = 0;
+   virtual void optimizeForLinearExplosion( const bool value = true ) = 0;
+};
+
+
+} // namespace refinement
+} // namespace lbm
+} // namespace walberla
