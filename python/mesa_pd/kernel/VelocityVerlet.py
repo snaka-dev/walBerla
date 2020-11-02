@@ -5,7 +5,7 @@ from mesa_pd.utility import generate_file
 
 
 class VelocityVerlet:
-    def __init__(self, integrate_rotation = True):
+    def __init__(self, integrate_rotation=True):
         self.context = {'bIntegrateRotation': integrate_rotation, 'interface': []}
         self.context['interface'].append(create_access("position", "walberla::mesa_pd::Vec3", access="gs"))
         self.context['interface'].append(create_access("linearVelocity", "walberla::mesa_pd::Vec3", access="gs"))
@@ -30,8 +30,12 @@ class VelocityVerlet:
 
         ctx["InterfaceTestName"] = "VelocityVerletInterfaceCheck"
         ctx["KernelInclude"] = "kernel/VelocityVerlet.h"
-        ctx[
-            "ExplicitInstantiation"] = "template void kernel::VelocityVerletPreForceUpdate::operator()(const size_t p_idx1, Accessor& ac) const;\n" + \
-                                       "template void kernel::VelocityVerletPostForceUpdate::operator()(const size_t p_idx1, Accessor& ac) const;"
+        ctx["ExplicitInstantiation"] = \
+            "template void kernel::VelocityVerletPreForceUpdate::operator()(" \
+            "const size_t p_idx1, " \
+            "Accessor& ac) const;\n" + \
+            "template void kernel::VelocityVerletPostForceUpdate::operator()(" \
+            "const size_t p_idx1, " \
+            "Accessor& ac) const;"
         generate_file(module['test_path'], 'tests/CheckInterface.templ.cpp', ctx,
                       'kernel/interfaces/VelocityVerletInterfaceCheck.cpp')

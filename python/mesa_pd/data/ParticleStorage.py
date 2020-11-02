@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-import numpy as np
 from ..utility import find, TerminalColor, generate_file
 
 
@@ -27,8 +26,8 @@ def create_particle_property(name, type, access="grs", defValue="", syncMode="AL
     """
 
     if (type == 'bool'):
-        raise RuntimeError(f"Due to flaws in the implementation of std::vector<bool>, bool is not supported as a "
-                           f"property type! Please use char instead.")
+        raise RuntimeError("Due to flaws in the implementation of std::vector<bool>, bool is not supported as a "
+                           "property type! Please use char instead.")
 
     # sort access specifier and remove duplicates
     foo = "".join(sorted(access))
@@ -65,7 +64,7 @@ class ParticleStorage():
 
     def add_property(self, name, type, access="grs", defValue="", syncMode="ALWAYS"):
         prop = find(lambda x: x['name'] == name, self.context['properties'])
-        if (prop == None):
+        if (prop is None):
             # print(f"{TerminalColor.GREEN} creating particle property: {name} {TerminalColor.DEFAULT}")
             self.context['properties'].append(
                 create_particle_property(name, type, access=access, defValue=defValue, syncMode=syncMode))
@@ -73,7 +72,9 @@ class ParticleStorage():
             if not (prop['type'] == type and prop['name'] == name and prop['defValue'] == defValue):
                 new_prop = create_particle_property(name, type, defValue=defValue, syncMode=syncMode)
                 raise RuntimeError(
-                    f"{TerminalColor.RED} property definition differs from previous one:\nPREVIOUS {prop}\nNEW {new_prop} {TerminalColor.DEFAULT}")
+                    f"{TerminalColor.RED} property definition differs from previous one:\n"
+                    f"PREVIOUS {prop}\n"
+                    f"NEW {new_prop} {TerminalColor.DEFAULT}")
             print(f"{TerminalColor.YELLOW} reusing particle property: {name} {TerminalColor.DEFAULT}")
 
     def add_include(self, include):
@@ -100,5 +101,6 @@ class ParticleStorage():
     def generate(self, module):
         ctx = {'module': module, **self.context}
 
-        generate_file(module['module_path'], 'data/ParticleStorage.templ.h', ctx, filename='data/ParticleStorage.h')
-        generate_file(module['module_path'], 'data/ParticleAccessor.templ.h', ctx, filename='data/ParticleAccessor.h')
+        generate_file(module['module_path'], 'data/ParticleStorage.templ.h', ctx)
+        generate_file(module['module_path'], 'data/ParticleAccessor.templ.h', ctx)
+        generate_file(module['module_path'], 'common/ParticleFunctions.templ.h', ctx)

@@ -91,9 +91,6 @@ option ( WALBERLA_SIMD_FORCE_SCALAR         "Do not use SIMD operations even whe
 
 option ( WALBERLA_BUFFER_DEBUG              "Type checking for BufferSystem ( slow )"        OFF )
 
-option ( WALBERLA_NO_OUTDATED_FEATURES      "Show warning/errors when outdated features "
-                                            "(i.e. features that will be deprecated) are used"   )
-
 # Profile guided optimization
 option ( WALBERLA_PROFILE_GENERATE          "Generates Profile for Optimization"                 )
 option ( WALBERLA_PROFILE_USE               "Uses Profile to optimize"                           )
@@ -652,9 +649,14 @@ else()
   list ( APPEND waLBerla_OPTIONAL_BOOST_COMPONENTS system )
 endif()
 
-if ( WALBERLA_BUILD_WITH_PYTHON AND WALBERLA_CXX_COMPILER_IS_MSVC )
+if ( WALBERLA_BUILD_WITH_PYTHON )
+  if( WALBERLA_CXX_COMPILER_IS_MSVC )
     get_filename_component(PYTHON_REQUIRED_LIB ${PYTHON_LIBRARY} NAME_WE)
     list( APPEND waLBerla_REQUIRED_BOOST_COMPONENTS ${PYTHON_REQUIRED_LIB} )
+  elseif( WALBERLA_USE_STD_FILESYSTEM OR WALBERLA_USE_STD_EXPERIMENTAL_FILESYSTEM )
+    list( APPEND waLBerla_REQUIRED_BOOST_COMPONENTS system )
+    list( REMOVE_ITEM waLBerla_OPTIONAL_BOOST_COMPONENTS system )
+  endif()
 endif()
 
 # This variable is necessary, if the CMAKE version used is not aware of a more recent boost version (keep this up to date!)
@@ -662,7 +664,7 @@ set ( Boost_ADDITIONAL_VERSIONS
       "1.45" "1.45.0" "1.46" "1.46.0" "1.46.1" "1.47" "1.47.0" "1.48" "1.48.0" "1.49" "1.49.0"
       "1.50" "1.50.0" "1.51" "1.51.0" "1.52" "1.52.0" "1.53" "1.53.0" "1.54" "1.54.0" "1.55" "1.55.0"
       "1.56" "1.56.0" "1.57" "1.57.0" "1.58" "1.58.0" "1.59" "1.59.0" "1.60" "1.60.0" "1.61" "1.61.0" "1.62" "1.62.0" "1.63" "1.63.0"
-      "1.64.0" "1.65.0" "1.65.1" "1.66.0" "1.67.0" "1.68.0" "1.69.0" "1.70.0" "1.71.0")
+      "1.64.0" "1.65.0" "1.65.1" "1.66.0" "1.67.0" "1.68.0" "1.69.0" "1.70.0" "1.71.0" "1.72.0" "1.73.0")
 
 set ( Boost_USE_STATIC_LIBS    OFF CACHE BOOL "Use boost static libraries" )
 set ( Boost_USE_MULTITHREADED  OFF CACHE BOOL "Use boost multithreaded libraries" )
@@ -749,11 +751,13 @@ if ( WALBERLA_BUILD_WITH_PYTHON AND NOT WALBERLA_CXX_COMPILER_IS_MSVC)
         SET(_boost_MULTITHREADED "-mt")
     endif()
     if( PYTHON_LIBRARY MATCHES "python3" )
+        string(REPLACE "." ";" VERSION_LIST ${PYTHONLIBS_VERSION_STRING})
+        list(GET VERSION_LIST 0 PY_VER_MAJOR)
+        list(GET VERSION_LIST 1 PY_VER_MINOR)
         find_library( BOOST_PYTHON_LIBRARY NAMES
-                boost_python37${_boost_MULTITHREADED} boost_python36${_boost_MULTITHREADED} boost_python35${_boost_MULTITHREADED}
-                boost_python-py37${_boost_MULTITHREADED} boost_python-py36${_boost_MULTITHREADED} boost_python-py35${_boost_MULTITHREADED}
-                boost_python-py34${_boost_MULTITHREADED} boost_python-py33${_boost_MULTITHREADED}
-                boost_python3${_boost_MULTITHREADED}
+                boost_python${PY_VER_MAJOR}${PY_VER_MINOR}${_boost_MULTITHREADED}
+                boost_python-py${PY_VER_MAJOR}${PY_VER_MINOR}${_boost_MULTITHREADED}
+                boost_python${PY_VER_MAJOR}${_boost_MULTITHREADED}
                 boost_python${_boost_MULTITHREADED}
                 PATHS ${Boost_LIBRARY_DIRS} NO_DEFAULT_PATH )
     else()
@@ -1127,7 +1131,7 @@ endif ( )
 ##
 ############################################################################################################################
 if (WALBERLA_BUILD_WITH_GCOV AND CMAKE_COMPILER_IS_GNUCXX  )
-    add_flag ( CMAKE_CXX_FLAGS_DEBUG "--coverage" )
+    add_flag ( CMAKE_CXX_FLAGS "--coverage" )
 endif()
 ############################################################################################################################
 
