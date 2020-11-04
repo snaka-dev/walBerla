@@ -26,7 +26,7 @@ cpp_printer = CustomSympyPrinter()
 REFINEMENT_SCALE_FACTOR = sp.Symbol("level_scale_factor")
 
 
-def __lattice_model(generation_context, class_name, lb_method, stream_collide_ast, collide_ast, stream_ast,
+def __lattice_model(generation_context, class_name, lb_method, stream_collide_ast, collide_ast, stream_ast, target,
                     refinement_scaling):
     stencil_name = get_stencil_name(lb_method.stencil)
     if not stencil_name:
@@ -107,7 +107,7 @@ def __lattice_model(generation_context, class_name, lb_method, stream_collide_as
         'stream_collide_kernel': KernelInfo(stream_collide_ast, ['pdfs_tmp'], [('pdfs', 'pdfs_tmp')], []),
         'collide_kernel': KernelInfo(collide_ast, [], [], []),
         'stream_kernel': KernelInfo(stream_ast, ['pdfs_tmp'], [('pdfs', 'pdfs_tmp')], []),
-        'target': 'cpu',
+        'target': target,
         'namespace': 'lbm',
         'headers': required_headers,
         'need_block_offsets': [
@@ -118,11 +118,12 @@ def __lattice_model(generation_context, class_name, lb_method, stream_collide_as
     env = Environment(loader=PackageLoader('lbmpy_walberla'), undefined=StrictUndefined)
     add_pystencils_filters_to_jinja_env(env)
 
+    source_extension = "cpp" if target == "cpu" else "cu"
     header = env.get_template('LatticeModel.tmpl.h').render(**jinja_context)
     source = env.get_template('LatticeModel.tmpl.cpp').render(**jinja_context)
 
-    generation_context.write_file("{}.h".format(class_name), header)
-    generation_context.write_file("{}.cpp".format(class_name), source)
+    generation_context.write_file(f"{class_name}.h", header)
+    generation_context.write_file(f"{class_name}.{source_extension}", source)
 
 
 def generate_lattice_model(generation_context, class_name, collision_rule, field_layout='zyxf', refinement_scaling=None,
@@ -137,8 +138,7 @@ def generate_lattice_model(generation_context, class_name, collision_rule, field
     dim = lb_method.dim
 
     create_kernel_params = default_create_kernel_parameters(generation_context, create_kernel_params)
-    if create_kernel_params['target'] == 'gpu':
-        raise ValueError("Lattice Models can only be generated for CPUs. To generate LBM on GPUs use sweeps directly")
+    target = create_kernel_params['target']
 
     if field_layout == 'fzyx':
         create_kernel_params['cpu_vectorize_info']['assume_inner_stride_one'] = True
@@ -164,7 +164,7 @@ def generate_lattice_model(generation_context, class_name, collision_rule, field
     stream_ast = create_kernel(stream_update_rule, **create_kernel_params)
     stream_ast.function_name = 'kernel_stream'
     stream_ast.assumed_inner_stride_one = create_kernel_params['cpu_vectorize_info']['assume_inner_stride_one']
-    __lattice_model(generation_context, class_name, lb_method, stream_collide_ast, collide_ast, stream_ast,
+    __lattice_model(generation_context, class_name, lb_method, stream_collide_ast, collide_ast, stream_ast, target,
                     refinement_scaling)
 
 

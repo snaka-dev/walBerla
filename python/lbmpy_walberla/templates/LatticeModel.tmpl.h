@@ -21,6 +21,12 @@
 #include "core/DataTypes.h"
 #include "core/logging/Logging.h"
 
+{% if target is equalto 'cpu' -%}
+#include "field/GhostLayerField.h"
+{%- elif target is equalto 'gpu' -%}
+#include "cuda/GPUField.h"
+{%- endif %}
+
 #include "field/GhostLayerField.h"
 #include "field/SwapableCompare.h"
 #include "domain_decomposition/BlockDataID.h"
@@ -109,13 +115,13 @@ public:
         Sweep( BlockDataID _pdfsID ) : pdfsID(_pdfsID) {};
 
         //void stream       ( IBlock * const block, const uint_t numberOfGhostLayersToInclude = uint_t(0) );
-        void collide      ( IBlock * const block, const uint_t numberOfGhostLayersToInclude = uint_t(0) );
-        void streamCollide( IBlock * const block, const uint_t numberOfGhostLayersToInclude = uint_t(0) );
-        void stream       ( IBlock * const block, const uint_t numberOfGhostLayersToInclude = uint_t(0) );
+        void collide      ( IBlock * const block, const uint_t numberOfGhostLayersToInclude = uint_t(0){%if target is equalto 'gpu'%}, cudaStream_t stream = nullptr{% endif %} );
+        void streamCollide( IBlock * const block, const uint_t numberOfGhostLayersToInclude = uint_t(0){%if target is equalto 'gpu'%}, cudaStream_t stream = nullptr{% endif %} );
+        void stream       ( IBlock * const block, const uint_t numberOfGhostLayersToInclude = uint_t(0){%if target is equalto 'gpu'%}, cudaStream_t stream = nullptr{% endif %} );
 
-        void operator() ( IBlock * const block, const uint_t numberOfGhostLayersToInclude = uint_t(0) )
+        void operator() ( IBlock * const block, const uint_t numberOfGhostLayersToInclude = uint_t(0){%if target is equalto 'gpu'%}, cudaStream_t stream = nullptr{% endif %} )
         {
-            streamCollide( block, numberOfGhostLayersToInclude );
+            streamCollide( block, numberOfGhostLayersToInclude{%if target is equalto 'gpu'%}, stream{% endif %} );
         }
 
     private:
@@ -222,35 +228,56 @@ public:
                       const Vector3< real_t > & u = Vector3< real_t >( real_t(0.0) ),
                       real_t rho = real_t(1.0) )
    {
+
+        {%if target is equalto 'gpu'%}
+        WALBERLA_ABORT("EquilibriumDistribution Not implemented for target GPU");
+        return real_t(0.0);
+        {% else %}
         {% if not compressible %}
         rho -= real_t(1.0);
         {% endif %}
         {{equilibrium_from_direction}}
+        {% endif %}
    }
 
    static real_t getSymmetricPart( const stencil::Direction direction,
                                    const Vector3<real_t> & u = Vector3< real_t >(real_t(0.0)),
                                    real_t rho = real_t(1.0) )
    {
+        {%if target is equalto 'gpu'%}
+        WALBERLA_ABORT("EquilibriumDistribution Not implemented for target GPU");
+        return real_t(0.0);
+        {% else %}
         {% if not compressible %}
         rho -= real_t(1.0);
         {% endif %}
         {{symmetric_equilibrium_from_direction}}
+        {% endif %}
    }
 
    static real_t getAsymmetricPart( const stencil::Direction direction,
                                     const Vector3< real_t > & u = Vector3<real_t>( real_t(0.0) ),
                                     real_t rho = real_t(1.0) )
    {
+        {%if target is equalto 'gpu'%}
+        WALBERLA_ABORT("EquilibriumDistribution Not implemented for target GPU");
+        return real_t(0.0);
+        {% else %}
         {% if not compressible %}
         rho -= real_t(1.0);
         {% endif %}
         {{asymmetric_equilibrium_from_direction}}
+        {% endif %}
    }
 
    static std::vector< real_t > get( const Vector3< real_t > & u = Vector3<real_t>( real_t(0.0) ),
                                      real_t rho = real_t(1.0) )
    {
+      {%if target is equalto 'gpu'%}
+      WALBERLA_ABORT("EquilibriumDistribution Not implemented for target GPU");
+      std::vector<real_t> result = {0.0};
+      return result;
+      {% else %}
       {% if not compressible %}
       rho -= real_t(1.0);
       {% endif %}
@@ -261,6 +288,7 @@ public:
          equilibrium[d.toIdx()] = get(*d, u, rho);
       }
       return equilibrium;
+      {% endif %}
    }
 };
 
@@ -274,6 +302,10 @@ struct AdaptVelocityToForce<{{class_name}}, void>
    static Vector3<real_t> get( FieldPtrOrIterator & it, const {{class_name}} & lm,
                                const Vector3< real_t > & velocity, const real_t rho )
    {
+      {%if target is equalto 'gpu'%}
+      WALBERLA_ABORT("AdaptVelocityToForce Not implemented for target GPU");
+      return velocity;
+      {% else %}
       auto x = it.x();
       auto y = it.y();
       auto z = it.z();
@@ -282,16 +314,22 @@ struct AdaptVelocityToForce<{{class_name}}, void>
       {% else %}
       return velocity;
       {% endif %}
+      {% endif %}
    }
 
    static Vector3<real_t> get( const cell_idx_t x, const cell_idx_t y, const cell_idx_t z, const {{class_name}} & lm,
                                const Vector3< real_t > & velocity, const real_t rho )
    {
+      {%if target is equalto 'gpu'%}
+      WALBERLA_ABORT("AdaptVelocityToForce Not implemented for target GPU");
+      return velocity;
+      {% else %}
       {% if macroscopic_velocity_shift %}
 
       return velocity - Vector3<real_t>({{macroscopic_velocity_shift | join(",") }} {% if D == 2 %}, real_t(0.0) {%endif %} );
       {% else %}
       return velocity;
+      {% endif %}
       {% endif %}
    }
 };
@@ -307,19 +345,26 @@ struct Equilibrium< {{class_name}}, void >
    static void set( FieldPtrOrIterator & it,
                     const Vector3< real_t > & u = Vector3< real_t >( real_t(0.0) ), real_t rho = real_t(1.0) )
    {
-        {%if not compressible %}
-        rho -= real_t(1.0);
-        {%endif %}
+      {%if target is equalto 'gpu'%}
+      WALBERLA_ABORT("Equilibrium setter Not implemented for target GPU");
+      {% else %}
+      {%if not compressible %}
+      rho -= real_t(1.0);
+      {%endif %}
 
-       {% for eqTerm in equilibrium -%}
-       it[{{loop.index0 }}] = {{eqTerm}};
-       {% endfor -%}
+      {% for eqTerm in equilibrium -%}
+      it[{{loop.index0 }}] = {{eqTerm}};
+      {% endfor -%}
+      {% endif %}
    }
 
    template< typename PdfField_T >
    static void set( PdfField_T & pdf, const cell_idx_t x, const cell_idx_t y, const cell_idx_t z,
                     const Vector3< real_t > & u = Vector3< real_t >( real_t(0.0) ), real_t rho = real_t(1.0) )
    {
+      {%if target is equalto 'gpu'%}
+      WALBERLA_ABORT("Equilibrium setter Not implemented for target GPU");
+      {% else %}
       {%if not compressible %}
       rho -= real_t(1.0);
       {%endif %}
@@ -328,6 +373,7 @@ struct Equilibrium< {{class_name}}, void >
       {% for eqTerm in equilibrium -%}
       pdf.getF( &xyz0, {{loop.index0 }})= {{eqTerm}};
       {% endfor -%}
+      {% endif %}
    }
 };
 
@@ -338,23 +384,33 @@ struct Density<{{class_name}}, void>
    template< typename FieldPtrOrIterator >
    static inline real_t get( const {{class_name}} & , const FieldPtrOrIterator & it )
    {
+      {%if target is equalto 'gpu'%}
+      WALBERLA_ABORT("Density getter Not implemented for target GPU");
+      return real_t(0.0);
+      {% else %}
         {% for i in range(Q) -%}
             const real_t f_{{i}} = it[{{i}}];
         {% endfor -%}
         {{density_getters | indent(8)}}
         return rho;
+      {% endif %}
    }
 
    template< typename PdfField_T >
    static inline real_t get( const {{class_name}} & ,
                              const PdfField_T & pdf, const cell_idx_t x, const cell_idx_t y, const cell_idx_t z )
    {
+      {%if target is equalto 'gpu'%}
+      WALBERLA_ABORT("Density getter Not implemented for target GPU");
+      return real_t(0.0);
+      {% else %}
         const real_t & xyz0 = pdf(x,y,z,0);
         {% for i in range(Q) -%}
             const real_t f_{{i}} = pdf.getF( &xyz0, {{i}});
         {% endfor -%}
         {{density_getters | indent(8)}}
         return rho;
+      {% endif %}
    }
 };
 
@@ -366,6 +422,9 @@ struct DensityAndVelocity<{{class_name}}>
     static void set( FieldPtrOrIterator & it, const {{class_name}} & lm,
                      const Vector3< real_t > & u = Vector3< real_t >( real_t(0.0) ), const real_t rho_in = real_t(1.0) )
     {
+      {%if target is equalto 'gpu'%}
+      WALBERLA_ABORT("DensityAndVelocity setter Not implemented for target GPU");
+      {% else %}
         auto x = it.x();
         auto y = it.y();
         auto z = it.z();
@@ -376,18 +435,23 @@ struct DensityAndVelocity<{{class_name}}>
         {% endif %}
 
         Equilibrium<{{class_name}}>::set(it, Vector3<real_t>(u_0, u_1, u_2), rho{%if not compressible %} + real_t(1) {%endif%});
+        {% endif %}
     }
 
     template< typename PdfField_T >
     static void set( PdfField_T & pdf, const cell_idx_t x, const cell_idx_t y, const cell_idx_t z, const {{class_name}} & lm,
                      const Vector3< real_t > & u = Vector3< real_t >( real_t(0.0) ), const real_t rho_in = real_t(1.0) )
     {
+         {%if target is equalto 'gpu'%}
+         WALBERLA_ABORT("DensityAndVelocity setter Not implemented for target GPU");
+         {% else %}
         {{density_velocity_setter_macroscopic_values | indent(8)}}
         {% if D == 2 -%}
         const real_t u_2(0.0);
         {% endif %}
 
         Equilibrium<{{class_name}}>::set(pdf, x, y, z, Vector3<real_t>(u_0, u_1, u_2), rho {%if not compressible %} + real_t(1) {%endif%});
+        {% endif %}
     }
 };
 
@@ -399,6 +463,9 @@ struct DensityAndVelocityRange<{{class_name}}, FieldIteratorXYZ>
    static void set( FieldIteratorXYZ & begin, const FieldIteratorXYZ & end, const {{class_name}} & lm,
                     const Vector3< real_t > & u = Vector3< real_t >( real_t(0.0) ), const real_t rho_in = real_t(1.0) )
    {
+         {%if target is equalto 'gpu'%}
+         WALBERLA_ABORT("DensityAndVelocityRange Not implemented for target GPU");
+         {% else %}
         for( auto cellIt = begin; cellIt != end; ++cellIt )
         {
             const auto x = cellIt.x();
@@ -411,6 +478,7 @@ struct DensityAndVelocityRange<{{class_name}}, FieldIteratorXYZ>
 
             Equilibrium<{{class_name}}>::set(cellIt, Vector3<real_t>(u_0, u_1, u_2), rho{%if not compressible %} + real_t(1) {%endif%});
         }
+        {% endif %}
    }
 };
 
@@ -423,6 +491,10 @@ struct DensityAndMomentumDensity<{{class_name}}>
    static real_t get( Vector3< real_t > & momentumDensity, const {{class_name}} & lm,
                       const FieldPtrOrIterator & it )
    {
+         {%if target is equalto 'gpu'%}
+         WALBERLA_ABORT("DensityAndMomentumDensity getter Not implemented for target GPU");
+         return real_t(0.0);
+         {% else %}
         const auto x = it.x();
         const auto y = it.y();
         const auto z = it.z();
@@ -436,12 +508,17 @@ struct DensityAndMomentumDensity<{{class_name}}>
             momentumDensity[{{i}}] = md_{{i}};
         {% endfor %}
         return rho;
+        {% endif %}
    }
 
    template< typename PdfField_T >
    static real_t get( Vector3< real_t > & momentumDensity, const {{class_name}} & lm, const PdfField_T & pdf,
                       const cell_idx_t x, const cell_idx_t y, const cell_idx_t z )
    {
+         {%if target is equalto 'gpu'%}
+         WALBERLA_ABORT("DensityAndMomentumDensity getter Not implemented for target GPU");
+         return real_t(0.0);
+         {% else %}
         const real_t & xyz0 = pdf(x,y,z,0);
         {% for i in range(Q) -%}
             const real_t f_{{i}} = pdf.getF( &xyz0, {{i}});
@@ -452,6 +529,7 @@ struct DensityAndMomentumDensity<{{class_name}}>
             momentumDensity[{{i}}] = md_{{i}};
         {% endfor %}
        return rho;
+       {% endif %}
    }
 };
 
@@ -462,6 +540,9 @@ struct MomentumDensity< {{class_name}}>
    template< typename FieldPtrOrIterator >
    static void get( Vector3< real_t > & momentumDensity, const {{class_name}} & lm, const FieldPtrOrIterator & it )
    {
+         {%if target is equalto 'gpu'%}
+         WALBERLA_ABORT("MomentumDensity getter Not implemented for target GPU");
+         {% else %}
         const auto x = it.x();
         const auto y = it.y();
         const auto z = it.z();
@@ -474,12 +555,16 @@ struct MomentumDensity< {{class_name}}>
         {% for i in range(D) -%}
             momentumDensity[{{i}}] = md_{{i}};
         {% endfor %}
+        {% endif %}
    }
 
    template< typename PdfField_T >
    static void get( Vector3< real_t > & momentumDensity, const {{class_name}} & lm, const PdfField_T & pdf,
                     const cell_idx_t x, const cell_idx_t y, const cell_idx_t z )
    {
+         {%if target is equalto 'gpu'%}
+         WALBERLA_ABORT("MomentumDensity getter Not implemented for target GPU");
+         {% else %}
         const real_t & xyz0 = pdf(x,y,z,0);
         {% for i in range(Q) -%}
             const real_t f_{{i}} = pdf.getF( &xyz0, {{i}});
@@ -489,6 +574,7 @@ struct MomentumDensity< {{class_name}}>
         {% for i in range(D) -%}
             momentumDensity[{{i}}] = md_{{i}};
         {% endfor %}
+        {% endif %}
    }
 };
 
