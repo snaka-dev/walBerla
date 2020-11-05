@@ -132,7 +132,7 @@ def generate_pack_info_from_kernel(generation_context, class_name: str, assignme
         class_name: name of the generated class
         assignments: list of assignments from the compute kernel - generates PackInfo for "pull" part only
                      i.e. the kernel is expected to only write to the center
-        kind:                      
+        kind:
         **create_kernel_params: remaining keyword arguments are passed to `pystencils.create_kernel`
     """
     assert kind in ('push', 'pull')
@@ -186,8 +186,14 @@ def generate_pack_info(generation_context, class_name: str,
     items = sorted(items, key=lambda e: e[0])
     directions_to_pack_terms = OrderedDict(items)
 
+    if 'cpu_vectorize_info' in create_kernel_params:
+        vec_params = create_kernel_params['cpu_vectorize_info']
+        if 'instruction_set' in vec_params and vec_params['instruction_set'] is not None:
+            raise NotImplementedError("Vectorisation of the pack info is not implemented.")
+
     create_kernel_params = default_create_kernel_parameters(generation_context, create_kernel_params)
     target = create_kernel_params.get('target', 'cpu')
+    create_kernel_params['cpu_vectorize_info']['instruction_set'] = None
 
     template_name = "CpuPackInfo.tmpl" if target == 'cpu' else 'GpuPackInfo.tmpl'
 
@@ -338,6 +344,7 @@ def get_vectorize_instruction_set(generation_context):
             return 'sse'
     else:
         return None
+
 
 def default_create_kernel_parameters(generation_context, params):
     default_dtype = "float64" if generation_context.double_accuracy else 'float32'

@@ -42,19 +42,20 @@
 #include <lbm/field/PdfField.h>
 #include <lbm/lattice_model/D3Q19.h>
 #include <lbm/lattice_model/D3Q27.h>
-#include <lbm/refinement/TimeStep.h>
 #include <lbm/sweeps/CellwiseSweep.h>
 #include <timeloop/SweepTimeloop.h>
 #include <type_traits>
 
-#include "CodeGenerationRefinement_D3Q19_SRT_COMP_LatticeModel.h"
-#include "CodeGenerationRefinement_D3Q19_SRT_INCOMP_LatticeModel.h"
-#include "CodeGenerationRefinement_D3Q27_SRT_COMP_LatticeModel.h"
-#include "CodeGenerationRefinement_D3Q27_SRT_INCOMP_LatticeModel.h"
-#include "CodeGenerationRefinement_D3Q27_TRT_INCOMP_LatticeModel.h"
-#include "CodeGenerationRefinement_D3Q19_MRT_COMP_LatticeModel.h"
+#include <lbm/refinement_rebase/TimeStep.h>
 
-//#define TEST_USES_VTK_OUTPUT
+// #include "CodeGenerationRefinement_D3Q19_SRT_COMP_LatticeModel.h"
+#include "CodeGenerationRefinement_D3Q19_SRT_INCOMP_LatticeModel.h"
+// #include "CodeGenerationRefinement_D3Q27_SRT_COMP_LatticeModel.h"
+// #include "CodeGenerationRefinement_D3Q27_SRT_INCOMP_LatticeModel.h"
+// #include "CodeGenerationRefinement_D3Q27_TRT_INCOMP_LatticeModel.h"
+// #include "CodeGenerationRefinement_D3Q19_MRT_COMP_LatticeModel.h"
+
+#define TEST_USES_VTK_OUTPUT
 #ifdef TEST_USES_VTK_OUTPUT
 #include "lbm/vtk/Density.h"
 #include "lbm/vtk/Velocity.h"
@@ -503,13 +504,13 @@ int main( int argc, char ** argv )
 
    fieldIds.emplace_back();
 
-   typedef lbm::D3Q19<SRT, true>                                      walberalLM_D3Q19_SRT_COMP;
-   typedef lbm::CodeGenerationRefinement_D3Q19_SRT_COMP_LatticeModel     lbmpyLM_D3Q19_SRT_COMP;
-
-   AddRefinementTimeStep< walberalLM_D3Q19_SRT_COMP >::add(blocks, timeloop, walberalLM_D3Q19_SRT_COMP(SRT(GlobalOmega)),
-                                                           fieldIds.back(), field::fzyx, flagFieldId, velocity, "( waLBerla D3Q19 SRT   COMP )");
-   AddRefinementTimeStep<    lbmpyLM_D3Q19_SRT_COMP >::add(blocks, timeloop,  lbmpyLM_D3Q19_SRT_COMP(GlobalOmega),
-                                                           fieldIds.back(), field::fzyx, flagFieldId, velocity, "(   lbmpy  D3Q19 SRT   COMP )");
+//   typedef lbm::D3Q19<SRT, true>                                      walberalLM_D3Q19_SRT_COMP;
+//   typedef lbm::CodeGenerationRefinement_D3Q19_SRT_COMP_LatticeModel     lbmpyLM_D3Q19_SRT_COMP;
+//
+//   AddRefinementTimeStep< walberalLM_D3Q19_SRT_COMP >::add(blocks, timeloop, walberalLM_D3Q19_SRT_COMP(SRT(GlobalOmega)),
+//                                                           fieldIds.back(), field::fzyx, flagFieldId, velocity, "( waLBerla D3Q19 SRT   COMP )");
+//   AddRefinementTimeStep<    lbmpyLM_D3Q19_SRT_COMP >::add(blocks, timeloop,  lbmpyLM_D3Q19_SRT_COMP(GlobalOmega),
+//                                                           fieldIds.back(), field::fzyx, flagFieldId, velocity, "(   lbmpy  D3Q19 SRT   COMP )");
 
    ////////////////////////////////
    /// D3Q27 SRT incompressible ///
@@ -517,13 +518,13 @@ int main( int argc, char ** argv )
 
    fieldIds.emplace_back();
 
-   typedef lbm::D3Q27<SRT, false>                                       walberalLM_D3Q27_SRT_INCOMP;
-   typedef lbm::CodeGenerationRefinement_D3Q27_SRT_INCOMP_LatticeModel     lbmpyLM_D3Q27_SRT_INCOMP;
-
-   AddRefinementTimeStep< walberalLM_D3Q27_SRT_INCOMP >::add(blocks, timeloop, walberalLM_D3Q27_SRT_INCOMP(SRT(GlobalOmega)),
-                                                             fieldIds.back(), field::fzyx, flagFieldId, velocity, "( waLBerla D3Q27 SRT INCOMP )");
-   AddRefinementTimeStep<    lbmpyLM_D3Q27_SRT_INCOMP >::add(blocks, timeloop,  lbmpyLM_D3Q27_SRT_INCOMP(GlobalOmega),
-                                                             fieldIds.back(), field::fzyx, flagFieldId, velocity, "(   lbmpy  D3Q27 SRT INCOMP )");
+//   typedef lbm::D3Q27<SRT, false>                                       walberalLM_D3Q27_SRT_INCOMP;
+//   typedef lbm::CodeGenerationRefinement_D3Q27_SRT_INCOMP_LatticeModel     lbmpyLM_D3Q27_SRT_INCOMP;
+//
+//   AddRefinementTimeStep< walberalLM_D3Q27_SRT_INCOMP >::add(blocks, timeloop, walberalLM_D3Q27_SRT_INCOMP(SRT(GlobalOmega)),
+//                                                             fieldIds.back(), field::fzyx, flagFieldId, velocity, "( waLBerla D3Q27 SRT INCOMP )");
+//   AddRefinementTimeStep<    lbmpyLM_D3Q27_SRT_INCOMP >::add(blocks, timeloop,  lbmpyLM_D3Q27_SRT_INCOMP(GlobalOmega),
+//                                                             fieldIds.back(), field::fzyx, flagFieldId, velocity, "(   lbmpy  D3Q27 SRT INCOMP )");
 
    ////////////////////////////////
    /// D3Q27 SRT   compressible ///
@@ -531,13 +532,13 @@ int main( int argc, char ** argv )
 
    fieldIds.emplace_back();
 
-   typedef lbm::D3Q27<SRT, true>                                      walberalLM_D3Q27_SRT_COMP;
-   typedef lbm::CodeGenerationRefinement_D3Q27_SRT_COMP_LatticeModel     lbmpyLM_D3Q27_SRT_COMP;
-
-   AddRefinementTimeStep< walberalLM_D3Q27_SRT_COMP >::add(blocks, timeloop, walberalLM_D3Q27_SRT_COMP(SRT(GlobalOmega)),
-                                                             fieldIds.back(), field::fzyx, flagFieldId, velocity, "( waLBerla D3Q27 SRT   COMP )");
-   AddRefinementTimeStep<    lbmpyLM_D3Q27_SRT_COMP >::add(blocks, timeloop,  lbmpyLM_D3Q27_SRT_COMP(GlobalOmega),
-                                                             fieldIds.back(), field::fzyx, flagFieldId, velocity, "(   lbmpy  D3Q27 SRT   COMP )");
+//   typedef lbm::D3Q27<SRT, true>                                      walberalLM_D3Q27_SRT_COMP;
+//   typedef lbm::CodeGenerationRefinement_D3Q27_SRT_COMP_LatticeModel     lbmpyLM_D3Q27_SRT_COMP;
+//
+//   AddRefinementTimeStep< walberalLM_D3Q27_SRT_COMP >::add(blocks, timeloop, walberalLM_D3Q27_SRT_COMP(SRT(GlobalOmega)),
+//                                                             fieldIds.back(), field::fzyx, flagFieldId, velocity, "( waLBerla D3Q27 SRT   COMP )");
+//   AddRefinementTimeStep<    lbmpyLM_D3Q27_SRT_COMP >::add(blocks, timeloop,  lbmpyLM_D3Q27_SRT_COMP(GlobalOmega),
+//                                                             fieldIds.back(), field::fzyx, flagFieldId, velocity, "(   lbmpy  D3Q27 SRT   COMP )");
 
    /////////////////////
    /// RUN TEST RUNS ///
@@ -554,14 +555,14 @@ int main( int argc, char ** argv )
    //////////////////
 
    check<walberalLM_D3Q19_SRT_INCOMP, lbmpyLM_D3Q19_SRT_INCOMP>( blocks, fieldIds[0][0], fieldIds[0][1] );
-   check<walberalLM_D3Q19_SRT_COMP,   lbmpyLM_D3Q19_SRT_COMP>  ( blocks, fieldIds[1][0], fieldIds[1][1] );
+   // check<walberalLM_D3Q19_SRT_COMP,   lbmpyLM_D3Q19_SRT_COMP>  ( blocks, fieldIds[1][0], fieldIds[1][1] );
 
    //////////////////
    /// D3Q27, SRT ///
    //////////////////
 
-   check<walberalLM_D3Q27_SRT_INCOMP, lbmpyLM_D3Q27_SRT_INCOMP>( blocks, fieldIds[2][0], fieldIds[2][1] );
-   check<walberalLM_D3Q27_SRT_COMP,   lbmpyLM_D3Q27_SRT_COMP>  ( blocks, fieldIds[3][0], fieldIds[3][1] );
+   // check<walberalLM_D3Q27_SRT_INCOMP, lbmpyLM_D3Q27_SRT_INCOMP>( blocks, fieldIds[2][0], fieldIds[2][1] );
+   // check<walberalLM_D3Q27_SRT_COMP,   lbmpyLM_D3Q27_SRT_COMP>  ( blocks, fieldIds[3][0], fieldIds[3][1] );
 
    return EXIT_SUCCESS;
 }

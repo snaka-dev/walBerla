@@ -68,7 +68,11 @@ waLBerla_compile_test( FILES initializer/PdfFieldInitializerTest.cpp )
 waLBerla_execute_test( NAME PdfFieldInitializerTest COMMAND $<TARGET_FILE:PdfFieldInitializerTest> ${CMAKE_CURRENT_SOURCE_DIR}/PdfFieldInitializerTest.prm PROCESSES 4 CONFIGURATIONS Release RelWithDbgInfo )
 
 waLBerla_compile_test( FILES SuViscoelasticityTest.cpp DEPENDS field blockforest timeloop)
-waLBerla_execute_test( NAME  SuViscoelasticityTest COMMAND $<TARGET_FILE:SuViscoelasticityTest> ${CMAKE_CURRENT_SOURCE_DIR}/Su.prm )
+waLBerla_execute_test( NAME  SuViscoelasticityLongTest COMMAND $<TARGET_FILE:SuViscoelasticityTest> ${CMAKE_CURRENT_SOURCE_DIR}/Su.prm LABELS longrun)
+waLBerla_execute_test( NAME  SuViscoelasticityShortTest COMMAND $<TARGET_FILE:SuViscoelasticityTest> ${CMAKE_CURRENT_SOURCE_DIR}/Su.prm -Parameters.shortrun=true )
+
+waLBerla_compile_test( FILES field/QCriterionTest.cpp DEPENDS field blockforest )
+waLBerla_execute_test( NAME QCriterionTest )
 
 # Code Generation
 if( WALBERLA_BUILD_WITH_CODEGEN )
@@ -92,7 +96,8 @@ waLBerla_generate_target_from_python(NAME FieldLayoutAndVectorizationTestGenerat
 waLBerla_compile_test( FILES codegen/FieldLayoutAndVectorizationTest.cpp DEPENDS FieldLayoutAndVectorizationTestGenerated)
 
 
-set( configs D3Q19_SRT_INCOMP D3Q19_SRT_COMP D3Q27_SRT_INCOMP D3Q27_SRT_COMP D3Q27_TRT_INCOMP D3Q19_MRT_COMP )
+# set( configs D3Q19_SRT_INCOMP D3Q19_SRT_COMP D3Q27_SRT_INCOMP D3Q27_SRT_COMP D3Q27_TRT_INCOMP D3Q19_MRT_COMP )
+set( configs D3Q19_SRT_INCOMP )
 list( APPEND RefinementTargets "" )
 
 foreach( config ${configs} )
