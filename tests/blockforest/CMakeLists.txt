@@ -51,3 +51,8 @@ waLBerla_compile_test( FILES communication/DirectionBasedReduceCommTest.cpp DEPE
 waLBerla_execute_test( NAME DirectionBasedReduceCommTest1 COMMAND $<TARGET_FILE:DirectionBasedReduceCommTest> )
 waLBerla_execute_test( NAME DirectionBasedReduceCommTest3 COMMAND $<TARGET_FILE:DirectionBasedReduceCommTest> PROCESSES 3 )
 waLBerla_execute_test( NAME DirectionBasedReduceCommTest8 COMMAND $<TARGET_FILE:DirectionBasedReduceCommTest> PROCESSES 8 )
+
+waLBerla_compile_test( FILES communication/NonUniformBufferedSchemeTest.cpp DEPENDS blockforest field )
+waLBerla_execute_test( NAME NonUniformBufferedSchemeTest1 COMMAND $<TARGET_FILE:NonUniformBufferedSchemeTest> )
+waLBerla_execute_test( NAME NonUniformBufferedSchemeTest3 COMMAND $<TARGET_FILE:NonUniformBufferedSchemeTest> PROCESSES 3 )
+waLBerla_execute_test( NAME NonUniformBufferedSchemeTest8 COMMAND $<TARGET_FILE:NonUniformBufferedSchemeTest> PROCESSES 8 )
