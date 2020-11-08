@@ -20,7 +20,7 @@
 
 #include "core/DataTypes.h"
 #include "core/Macros.h"
-#include "lbm/field/PdfField.h"
+{%if target is equalto 'gpu'%}#include "cuda/GPUPdfField.h"{% else %}#include "lbm/field/PdfField.h"{% endif %}
 #include "lbm/sweeps/Streaming.h"
 #include "{{class_name}}.h"
 
@@ -65,13 +65,16 @@ void {{class_name}}::Sweep::streamCollide( IBlock * block, const uint_t numberOf
 {
    {{stream_collide_kernel|generate_block_data_to_field_extraction(parameters=['pdfs', 'pdfs_tmp'])|indent(4)}}
 
-   auto & lm = pdfs->latticeModel();
-   //auto & lm = dynamic_cast< lbm::PdfField<{{class_name}}> * > (pdfs)->latticeModel();
+   {%if target is equalto 'gpu'%}
+   auto & lm = static_cast< cuda::GPUPdfField<{{class_name}}> * > (pdfs)->latticeModel();
+   {% else %}
+   auto & lm = dynamic_cast< lbm::PdfField<{{class_name}}> * > (pdfs)->latticeModel();
+   {% endif %}
    WALBERLA_ASSERT_EQUAL( *(lm.blockId_), block->getId() );
 
    {{stream_collide_kernel|generate_refs_for_kernel_parameters(prefix='lm.', parameters_to_ignore=['pdfs', 'pdfs_tmp'])|indent(4) }}
    {%if target is equalto 'gpu'%}
-   {{stream_collide_kernel|generate_call('cell_idx_c(numberOfGhostLayersToInclude)', stream='stream')|indent(4)}}
+   {{stream_collide_kernel|generate_call(stream='stream')|indent(4)}}
    {% else %}
    {{stream_collide_kernel|generate_call('cell_idx_c(numberOfGhostLayersToInclude)')|indent(4)}}
    {% endif %}
@@ -83,13 +86,16 @@ void {{class_name}}::Sweep::collide( IBlock * block, const uint_t numberOfGhostL
 {
    {{collide_kernel|generate_block_data_to_field_extraction(parameters=['pdfs'])|indent(4)}}
 
-   auto & lm = pdfs->latticeModel();
-   //auto & lm = dynamic_cast< lbm::PdfField<{{class_name}}> * > (pdfs)->latticeModel();
+   {%if target is equalto 'gpu'%}
+   auto & lm = static_cast< cuda::GPUPdfField<{{class_name}}> * > (pdfs)->latticeModel();
+   {% else %}
+   auto & lm = dynamic_cast< lbm::PdfField<{{class_name}}> * > (pdfs)->latticeModel();
+   {% endif %}
    WALBERLA_ASSERT_EQUAL( *(lm.blockId_), block->getId() );
 
    {{collide_kernel|generate_refs_for_kernel_parameters(prefix='lm.', parameters_to_ignore=['pdfs', 'pdfs_tmp'])|indent(4) }}
    {%if target is equalto 'gpu'%}
-   {{collide_kernel|generate_call('cell_idx_c(numberOfGhostLayersToInclude)', stream='stream')|indent(4)}}
+   {{collide_kernel|generate_call(stream='stream')|indent(4)}}
    {% else %}
    {{collide_kernel|generate_call('cell_idx_c(numberOfGhostLayersToInclude)')|indent(4)}}
    {% endif %}
@@ -101,7 +107,7 @@ void {{class_name}}::Sweep::stream( IBlock * block, const uint_t numberOfGhostLa
    {{stream_kernel|generate_block_data_to_field_extraction(parameters=['pdfs', 'pdfs_tmp'])|indent(4)}}
 
    {%if target is equalto 'gpu'%}
-   {{stream_kernel|generate_call('cell_idx_c(numberOfGhostLayersToInclude)', stream='stream')|indent(4)}}
+   {{stream_kernel|generate_call(stream='stream')|indent(4)}}
    {% else %}
    {{stream_kernel|generate_call('cell_idx_c(numberOfGhostLayersToInclude)')|indent(4)}}
    {% endif %}

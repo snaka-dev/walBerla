@@ -65,6 +65,23 @@ namespace cuda {
 
 
 
+   //*******************************************************************************************************************
+   /*! Adds a cuda::GPUPdfField to a StructuredBlockStorage using data from a CPU PDF field
+   *
+   *  - adds a GPU PDF field to a StructuredBlockStorage using a CPU PDF field
+   *  - acts similar to addGPUFieldToStorage but needs a latticeModel for GPU usage
+   *  @tparam Field_T  type of the CPU field, the created GPUField will be of type cuda::GPUField<Field_T::value_type>
+   */
+   //*******************************************************************************************************************
+   template< typename Field_T, typename LatticeModel_T>
+   BlockDataID addGPUPdfFieldToStorage( const shared_ptr< StructuredBlockStorage > & bs,
+                                        ConstBlockDataID cpuFieldID,
+                                        const LatticeModel_T & _latticeModel,
+                                        const std::string & identifier,
+                                        bool usePitchedMem = true );
+
+
+
 } // namespace cuda
 } // namespace walberla
 

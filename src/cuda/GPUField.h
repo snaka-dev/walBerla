@@ -65,7 +65,7 @@ namespace cuda {
       GPUField( uint_t _xSize, uint_t _ySize, uint_t _zSize, uint_t _fSize,
                 uint_t _nrOfGhostLayers, const Layout & _layout = zyxf, bool usePitchedMem = true );
 
-      ~GPUField();
+      virtual ~GPUField();
 
       Layout layout() const { return layout_; }
 
@@ -110,7 +110,7 @@ namespace cuda {
       bool hasSameAllocSize( const GPUField<T> & other ) const;
       bool hasSameSize( const GPUField<T> & other ) const;
 
-      GPUField<T> * cloneUninitialized() const;
+      virtual GPUField<T> * cloneUninitialized() const;
 
       void swapDataPointers( GPUField<T> & other );
       void swapDataPointers( GPUField<T> * other ) { swapDataPointers( *other ); }

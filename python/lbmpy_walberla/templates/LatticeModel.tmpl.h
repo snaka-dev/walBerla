@@ -345,9 +345,6 @@ struct Equilibrium< {{class_name}}, void >
    static void set( FieldPtrOrIterator & it,
                     const Vector3< real_t > & u = Vector3< real_t >( real_t(0.0) ), real_t rho = real_t(1.0) )
    {
-      {%if target is equalto 'gpu'%}
-      WALBERLA_ABORT("Equilibrium setter Not implemented for target GPU");
-      {% else %}
       {%if not compressible %}
       rho -= real_t(1.0);
       {%endif %}
@@ -355,16 +352,12 @@ struct Equilibrium< {{class_name}}, void >
       {% for eqTerm in equilibrium -%}
       it[{{loop.index0 }}] = {{eqTerm}};
       {% endfor -%}
-      {% endif %}
    }
 
    template< typename PdfField_T >
    static void set( PdfField_T & pdf, const cell_idx_t x, const cell_idx_t y, const cell_idx_t z,
                     const Vector3< real_t > & u = Vector3< real_t >( real_t(0.0) ), real_t rho = real_t(1.0) )
    {
-      {%if target is equalto 'gpu'%}
-      WALBERLA_ABORT("Equilibrium setter Not implemented for target GPU");
-      {% else %}
       {%if not compressible %}
       rho -= real_t(1.0);
       {%endif %}
@@ -373,7 +366,6 @@ struct Equilibrium< {{class_name}}, void >
       {% for eqTerm in equilibrium -%}
       pdf.getF( &xyz0, {{loop.index0 }})= {{eqTerm}};
       {% endfor -%}
-      {% endif %}
    }
 };
 
@@ -463,9 +455,6 @@ struct DensityAndVelocityRange<{{class_name}}, FieldIteratorXYZ>
    static void set( FieldIteratorXYZ & begin, const FieldIteratorXYZ & end, const {{class_name}} & lm,
                     const Vector3< real_t > & u = Vector3< real_t >( real_t(0.0) ), const real_t rho_in = real_t(1.0) )
    {
-         {%if target is equalto 'gpu'%}
-         WALBERLA_ABORT("DensityAndVelocityRange Not implemented for target GPU");
-         {% else %}
         for( auto cellIt = begin; cellIt != end; ++cellIt )
         {
             const auto x = cellIt.x();
@@ -478,7 +467,6 @@ struct DensityAndVelocityRange<{{class_name}}, FieldIteratorXYZ>
 
             Equilibrium<{{class_name}}>::set(cellIt, Vector3<real_t>(u_0, u_1, u_2), rho{%if not compressible %} + real_t(1) {%endif%});
         }
-        {% endif %}
    }
 };
 

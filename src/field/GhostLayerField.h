@@ -90,7 +90,7 @@ namespace field {
                        const std::vector<T> & fValues, const Layout & layout = zyxf,
                        const shared_ptr<FieldAllocator<T> > &alloc = shared_ptr<FieldAllocator<T> >() );
 
-      virtual ~GhostLayerField() {}
+      virtual ~GhostLayerField() = default;
 
 
 

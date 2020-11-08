@@ -54,27 +54,29 @@ typedef FlagField< flag_t >  FlagField_T;
 
 int main( int argc, char ** argv )
 {
-   walberla::Environment walberlaEnv( argc, argv );
+   walberla::Environment walberlaEnv(argc, argv);
 
-   auto blocks = blockforest::createUniformBlockGridFromConfig( walberlaEnv.config() );
+   auto blocks = blockforest::createUniformBlockGridFromConfig(walberlaEnv.config());
 
    // read parameters
-   auto parameters = walberlaEnv.config()->getOneBlock( "Parameters" );
+   auto parameters = walberlaEnv.config()->getOneBlock("Parameters");
 
-   const real_t          omega           = parameters.getParameter< real_t >         ( "omega",           real_c( 1.4 ) );
-   const Vector3<real_t> initialVelocity = parameters.getParameter< Vector3<real_t> >( "initialVelocity", Vector3<real_t>() );
-   const uint_t          timesteps       = parameters.getParameter< uint_t >         ( "timesteps",       uint_c( 10 )  );
+   const real_t omega = parameters.getParameter< real_t >("omega", real_c(1.4));
+   const Vector3< real_t > initialVelocity =
+      parameters.getParameter< Vector3< real_t > >("initialVelocity", Vector3< real_t >());
+   const uint_t timesteps = parameters.getParameter< uint_t >("timesteps", uint_c(10));
 
-   const double remainingTimeLoggerFrequency = parameters.getParameter< double >( "remainingTimeLoggerFrequency", 3.0 ); // in seconds
+   const double remainingTimeLoggerFrequency =
+      parameters.getParameter< double >("remainingTimeLoggerFrequency", 3.0); // in seconds
 
    // create fields
-   BlockDataID forceFieldId = field::addToStorage<VectorField_T>( blocks, "Force", real_t( 0.0 ));
-   BlockDataID velFieldId = field::addToStorage<VectorField_T>( blocks, "Velocity", real_t( 0.0 ));
-   BlockDataID omegaFieldId = field::addToStorage<ScalarField_T>( blocks, "Omega", real_t( 0.0 ));
+   BlockDataID forceFieldId = field::addToStorage< VectorField_T >(blocks, "Force", real_t(0.0));
+   BlockDataID velFieldId   = field::addToStorage< VectorField_T >(blocks, "Velocity", real_t(0.0));
+   BlockDataID omegaFieldId = field::addToStorage< ScalarField_T >(blocks, "Omega", real_t(0.0));
 
-   LatticeModel_T latticeModel = LatticeModel_T( forceFieldId, omegaFieldId, velFieldId, omega );
-   BlockDataID pdfFieldId = lbm::addPdfFieldToStorage( blocks, "pdf field", latticeModel, initialVelocity, real_t(1) );
-   BlockDataID flagFieldId = field::addFlagFieldToStorage< FlagField_T >( blocks, "flag field" );
+   LatticeModel_T latticeModel = LatticeModel_T(forceFieldId, omegaFieldId, velFieldId, omega);
+   BlockDataID pdfFieldId  = lbm::addPdfFieldToStorage(blocks, "pdf field", latticeModel, initialVelocity, real_t(1));
+   BlockDataID flagFieldId = field::addFlagFieldToStorage< FlagField_T >(blocks, "flag field");
 
    // create and initialize boundary handling
    const FlagUID fluidFlagUID( "Fluid" );

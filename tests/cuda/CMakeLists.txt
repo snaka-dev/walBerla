@@ -27,8 +27,10 @@ if( WALBERLA_BUILD_WITH_CODEGEN )
     waLBerla_generate_target_from_python(NAME LbCodeGenerationExampleGeneratedGPU
             FILE codegen/LbCodeGenerationExampleGPU.py
             OUT_FILES LbCodeGenerationExample_LatticeModel.cu LbCodeGenerationExample_LatticeModel.h
+            PDF_Setter.cu PDF_Setter.h
             LbCodeGenerationExample_NoSlip.cu LbCodeGenerationExample_NoSlip.h
-            LbCodeGenerationExample_UBB.cu LbCodeGenerationExample_UBB.h )
+            LbCodeGenerationExample_UBB.cu LbCodeGenerationExample_UBB.h
+            PackInfo.cu PackInfo.h)
     waLBerla_compile_test( FILES codegen/LbCodeGenerationExampleGPU.cpp DEPENDS LbCodeGenerationExampleGeneratedGPU field blockforest geometry timeloop vtk cuda)
 
     waLBerla_generate_target_from_python(NAME CodegenJacobiGPUGeneratedCudaJacobiKernel FILE codegen/CudaJacobiKernel.py
