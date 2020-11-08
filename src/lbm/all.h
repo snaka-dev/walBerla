@@ -35,6 +35,5 @@
 #include "gui/all.h"
 #include "lattice_model/all.h"
 #include "refinement/all.h"
-#include "refinement_rebase/all.h"
 #include "sweeps/all.h"
 #include "vtk/all.h"
