@@ -35,15 +35,17 @@ setter_assignments = macroscopic_values_setter(method, velocity=velocity_field.c
 getter_assignments = macroscopic_values_getter(method, velocity=velocity_field.center_vector,
                                                pdfs=pdfs.center_vector, density=density_field)
 
+# opt = {'instruction_set': 'sse', 'assume_aligned': True, 'nontemporal': False, 'assume_inner_stride_one': True}
+
 update_rule = create_lb_update_rule(lb_method=method, **options)
 
 info_header = f"""
-    using namespace walberla;
-    #include "stencil/D{dim}Q{q}.h"
-    using Stencil_T = walberla::stencil::D{dim}Q{q};
-    using PdfField_T = GhostLayerField<real_t, {q}>;
-    using VelocityField_T = GhostLayerField<real_t, {dim}>;
-    using ScalarField_T = GhostLayerField<real_t, 1>;
+using namespace walberla;
+#include "stencil/D{dim}Q{q}.h"
+using Stencil_T = walberla::stencil::D{dim}Q{q};
+using PdfField_T = GhostLayerField<real_t, {q}>;
+using VelocityField_T = GhostLayerField<real_t, {dim}>;
+using ScalarField_T = GhostLayerField<real_t, 1>;
     """
 
 with CodeGeneration() as ctx:
