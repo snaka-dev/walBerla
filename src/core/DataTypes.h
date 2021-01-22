@@ -54,7 +54,7 @@ using std::dynamic_pointer_cast;
 template< typename S, typename T >
 inline S numeric_cast( T t ) {
 #ifndef NDEBUG
-   if( std::is_integral<S>::value && std::is_integral<T>::value && !std::is_same<S,T>::value )
+   if constexpr(std::is_integral<S>::value && std::is_integral<T>::value && !std::is_same<S,T>::value)
         // integer to different integer: check that forward and back conversion does not change value
    {
       if( !isIdentical( static_cast<T>( static_cast<S>(t) ), t ) )
@@ -62,7 +62,7 @@ inline S numeric_cast( T t ) {
          throw std::range_error("out of range");
       }
    }
-   else if( !std::is_integral<S>::value && !std::is_integral<T>::value && sizeof(S) < sizeof(T) )
+   else if constexpr(!std::is_integral<S>::value && !std::is_integral<T>::value && sizeof(S) < sizeof(T))
        // float to shorter float: check that value within limits of shorter type
    {
       using H = typename std::conditional< !std::is_integral<S>::value && !std::is_integral<T>::value && (sizeof(S) < sizeof(T)), T, long double >::type; // always true, but makes Intel's overflow check happy
@@ -71,7 +71,7 @@ inline S numeric_cast( T t ) {
          throw std::range_error("out of range");
       }
    }
-   else if( std::is_integral<S>::value && !std::is_integral<T>::value )
+   else if constexpr(std::is_integral<S>::value && !std::is_integral<T>::value)
        // float to integer: check that value within limits of integer
    {
       using H = typename std::conditional< std::is_integral<S>::value && !std::is_integral<T>::value, T, long double >::type; // always true, but makes Intel's overflow check happy

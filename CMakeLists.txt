@@ -526,13 +526,8 @@ if ( WALBERLA_CXX_COMPILER_IS_MSVC )
    add_flag ( CMAKE_CXX_FLAGS "-W4" )              # set warning level to maximum
    add_flag ( CMAKE_CXX_FLAGS "-bigobj" )          # enable big object files
    add_flag ( CMAKE_CXX_FLAGS "-wd4127" )          # disable compiler warning C4127: "conditional expression is constant"
-   add_flag ( CMAKE_CXX_FLAGS "-wd4512" )          # disable compiler warning C4512: "assignment operator could not be generated"
-   add_flag ( CMAKE_CXX_FLAGS "-wd4913" )          # disable compiler warning C4512: "user defined binary operator ',' exists but
-                                                   # no overload could convert all operands, default built-in binary operator ','
-                                                   # used"
    add_flag ( CMAKE_CXX_FLAGS "-wd4702" )          # disable compiler warning C4702: "unreachable code"
-   add_flag ( CMAKE_CXX_FLAGS "-wd4505" )          # disable compiler warning C4505: "unreferenced local function has been removed"
-   add_flag ( CMAKE_CXX_FLAGS "-wd4503" )          # disable compiler warning C4503: "'identifier' : decorated name length exceeded, name was truncated"
+
 
    if ( WARNING_ERROR )
       add_flag ( CMAKE_CXX_FLAGS "-WX" )           # Treat warnings as errors
