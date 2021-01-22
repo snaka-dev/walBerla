@@ -413,7 +413,7 @@ void TimeStep< LatticeModel_T, Sweep_T, BoundaryHandling_T >::consistencyChecks(
       auto * flagField = boundaryHandling->getFlagField();
       WALBERLA_ASSERT_NOT_NULLPTR( flagField );
 
-      if( LatticeModel_T::Stencil::D == uint_t(3) )
+      if constexpr( LatticeModel_T::Stencil::D == uint_t(3) )
       {
          if( ( pdfField->xSize() & uint_t(1) ) == uint_t(1) || ( pdfField->ySize() & uint_t(1) ) == uint_t(1) ||
              ( pdfField->zSize() & uint_t(1) ) == uint_t(1) )

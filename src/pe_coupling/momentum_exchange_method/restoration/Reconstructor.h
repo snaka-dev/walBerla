@@ -273,7 +273,7 @@ public:
      alternativeReconstructor_( EquilibriumAndNonEquilibriumReconstructor< LatticeModel_T, BoundaryHandling_T, ExtrapolationDirectionFinder_T >
       ( blockStorage, boundaryHandlingID, bodyFieldID, extrapolationDirectionFinder ) )
    {
-      if( enforceNoSlipConstraintAfterExtrapolation_ ) {
+      if ( enforceNoSlipConstraintAfterExtrapolation_ ) {
          WALBERLA_CHECK((std::is_same<typename LatticeModel_T::Stencil, stencil::D3Q19>::value),
                         "Enforcing no-slip constraint after extrapolation currently only works with D3Q19 stencil!");
       }
@@ -322,7 +322,7 @@ void ExtrapolationReconstructor< LatticeModel_T, BoundaryHandling_T, Extrapolati
    else
    {
       extrapolatePDFs( x, y, z, block, pdfField, extrapolationDirection, numberOfCellsForExtrapolation );
-      if( enforceNoSlipConstraintAfterExtrapolation_ )
+      if ( enforceNoSlipConstraintAfterExtrapolation_ )
       {
          enforceNoSlipConstraint( x, y, z, block, pdfField );
       }

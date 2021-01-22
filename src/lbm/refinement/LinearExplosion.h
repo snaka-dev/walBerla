@@ -231,7 +231,7 @@ void LinearExplosion< LatticeModel_T, BoundaryHandling_T >::operator()( Block * 
                   WALBERLA_ASSERT( boundaryHandling->isDomain( cell_idx_t(2) * x + cell_idx_t(1), cell_idx_t(2) * y,                 cell_idx_t(2) * z                 ) );
                   WALBERLA_ASSERT( boundaryHandling->isDomain( cell_idx_t(2) * x,                 cell_idx_t(2) * y + cell_idx_t(1), cell_idx_t(2) * z                 ) );
                   WALBERLA_ASSERT( boundaryHandling->isDomain( cell_idx_t(2) * x + cell_idx_t(1), cell_idx_t(2) * y + cell_idx_t(1), cell_idx_t(2) * z                 ) );
-                  if( Stencil::D == uint_t(3) )
+                  if constexpr( Stencil::D == uint_t(3) )
                   {
                      WALBERLA_ASSERT( boundaryHandling->isDomain( cell_idx_t(2) * x,                 cell_idx_t(2) * y,                 cell_idx_t(2) * z + cell_idx_t(1) ) );
                      WALBERLA_ASSERT( boundaryHandling->isDomain( cell_idx_t(2) * x + cell_idx_t(1), cell_idx_t(2) * y,                 cell_idx_t(2) * z + cell_idx_t(1) ) );
@@ -246,7 +246,7 @@ void LinearExplosion< LatticeModel_T, BoundaryHandling_T >::operator()( Block * 
                   WALBERLA_ASSERT( !boundaryHandling->isDomain( cell_idx_t(2) * x + cell_idx_t(1), cell_idx_t(2) * y,                 cell_idx_t(2) * z                 ) );
                   WALBERLA_ASSERT( !boundaryHandling->isDomain( cell_idx_t(2) * x,                 cell_idx_t(2) * y + cell_idx_t(1), cell_idx_t(2) * z                 ) );
                   WALBERLA_ASSERT( !boundaryHandling->isDomain( cell_idx_t(2) * x + cell_idx_t(1), cell_idx_t(2) * y + cell_idx_t(1), cell_idx_t(2) * z                 ) );
-                  if( Stencil::D == uint_t(3) )
+                  if constexpr( Stencil::D == uint_t(3) )
                   {
                      WALBERLA_ASSERT( !boundaryHandling->isDomain( cell_idx_t(2) * x,                 cell_idx_t(2) * y,                 cell_idx_t(2) * z + cell_idx_t(1) ) );
                      WALBERLA_ASSERT( !boundaryHandling->isDomain( cell_idx_t(2) * x + cell_idx_t(1), cell_idx_t(2) * y,                 cell_idx_t(2) * z + cell_idx_t(1) ) );
@@ -379,7 +379,7 @@ void linearInterpolation( const cell_idx_t y, const cell_idx_t z, const CellInte
          WALBERLA_ASSERT( boundaryHandling->isDomain( x + cell_idx_t(1), y,                 z                 ) );
          WALBERLA_ASSERT( boundaryHandling->isDomain( x,                 y + cell_idx_t(1), z                 ) );
          WALBERLA_ASSERT( boundaryHandling->isDomain( x + cell_idx_t(1), y + cell_idx_t(1), z                 ) );
-         if( PdfField_T::Stencil::D == uint_t(3) )
+         if constexpr( PdfField_T::Stencil::D == uint_t(3) )
          {
             WALBERLA_ASSERT( boundaryHandling->isDomain( x,                 y,                 z + cell_idx_t(1) ) );
             WALBERLA_ASSERT( boundaryHandling->isDomain( x + cell_idx_t(1), y,                 z + cell_idx_t(1) ) );
@@ -463,7 +463,7 @@ void linearInterpolation( const cell_idx_t y, const cell_idx_t z, const CellInte
             pdfField->get( xx, y , z , f ) = v + ( weights[4][0] * grad[0] + weights[4][1] * grad[1] + weights[4][2] * grad[2] );
             pdfField->get( xx, yy, z , f ) = v + ( weights[6][0] * grad[0] + weights[6][1] * grad[1] + weights[6][2] * grad[2] );
 
-            if( PdfField_T::Stencil::D == uint_t(3) )
+            if constexpr( PdfField_T::Stencil::D == uint_t(3) )
             {
                const auto zz = z + cell_idx_t(1);
                pdfField->get( x , y , zz, f ) = v + ( weights[1][0] * grad[0] + weights[1][1] * grad[1] + weights[1][2] * grad[2] );
@@ -478,7 +478,7 @@ void linearInterpolation( const cell_idx_t y, const cell_idx_t z, const CellInte
          WALBERLA_ASSERT( !boundaryHandling->isDomain( x + cell_idx_t(1), y,                 z                 ) );
          WALBERLA_ASSERT( !boundaryHandling->isDomain( x,                 y + cell_idx_t(1), z                 ) );
          WALBERLA_ASSERT( !boundaryHandling->isDomain( x + cell_idx_t(1), y + cell_idx_t(1), z                 ) );
-         if( PdfField_T::Stencil::D == uint_t(3) )
+         if constexpr( PdfField_T::Stencil::D == uint_t(3) )
          {
             WALBERLA_ASSERT( !boundaryHandling->isDomain( x,                 y,                 z + cell_idx_t(1) ) );
             WALBERLA_ASSERT( !boundaryHandling->isDomain( x + cell_idx_t(1), y,                 z + cell_idx_t(1) ) );

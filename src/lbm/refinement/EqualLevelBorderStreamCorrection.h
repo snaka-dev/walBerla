@@ -92,7 +92,7 @@ bool EqualLevelBorderStreamCorrection< LatticeModel_T >::finerNeighborExistsInVi
       if( stencil::c[i][dir] == -1 ) max[i] = 0;
       if( stencil::c[i][dir] ==  1 ) min[i] = 0;
    }
-   if( LatticeModel_T::Stencil::D == uint_t(2) )
+   if constexpr( LatticeModel_T::Stencil::D == uint_t(2) )
       min[2] = max[2] = 0;
 
    for( int z = min[2]; z <= max[2]; ++z ) {

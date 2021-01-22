@@ -219,11 +219,11 @@ void PSMSweep< LatticeModel_T, Filter_T, DensityVelocityIn_T, DensityVelocityOut
                      for( auto d = Stencil_T::begin(); d != Stencil_T::end(); ++d )
                      {
                         // Different solid collision operators available
-                        if( SolidCollision_T == 1){
+                        if constexpr( SolidCollision_T == 1){
                            omega_s = pdfs[d.toInvIdx()] - pdfs_equ[d.toInvIdx()] + pdfs_equ_solid[d.toIdx()] - pdfs[d.toIdx()];
-                        }else if( SolidCollision_T == 2 ){
+                        }else if constexpr( SolidCollision_T == 2 ){
                            omega_s = pdfs_equ_solid[d.toIdx()] - pdfs[d.toIdx()] + ( real_c(1) - omega) * ( pdfs[d.toIdx()] - pdfs_equ[d.toIdx()] );
-                        }else if( SolidCollision_T == 3){
+                        }else if constexpr( SolidCollision_T == 3){
                            omega_s = pdfs[d.toInvIdx()] - pdfs_equ_solid[d.toInvIdx()] + pdfs_equ_solid[d.toIdx()] - pdfs[d.toIdx()];
                         }
                         real_t BsOmegaS = Bs * omega_s;
@@ -372,11 +372,11 @@ void PSMSweep< LatticeModel_T, Filter_T, DensityVelocityIn_T, DensityVelocityOut
                      for( auto d = Stencil_T::begin(); d != Stencil_T::end(); ++d )
                      {
                         // Different solid collision operators available
-                        if( SolidCollision_T == 1){
+                        if constexpr( SolidCollision_T == 1){
                            omega_s = pdfs[d.toInvIdx()] - pdfs_equ[d.toInvIdx()] + pdfs_equ_solid[d.toIdx()] - pdfs[d.toIdx()];
-                        }else if( SolidCollision_T == 2 ){
+                        }else if constexpr( SolidCollision_T == 2 ){
                            omega_s = pdfs_equ_solid[d.toIdx()] - pdfs[d.toIdx()] + ( real_c(1) - omega) * ( pdfs[d.toIdx()] - pdfs_equ[d.toIdx()] );
-                        }else if( SolidCollision_T == 3){
+                        }else if constexpr( SolidCollision_T == 3){
                            omega_s = pdfs[d.toInvIdx()] - pdfs_equ_solid[d.toInvIdx()] + pdfs_equ_solid[d.toIdx()] - pdfs[d.toIdx()];
                         }
                         real_t BsOmegaS = Bs * omega_s;

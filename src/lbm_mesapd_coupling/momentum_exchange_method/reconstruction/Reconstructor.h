@@ -394,7 +394,7 @@ public:
       if( enoughCellsForExtrapolation(numberOfCellsForExtrapolation) )
       {
          extrapolatePDFs( x, y, z, pdfField, extrapolationDirection, numberOfCellsForExtrapolation );
-         if( EnforceNoSlipConstraintAfterExtrapolation )
+         if constexpr( EnforceNoSlipConstraintAfterExtrapolation )
          {
             real_t cx, cy, cz;
             blockStorage_->getBlockLocalCellCenter( *block, Cell(x,y,z), cx, cy, cz );
@@ -767,7 +767,7 @@ public:
          // else: 0
       }
 
-      if(Stencil::D == 3)
+      if constexpr(Stencil::D == 3)
       {
          // only in 3D
          // check if both neighbors are available for central differences
@@ -812,7 +812,7 @@ public:
 
       // 5. set PDFs to approximated equilibrium by Grad
       // this is just the regular feq with additional Pneq part
-      if(LatticeModel::compressible)
+      if constexpr(LatticeModel::compressible)
       {
          for( auto q = Stencil::begin(); q != Stencil::end(); ++q )
          {

@@ -104,7 +104,7 @@ template< typename Field_T, typename Stencil >
 void PackInfo< Field_T, Stencil >::packDataEqualLevelImpl( const Block * sender, stencil::Direction dir, mpi::SendBuffer & buffer ) const
 {
 #ifndef NDEBUG
-   if( Stencil::D == uint_t(2) )
+   if constexpr( Stencil::D == uint_t(2) )
       WALBERLA_ASSERT_EQUAL( stencil::cz[dir], 0 );
 #endif
 
@@ -123,7 +123,7 @@ template< typename Field_T, typename Stencil >
 void PackInfo< Field_T, Stencil >::unpackDataEqualLevel( Block * receiver, stencil::Direction dir, mpi::RecvBuffer & buffer )
 {
 #ifndef NDEBUG
-   if( Stencil::D == uint_t(2) )
+   if constexpr( Stencil::D == uint_t(2) )
       WALBERLA_ASSERT_EQUAL( stencil::cz[dir], 0 );
 #endif
 
@@ -142,7 +142,7 @@ template< typename Field_T, typename Stencil >
 void PackInfo< Field_T, Stencil >::communicateLocalEqualLevel( const Block * sender, Block * receiver, stencil::Direction dir )
 {
 #ifndef NDEBUG
-   if( Stencil::D == uint_t(2) )
+   if constexpr( Stencil::D == uint_t(2) )
       WALBERLA_ASSERT_EQUAL( stencil::cz[dir], 0 );
 #endif
 
@@ -180,7 +180,7 @@ void PackInfo< Field_T, Stencil >::packDataCoarseToFineImpl( const Block * coars
                                                                        stencil::Direction dir, mpi::SendBuffer & buffer ) const
 {
 #ifndef NDEBUG
-   if( Stencil::D == uint_t(2) )
+   if constexpr( Stencil::D == uint_t(2) )
       WALBERLA_ASSERT_EQUAL( stencil::cz[dir], 0 );
 #endif
 
@@ -202,7 +202,7 @@ void PackInfo< Field_T, Stencil >::unpackDataCoarseToFine( Block * fineReceiver,
                                                                      stencil::Direction dir, mpi::RecvBuffer & buffer )
 {
 #ifndef NDEBUG
-   if( Stencil::D == uint_t(2) )
+   if constexpr( Stencil::D == uint_t(2) )
       WALBERLA_ASSERT_EQUAL( stencil::cz[dir], 0 );
 #endif
 
@@ -222,7 +222,7 @@ void PackInfo< Field_T, Stencil >::unpackDataCoarseToFine( Block * fineReceiver,
                field->get( x + cell_idx_t(1), y,                 z,                 idx ) = value;
                field->get( x,                 y + cell_idx_t(1), z,                 idx ) = value;
                field->get( x + cell_idx_t(1), y + cell_idx_t(1), z,                 idx ) = value;
-               if( Stencil::D == uint_t(3) )
+               if constexpr( Stencil::D == uint_t(3) )
                {
                   field->get( x,                 y,                 z + cell_idx_t(1), idx ) = value;
                   field->get( x + cell_idx_t(1), y,                 z + cell_idx_t(1), idx ) = value;
@@ -241,7 +241,7 @@ template< typename Field_T, typename Stencil >
 void PackInfo< Field_T, Stencil >::communicateLocalCoarseToFine( const Block * coarseSender, Block * fineReceiver, stencil::Direction dir )
 {
 #ifndef NDEBUG
-   if( Stencil::D == uint_t(2) )
+   if constexpr( Stencil::D == uint_t(2) )
       WALBERLA_ASSERT_EQUAL( stencil::cz[dir], 0 );
 #endif
 
@@ -255,7 +255,7 @@ void PackInfo< Field_T, Stencil >::communicateLocalCoarseToFine( const Block * c
 
    WALBERLA_ASSERT_EQUAL( packingInterval.xSize() * uint_t(2), unpackingInterval.xSize() );
    WALBERLA_ASSERT_EQUAL( packingInterval.ySize() * uint_t(2), unpackingInterval.ySize() );
-   if( Stencil::D == uint_t(3) )
+   if constexpr( Stencil::D == uint_t(3) )
    {
       WALBERLA_ASSERT_EQUAL( packingInterval.zSize() * uint_t(2), unpackingInterval.zSize() );
    }
@@ -280,7 +280,7 @@ void PackInfo< Field_T, Stencil >::communicateLocalCoarseToFine( const Block * c
                rf->get( rx + cell_idx_t(1), ry,                 rz,                 idx ) = value;
                rf->get( rx,                 ry + cell_idx_t(1), rz,                 idx ) = value;
                rf->get( rx + cell_idx_t(1), ry + cell_idx_t(1), rz,                 idx ) = value;
-               if( Stencil::D == uint_t(3) )
+               if constexpr( Stencil::D == uint_t(3) )
                {
                   rf->get( rx,                 ry,                 rz + cell_idx_t(1), idx ) = value;
                   rf->get( rx + cell_idx_t(1), ry,                 rz + cell_idx_t(1), idx ) = value;
@@ -296,7 +296,7 @@ void PackInfo< Field_T, Stencil >::communicateLocalCoarseToFine( const Block * c
       rz += cell_idx_t(2);
       WALBERLA_ASSERT_EQUAL( ry, unpackingInterval.yMax() + cell_idx_t(1) );
    }
-   if( Stencil::D == uint_t(3) )
+   if constexpr( Stencil::D == uint_t(3) )
    {
       WALBERLA_ASSERT_EQUAL( rz, unpackingInterval.zMax() + cell_idx_t(1) );
    }
@@ -317,7 +317,7 @@ void PackInfo< Field_T, Stencil >::packDataFineToCoarseImpl( const Block * fineS
                                                                        stencil::Direction dir, mpi::SendBuffer & buffer ) const
 {
 #ifndef NDEBUG
-   if( Stencil::D == uint_t(2) )
+   if constexpr( Stencil::D == uint_t(2) )
       WALBERLA_ASSERT_EQUAL( stencil::cz[dir], 0 );
 #endif
 
@@ -340,7 +340,7 @@ void PackInfo< Field_T, Stencil >::packDataFineToCoarseImpl( const Block * fineS
                                                value += field->get( x + cell_idx_t(1), y,                 z,                 idx );
                                                value += field->get( x,                 y + cell_idx_t(1), z,                 idx );
                                                value += field->get( x + cell_idx_t(1), y + cell_idx_t(1), z,                 idx );
-               if( Stencil::D == uint_t(3) )
+               if constexpr( Stencil::D == uint_t(3) )
                {
                                                value += field->get( x,                 y,                 z + cell_idx_t(1), idx );
                                                value += field->get( x + cell_idx_t(1), y,                 z + cell_idx_t(1), idx );
@@ -362,7 +362,7 @@ void PackInfo< Field_T, Stencil >::unpackDataFineToCoarse( Block * coarseReceive
                                                                      stencil::Direction dir, mpi::RecvBuffer & buffer )
 {
 #ifndef NDEBUG
-   if( Stencil::D == uint_t(2) )
+   if constexpr( Stencil::D == uint_t(2) )
       WALBERLA_ASSERT_EQUAL( stencil::cz[dir], 0 );
 #endif
 
@@ -387,7 +387,7 @@ template< typename Field_T, typename Stencil >
 void PackInfo< Field_T, Stencil >::communicateLocalFineToCoarse( const Block * fineSender, Block * coarseReceiver, stencil::Direction dir )
 {
 #ifndef NDEBUG
-   if( Stencil::D == uint_t(2) )
+   if constexpr( Stencil::D == uint_t(2) )
       WALBERLA_ASSERT_EQUAL( stencil::cz[dir], 0 );
 #endif
 
@@ -405,7 +405,7 @@ void PackInfo< Field_T, Stencil >::communicateLocalFineToCoarse( const Block * f
 
    WALBERLA_ASSERT_EQUAL( packingInterval.xSize(), unpackingInterval.xSize() * uint_t(2) );
    WALBERLA_ASSERT_EQUAL( packingInterval.ySize(), unpackingInterval.ySize() * uint_t(2) );
-   if( Stencil::D == uint_t(3) )
+   if constexpr( Stencil::D == uint_t(3) )
    {
       WALBERLA_ASSERT_EQUAL( packingInterval.zSize(), unpackingInterval.zSize() * uint_t(2) );
    }
@@ -448,7 +448,7 @@ void PackInfo< Field_T, Stencil >::communicateLocalFineToCoarse( const Block * f
       sz += cell_idx_t(2);
       WALBERLA_ASSERT_EQUAL( sy, packingInterval.yMax() + cell_idx_t(1) );
    }
-   if( Stencil::D == uint_t(3) )
+   if constexpr( Stencil::D == uint_t(3) )
    {
       WALBERLA_ASSERT_EQUAL( sz, packingInterval.zMax() + cell_idx_t(1) );
    }
