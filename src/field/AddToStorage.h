@@ -102,7 +102,7 @@ namespace internal {
 template< typename GhostLayerField_T, typename BlockStorage_T, class Enable = void >
 struct AddToStorage
 {
-   static BlockDataID add( const shared_ptr< BlockStorage_T > & blocks, const std::string & identifier,
+   static BlockDataID add( const shared_ptr< BlockStorage_T > & blocks, const std::string & identifier, const uint_t fSize,
                            const typename GhostLayerField_T::value_type & initValue, const Layout layout, const uint_t nrOfGhostLayers,
                            const bool /*alwaysInitialize*/, const std::function< void ( GhostLayerField_T * field, IBlock * const block ) > & initFunction,
                            const Set<SUID> & requiredSelectors, const Set<SUID> & incompatibleSelectors,
@@ -119,7 +119,7 @@ struct AddToStorage< GhostLayerField_T, BlockStorage_T,
                      typename std::enable_if< ( std::is_integral< typename GhostLayerField_T::value_type >::value || std::is_floating_point< typename GhostLayerField_T::value_type >::value ) &&
 	                                            ! std::is_same< GhostLayerField_T, FlagField< typename GhostLayerField_T::value_type > >::value >::type >
 {
-   static BlockDataID add( const shared_ptr< BlockStorage_T > & blocks, const std::string & identifier,
+   static BlockDataID add( const shared_ptr< BlockStorage_T > & blocks, const std::string & identifier, const uint_t fSize,
                            const typename GhostLayerField_T::value_type & initValue, const Layout layout, const uint_t nrOfGhostLayers,
                            const bool alwaysInitialize, const std::function< void ( GhostLayerField_T * field, IBlock * const block ) > & initFunction,
                            const Set<SUID> & requiredSelectors, const Set<SUID> & incompatibleSelectors,
@@ -127,12 +127,12 @@ struct AddToStorage< GhostLayerField_T, BlockStorage_T,
    {
       if( alwaysInitialize )
       {
-         auto dataHandling = walberla::make_shared< field::AlwaysInitializeBlockDataHandling< GhostLayerField_T > >( blocks, nrOfGhostLayers, initValue, layout, calculateSize );
+         auto dataHandling = walberla::make_shared< field::AlwaysInitializeBlockDataHandling< GhostLayerField_T > >( blocks, fSize, nrOfGhostLayers, initValue, layout, calculateSize );
          dataHandling->addInitializationFunction( initFunction );
          return blocks->addBlockData( dataHandling, identifier, requiredSelectors, incompatibleSelectors );
       }
 
-      auto dataHandling = walberla::make_shared< field::DefaultBlockDataHandling< GhostLayerField_T > >( blocks, nrOfGhostLayers, initValue, layout, calculateSize );
+      auto dataHandling = walberla::make_shared< field::DefaultBlockDataHandling< GhostLayerField_T > >( blocks, fSize, nrOfGhostLayers, initValue, layout, calculateSize );
       dataHandling->addInitializationFunction( initFunction );
       return blocks->addBlockData( dataHandling, identifier, requiredSelectors, incompatibleSelectors );
    }
@@ -145,6 +145,7 @@ struct AddToStorage< GhostLayerField_T, BlockStorage_T,
 template< typename GhostLayerField_T, typename BlockStorage_T >
 BlockDataID addToStorage( const shared_ptr< BlockStorage_T > & blocks,
                           const std::string & identifier,
+                          const uint_t fSize,
                           const typename GhostLayerField_T::value_type & initValue = typename GhostLayerField_T::value_type(),
                           const Layout layout = zyxf,
                           const uint_t nrOfGhostLayers = uint_t(1),
@@ -154,7 +155,7 @@ BlockDataID addToStorage( const shared_ptr< BlockStorage_T > & blocks,
                           const Set<SUID> & requiredSelectors = Set<SUID>::emptySet(),
                           const Set<SUID> & incompatibleSelectors = Set<SUID>::emptySet() )
 {
-   return internal::AddToStorage< GhostLayerField_T, BlockStorage_T >::add( blocks, identifier, initValue, layout, nrOfGhostLayers,
+   return internal::AddToStorage< GhostLayerField_T, BlockStorage_T >::add( blocks, identifier, fSize, initValue, layout, nrOfGhostLayers,
                                                                             alwaysInitialize, initFunction, requiredSelectors, incompatibleSelectors );
 }
 
@@ -163,13 +164,14 @@ BlockDataID addToStorage( const shared_ptr< BlockStorage_T > & blocks,
 template< typename GhostLayerField_T, typename BlockStorage_T >
 BlockDataID addToStorage( const shared_ptr< BlockStorage_T > & blocks,
                           const std::string & identifier,
+                          const uint_t fSize,
                           const typename GhostLayerField_T::value_type & initValue,
                           const Layout layout,
                           const uint_t nrOfGhostLayers,
                           const bool alwaysInitialize,
                           const Set<SUID> & requiredSelectors, const Set<SUID> & incompatibleSelectors = Set<SUID>::emptySet() )
 {
-   return addToStorage< GhostLayerField_T >( blocks, identifier, initValue, layout, nrOfGhostLayers, alwaysInitialize,
+   return addToStorage< GhostLayerField_T >( blocks, identifier, fSize, initValue, layout, nrOfGhostLayers, alwaysInitialize,
                                              std::function< void ( GhostLayerField_T * field, IBlock * const block ) >(),
                                              requiredSelectors, incompatibleSelectors );
 }
@@ -179,6 +181,7 @@ BlockDataID addToStorage( const shared_ptr< BlockStorage_T > & blocks,
 template< typename GhostLayerField_T, typename BlockStorage_T >
 BlockDataID addToStorage( const shared_ptr< BlockStorage_T > & blocks,
                           const std::string & identifier,
+                          const uint_t fSize,
                           const std::function< Vector3< uint_t > ( const shared_ptr< StructuredBlockStorage > &, IBlock * const ) > calculateSize,
                           const typename GhostLayerField_T::value_type & initValue = typename GhostLayerField_T::value_type(),
                           const Layout layout = zyxf,
@@ -189,7 +192,7 @@ BlockDataID addToStorage( const shared_ptr< BlockStorage_T > & blocks,
                           const Set<SUID> & requiredSelectors = Set<SUID>::emptySet(),
                           const Set<SUID> & incompatibleSelectors = Set<SUID>::emptySet() )
 {
-   return internal::AddToStorage< GhostLayerField_T, BlockStorage_T >::add( blocks, identifier, initValue, layout, nrOfGhostLayers,
+   return internal::AddToStorage< GhostLayerField_T, BlockStorage_T >::add( blocks, identifier, fSize, initValue, layout, nrOfGhostLayers,
                                                                             alwaysInitialize, initFunction, requiredSelectors,
                                                                             incompatibleSelectors, calculateSize );
 }
@@ -199,6 +202,7 @@ BlockDataID addToStorage( const shared_ptr< BlockStorage_T > & blocks,
 template< typename GhostLayerField_T, typename BlockStorage_T >
 BlockDataID addToStorage( const shared_ptr< BlockStorage_T > & blocks,
                           const std::string & identifier,
+                          const uint_t fSize,
                           const std::function< Vector3< uint_t > ( const shared_ptr< StructuredBlockStorage > &, IBlock * const ) > calculateSize,
                           const typename GhostLayerField_T::value_type & initValue,
                           const Layout layout,
@@ -206,7 +210,7 @@ BlockDataID addToStorage( const shared_ptr< BlockStorage_T > & blocks,
                           const bool alwaysInitialize,
                           const Set<SUID> & requiredSelectors, const Set<SUID> & incompatibleSelectors = Set<SUID>::emptySet() )
 {
-   return addToStorage< GhostLayerField_T >( blocks, identifier, initValue, layout, nrOfGhostLayers, alwaysInitialize,
+   return addToStorage< GhostLayerField_T >( blocks, identifier, fSize, initValue, layout, nrOfGhostLayers, alwaysInitialize,
                                              std::function< void ( GhostLayerField_T * field, IBlock * const block ) >(),
                                              requiredSelectors, incompatibleSelectors, calculateSize );
 }
@@ -294,6 +298,7 @@ struct Creator : public domain_decomposition::BlockDataCreator< GhostLayerField_
 {
    Creator( const shared_ptr< StructuredBlockStorage > & blocks,
             const std::string & identifier,
+            const uint_t fSize,
             const Set<SUID> & requiredSelectors,
             const Set<SUID> & incompatibleSelectors,
             const typename GhostLayerField_T::value_type & initValue = typename GhostLayerField_T::value_type(),
@@ -333,6 +338,7 @@ struct Creator< GhostLayerField_T,
 {
    Creator( const shared_ptr< StructuredBlockStorage > & blocks,
             const std::string & identifier,
+            const uint_t fSize,
             const Set<SUID> & requiredSelectors,
             const Set<SUID> & incompatibleSelectors,
             const typename GhostLayerField_T::value_type & initValue = typename GhostLayerField_T::value_type(),

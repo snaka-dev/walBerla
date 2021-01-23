@@ -42,9 +42,9 @@ delete_loop = """
 
 def make_field_type(dtype, f_size, is_gpu):
     if is_gpu:
-        return "cuda::GPUField<%s>" % (dtype,)
+        return f"cuda::GPUField<{dtype}>"
     else:
-        return "field::GhostLayerField<%s, %d>" % (dtype, f_size)
+        return f"field::GhostLayerField<{dtype}>"
 
 
 def get_field_fsize(field):
