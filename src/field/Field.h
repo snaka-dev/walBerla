@@ -1,15 +1,15 @@
 //======================================================================================================================
 //
-//  This file is part of waLBerla. waLBerla is free software: you can 
+//  This file is part of waLBerla. waLBerla is free software: you can
 //  redistribute it and/or modify it under the terms of the GNU General Public
-//  License as published by the Free Software Foundation, either version 3 of 
+//  License as published by the Free Software Foundation, either version 3 of
 //  the License, or (at your option) any later version.
-//  
-//  waLBerla is distributed in the hope that it will be useful, but WITHOUT 
-//  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or 
-//  FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License 
+//
+//  waLBerla is distributed in the hope that it will be useful, but WITHOUT
+//  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+//  FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 //  for more details.
-//  
+//
 //  You should have received a copy of the GNU General Public License along
 //  with waLBerla (see COPYING.txt). If not, see <http://www.gnu.org/licenses/>.
 //
@@ -59,12 +59,11 @@ namespace field {
    *
    * Template Parameters:
    *   - T         type that is stored in the field
-   *   - fSize     size of the f coordinate
    *
    * See also \ref fieldPage
    */
    //*******************************************************************************************************************
-   template<typename T, uint_t fSize_>
+   template<typename T>
    class Field
    {
    public:
@@ -74,24 +73,20 @@ namespace field {
       //@{
       typedef T                                    value_type;
 
-      typedef ForwardFieldIterator<T,fSize_>       iterator;
-      typedef ForwardFieldIterator<const T,fSize_> const_iterator;
+      typedef ForwardFieldIterator<T>       iterator;
+      typedef ForwardFieldIterator<const T> const_iterator;
 
-      typedef ReverseFieldIterator<T,fSize_>       reverse_iterator;
-      typedef ReverseFieldIterator<const T,fSize_> const_reverse_iterator;
+      typedef ReverseFieldIterator<T>       reverse_iterator;
+      typedef ReverseFieldIterator<const T> const_reverse_iterator;
 
-      typedef FieldIterator<T,fSize_ >             base_iterator;
-      typedef FieldIterator<const T,fSize_ >       const_base_iterator;
+      typedef FieldIterator<T >             base_iterator;
+      typedef FieldIterator<const T >       const_base_iterator;
 
-      typedef FieldPointer<Field<T,fSize_>, Field<T,fSize_>, T >             Ptr;
-      typedef FieldPointer<Field<T,fSize_>, const Field<T,fSize_>, const T > ConstPtr;
+      typedef FieldPointer<Field<T>, Field<T>, T >             Ptr;
+      typedef FieldPointer<Field<T>, const Field<T>, const T > ConstPtr;
 
-      typedef typename std::conditional<VectorTrait<T>::F_SIZE!=0,
-                                        Field<typename VectorTrait<T>::OutputType, VectorTrait<T>::F_SIZE*fSize_>,
-                                        Field<T, fSize_>
-                                        >::type FlattenedField;
+      typedef typename std::conditional<VectorTrait<T>::F_SIZE!=0, Field<typename VectorTrait<T>::OutputType>, Field<T>>::type FlattenedField;
 
-      static const uint_t F_SIZE = fSize_;
       //@}
       //****************************************************************************************************************
 
@@ -102,28 +97,28 @@ namespace field {
       //@{
 
 
-      Field( uint_t xSize, uint_t ySize, uint_t zSize,
+      Field( uint_t xSize, uint_t ySize, uint_t zSize, uint_t _fSize,
              const Layout & layout = zyxf,
              const shared_ptr<FieldAllocator<T> > &alloc = shared_ptr<FieldAllocator<T> >() );
-      Field( uint_t xSize, uint_t ySize, uint_t zSize,
+      Field( uint_t xSize, uint_t ySize, uint_t zSize, uint_t _fSize,
              const T & initValue, const Layout & layout = zyxf,
              const shared_ptr<FieldAllocator<T> > &alloc = shared_ptr<FieldAllocator<T> >() );
-      Field( uint_t xSize, uint_t ySize, uint_t zSize,
+      Field( uint_t xSize, uint_t ySize, uint_t zSize, uint_t _fSize,
              const std::vector<T> & fValues, const Layout & layout = zyxf,
              const shared_ptr<FieldAllocator<T> > &alloc = shared_ptr<FieldAllocator<T> >() );
       virtual ~Field();
 
 
-      void init( uint_t xSize, uint_t ySize, uint_t zSize, const Layout & layout = zyxf,
+      void init( uint_t xSize, uint_t ySize, uint_t zSize, uint_t fSize, const Layout & layout = zyxf,
                  shared_ptr<FieldAllocator<T> > alloc = shared_ptr<FieldAllocator<T> >(),
                  uint_t innerGhostLayerSizeForAlignedAlloc = 0 );
 
 
-      virtual void resize( uint_t xSize, uint_t ySize, uint_t zSize );
+      virtual void resize( uint_t xSize, uint_t ySize, uint_t zSize, uint_t fSize );
 
-      Field<T,fSize_> * clone()              const;
-      Field<T,fSize_> * cloneUninitialized() const;
-      Field<T,fSize_> * cloneShallowCopy()   const;
+      Field<T> * clone()              const;
+      Field<T> * cloneUninitialized() const;
+      Field<T> * cloneShallowCopy()   const;
       FlattenedField * flattenedShallowCopy() const;
       //@}
       //****************************************************************************************************************
@@ -176,11 +171,11 @@ namespace field {
 
              void set (const T & value);
              void set (const std::vector<T> & fValues);
-      inline void set (const Field<T,fSize_> & other );
-      inline void set (const Field<T,fSize_> * other ) { set( *other ); }
+      inline void set (const Field<T> & other );
+      inline void set (const Field<T> * other ) { set( *other ); }
 
-      void swapDataPointers( Field<T,fSize_> & other );
-      void swapDataPointers( Field<T,fSize_> * other ) { swapDataPointers( *other ); }
+      void swapDataPointers( Field<T> & other );
+      void swapDataPointers( Field<T> * other ) { swapDataPointers( *other ); }
 
       //@}
       //****************************************************************************************************************
@@ -189,10 +184,10 @@ namespace field {
       //** Equality Checks *********************************************************************************************
       /*! \name Equality Checks */
       //@{
-      inline bool operator==      ( const Field<T,fSize_> & other ) const;
-      inline bool operator!=      ( const Field<T,fSize_> & other ) const;
-      inline bool hasSameAllocSize( const Field<T,fSize_> & other ) const;
-      inline bool hasSameSize     ( const Field<T,fSize_> & other ) const;
+      inline bool operator==      ( const Field<T> & other ) const;
+      inline bool operator!=      ( const Field<T> & other ) const;
+      inline bool hasSameAllocSize( const Field<T> & other ) const;
+      inline bool hasSameSize     ( const Field<T> & other ) const;
       //@}
       //****************************************************************************************************************
 
@@ -273,7 +268,7 @@ namespace field {
       //** Slicing  ****************************************************************************************************
       /*! \name Slicing */
       //@{
-      Field<T,fSize_> * getSlicedField( const CellInterval & interval ) const;
+      Field<T> * getSlicedField( const CellInterval & interval ) const;
       virtual void slice           ( const CellInterval & interval );
       virtual void shiftCoordinates( cell_idx_t cx, cell_idx_t cy, cell_idx_t cz );
       //@}
@@ -326,12 +321,12 @@ namespace field {
       /*! \name Shallow Copy */
       //@{
       Field(const Field & other);
-      template <typename T2, uint_t fSize2>
-      Field(const Field<T2, fSize2> & other);
+      template <typename T2>
+      Field(const Field<T2> & other);
       virtual uint_t referenceCount() const;
 
 
-      virtual Field<T,fSize_> * cloneShallowCopyInternal()   const;
+      virtual Field<T> * cloneShallowCopyInternal()   const;
       virtual FlattenedField * flattenedShallowCopyInternal() const;
 
       //@}
@@ -364,6 +359,7 @@ namespace field {
       uint_t xSize_;         //!< Number of cells in x-dimension (excluding padded cells)
       uint_t ySize_;         //!< Number of cells in y-dimension (excluding padded cells)
       uint_t zSize_;         //!< Number of cells in z-dimension (excluding padded cells)
+      uint_t fSize_;         //!< Number of cells in f-dimension (excluding padded cells)
 
       uint_t xAllocSize_;    //!< Number of cells in x-dimension (including padded cells)
       uint_t yAllocSize_;    //!< Number of cells in y-dimension (including padded cells)
@@ -380,12 +376,10 @@ namespace field {
 
       shared_ptr<FieldAllocator<T> > allocator_; //!< Allocator for the field
 
-      friend class FieldIterator<T,fSize_>;
-      friend class FieldIterator<const T,fSize_>;
-      template <typename T2, uint_t fSize2>
+      friend class FieldIterator<T>;
+      friend class FieldIterator<const T>;
+      template <typename T2>
       friend class Field;
-
-      static_assert(fSize_ > 0, "fSize()=0 means: empty field");
 
 #ifdef WALBERLA_FIELD_MONITORED_ACCESS
       std::vector<MonitorFunction> monitorFuncs_;

@@ -79,7 +79,7 @@ namespace field {
 */
 //**********************************************************************************************************************
 template<typename T = uint32_t>
-class FlagField : public GhostLayerField<T,1>
+class FlagField : public GhostLayerField<T>
 {
 public:
 
@@ -88,19 +88,19 @@ public:
    //@{
    typedef T flag_t;
 
-   typedef typename GhostLayerField<T,1>::value_type             value_type;
+   typedef typename GhostLayerField<T>::value_type             value_type;
 
-   typedef typename GhostLayerField<T,1>::iterator               iterator;
-   typedef typename GhostLayerField<T,1>::const_iterator         const_iterator;
+   typedef typename GhostLayerField<T>::iterator               iterator;
+   typedef typename GhostLayerField<T>::const_iterator         const_iterator;
 
-   typedef typename GhostLayerField<T,1>::reverse_iterator       reverse_iterator;
-   typedef typename GhostLayerField<T,1>::const_reverse_iterator const_reverse_iterator;
+   typedef typename GhostLayerField<T>::reverse_iterator       reverse_iterator;
+   typedef typename GhostLayerField<T>::const_reverse_iterator const_reverse_iterator;
 
-   typedef typename Field<T,1>::base_iterator                    base_iterator;
-   typedef typename Field<T,1>::const_base_iterator              const_base_iterator;
+   typedef typename Field<T>::base_iterator                    base_iterator;
+   typedef typename Field<T>::const_base_iterator              const_base_iterator;
 
-   typedef typename GhostLayerField<T,1>::Ptr                    Ptr;
-   typedef typename GhostLayerField<T,1>::ConstPtr               ConstPtr;
+   typedef typename GhostLayerField<T>::Ptr                    Ptr;
+   typedef typename GhostLayerField<T>::ConstPtr               ConstPtr;
    //@}
    //*******************************************************************************************************************
 
@@ -196,7 +196,7 @@ protected:
    /*! \name Shallow Copy */
    //@{
    FlagField(const FlagField<T> & other);
-   virtual Field<T,1> * cloneShallowCopyInternal()   const;
+   virtual Field<T> * cloneShallowCopyInternal()   const;
    //@}
    //*******************************************************************************************************************
 

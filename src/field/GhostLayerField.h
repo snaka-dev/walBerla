@@ -46,30 +46,30 @@ namespace field {
    *
    */
    //*******************************************************************************************************************
-   template<typename T, uint_t fSize_>
-   class GhostLayerField : public Field<T,fSize_>
+   template<typename T>
+   class GhostLayerField : public Field<T>
    {
    public:
       //** Type Definitions  *******************************************************************************************
       /*! \name Type Definitions */
       //@{
-      typedef typename Field<T,fSize_>::value_type             value_type;
+      typedef typename Field<T>::value_type             value_type;
 
-      typedef typename Field<T,fSize_>::iterator               iterator;
-      typedef typename Field<T,fSize_>::const_iterator         const_iterator;
+      typedef typename Field<T>::iterator               iterator;
+      typedef typename Field<T>::const_iterator         const_iterator;
 
-      typedef typename Field<T,fSize_>::reverse_iterator       reverse_iterator;
-      typedef typename Field<T,fSize_>::const_reverse_iterator const_reverse_iterator;
+      typedef typename Field<T>::reverse_iterator       reverse_iterator;
+      typedef typename Field<T>::const_reverse_iterator const_reverse_iterator;
 
-      typedef typename Field<T,fSize_>::base_iterator          base_iterator;
-      typedef typename Field<T,fSize_>::const_base_iterator    const_base_iterator;
+      typedef typename Field<T>::base_iterator          base_iterator;
+      typedef typename Field<T>::const_base_iterator    const_base_iterator;
 
-      typedef typename Field<T,fSize_>::Ptr                    Ptr;
-      typedef typename Field<T,fSize_>::ConstPtr               ConstPtr;
+      typedef typename Field<T>::Ptr                    Ptr;
+      typedef typename Field<T>::ConstPtr               ConstPtr;
 
       typedef typename std::conditional<VectorTrait<T>::F_SIZE!=0,
-                                        GhostLayerField<typename VectorTrait<T>::OutputType, VectorTrait<T>::F_SIZE*fSize_>,
-                                        GhostLayerField<T, fSize_>
+                                        GhostLayerField<typename VectorTrait<T>::OutputType>,
+                                        GhostLayerField<T>
                                         >::type FlattenedField;
       //@}
       //****************************************************************************************************************
@@ -80,13 +80,13 @@ namespace field {
       //@{
 
 
-      GhostLayerField( uint_t xSize, uint_t ySize, uint_t zSize, uint_t gl,
+      GhostLayerField( uint_t xSize, uint_t ySize, uint_t zSize, uint_t _fSize, uint_t gl,
                       const Layout & layout = zyxf,
                       const shared_ptr<FieldAllocator<T> > &alloc = shared_ptr<FieldAllocator<T> >() );
-      GhostLayerField( uint_t xSize, uint_t ySize, uint_t zSize, uint_t gl,
+      GhostLayerField( uint_t xSize, uint_t ySize, uint_t zSize, uint_t _fSize, uint_t gl,
                        const T & initValue, const Layout & layout = zyxf,
                        const shared_ptr<FieldAllocator<T> > &alloc = shared_ptr<FieldAllocator<T> >() );
-      GhostLayerField( uint_t xSize, uint_t ySize, uint_t zSize, uint_t gl,
+      GhostLayerField( uint_t xSize, uint_t ySize, uint_t zSize, uint_t _fSize, uint_t gl,
                        const std::vector<T> & fValues, const Layout & layout = zyxf,
                        const shared_ptr<FieldAllocator<T> > &alloc = shared_ptr<FieldAllocator<T> >() );
 
@@ -97,19 +97,20 @@ namespace field {
       void init( uint_t xSizeWithoutGhostLayer,
                  uint_t ySizeWithoutGhostLayer,
                  uint_t zSizeWithoutGhostLayer,
+                 uint_t _fSize,
                  uint_t nrGhostLayers,
                  const Layout & layout = zyxf,
                  const shared_ptr<FieldAllocator<T> > &alloc = shared_ptr<FieldAllocator<T> >() );
 
 
-      virtual void resize( uint_t xSize, uint_t ySize, uint_t zSize );
-              void resize( uint_t xSize, uint_t ySize, uint_t zSize, uint_t gl );
+      virtual void resize( uint_t xSize, uint_t ySize, uint_t zSize, uint_t _fSize );
+              void resize( uint_t xSize, uint_t ySize, uint_t zSize, uint_t _fSize, uint_t gl );
 
-      using Field<T,fSize_>::resize;
+      using Field<T>::resize;
 
-      inline GhostLayerField<T,fSize_> * clone()              const;
-      inline GhostLayerField<T,fSize_> * cloneUninitialized() const;
-      inline GhostLayerField<T,fSize_> * cloneShallowCopy()   const;
+      inline GhostLayerField<T> * clone()              const;
+      inline GhostLayerField<T> * cloneUninitialized() const;
+      inline GhostLayerField<T> * cloneShallowCopy()   const;
       inline FlattenedField * flattenedShallowCopy() const;
       //@}
       //****************************************************************************************************************
@@ -118,11 +119,11 @@ namespace field {
       //** Size Information ********************************************************************************************
       /*! \name Size Information */
       //@{
-      inline uint_t       xSizeWithGhostLayer()        const  { return Field<T,fSize_>::xSize() + uint_c(2)*gl_; }
-      inline uint_t       ySizeWithGhostLayer()        const  { return Field<T,fSize_>::ySize() + uint_c(2)*gl_; }
-      inline uint_t       zSizeWithGhostLayer()        const  { return Field<T,fSize_>::zSize() + uint_c(2)*gl_; }
-      inline uint_t       sizeWithGhostLayer(uint_t i) const  { return i==3 ? fSize_ :
-                                                                              Field<T,fSize_>::size(i) + uint_c(2)*gl_; }
+      inline uint_t       xSizeWithGhostLayer()        const  { return Field<T>::xSize() + uint_c(2)*gl_; }
+      inline uint_t       ySizeWithGhostLayer()        const  { return Field<T>::ySize() + uint_c(2)*gl_; }
+      inline uint_t       zSizeWithGhostLayer()        const  { return Field<T>::zSize() + uint_c(2)*gl_; }
+      inline uint_t       sizeWithGhostLayer(uint_t i) const  { return i==3 ? Field<T>::fSize() :
+                                                                              Field<T>::size(i) + uint_c(2)*gl_; }
       inline uint_t       nrOfGhostLayers()            const  { return gl_; }
       inline CellInterval xyzSizeWithGhostLayer()      const;
       //@}
@@ -199,7 +200,7 @@ namespace field {
       //** Slicing  ****************************************************************************************************
       /*! \name Slicing */
       //@{
-      GhostLayerField<T,fSize_> * getSlicedField( const CellInterval & interval ) const;
+      GhostLayerField<T> * getSlicedField( const CellInterval & interval ) const;
       virtual void slice           ( const CellInterval & interval );
       virtual void shiftCoordinates( cell_idx_t cx, cell_idx_t cy, cell_idx_t cz );
       //@}
@@ -214,15 +215,15 @@ namespace field {
       //** Shallow Copy ************************************************************************************************
       /*! \name Shallow Copy */
       //@{
-      virtual Field<T,fSize_> * cloneShallowCopyInternal()   const;
-      virtual typename Field<T,fSize_>::FlattenedField * flattenedShallowCopyInternal() const;
-      GhostLayerField(const GhostLayerField<T,fSize_> & other);
-      template <typename T2, uint_t fSize2>
-      GhostLayerField(const GhostLayerField<T2, fSize2> & other);
+      virtual Field<T> * cloneShallowCopyInternal()   const;
+      virtual typename Field<T>::FlattenedField * flattenedShallowCopyInternal() const;
+      GhostLayerField(const GhostLayerField<T> & other);
+      template <typename T2>
+      GhostLayerField(const GhostLayerField<T2> & other);
       //@}
       //****************************************************************************************************************
 
-      template <typename T2, uint_t fSize2>
+      template <typename T2>
       friend class GhostLayerField;
    };
 
