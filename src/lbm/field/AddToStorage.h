@@ -43,10 +43,10 @@ public:
    typedef PdfField<LatticeModel_T> PdfField_T;
    typedef field::BlockDataHandling< PdfField_T, LatticeModel_T::Stencil::D == 2 > Base_T;
 
-   PdfFieldHandling( const weak_ptr< StructuredBlockStorage > & blocks, const LatticeModel_T & latticeModel,
+   PdfFieldHandling( const weak_ptr< StructuredBlockStorage > & blocks, const LatticeModel_T & latticeModel, const uint_t fSize,
                      const bool _initialize, const Vector3<real_t> & initialVelocity, const real_t initialDensity,
                      const uint_t nrOfGhostLayers, const field::Layout & layout ) :
-      blocks_( blocks ), latticeModel_( latticeModel ),
+      blocks_( blocks ), latticeModel_( latticeModel ), fSize_(fSize),
       initialize_( _initialize ), initialVelocity_( initialVelocity ), initialDensity_( initialDensity ),
       nrOfGhostLayers_( nrOfGhostLayers ), layout_( layout ) {}
 
@@ -135,13 +135,14 @@ private:
 
       latticeModel_.configure( *block, *blocks );
 
-      return new PdfField_T( blocks->getNumberOfXCells( *block ), blocks->getNumberOfYCells( *block ), blocks->getNumberOfZCells( *block ),
+      return new PdfField_T( blocks->getNumberOfXCells( *block ), blocks->getNumberOfYCells( *block ), blocks->getNumberOfZCells( *block ), fSize_,
                              latticeModel_, _initialize, initialVelocity_, initialDensity, nrOfGhostLayers_, layout_ );
    }
 
    weak_ptr< StructuredBlockStorage > blocks_;
 
    LatticeModel_T    latticeModel_;
+   const uint_t      fSize_;
    bool              initialize_;
    Vector3< real_t > initialVelocity_;
    real_t            initialDensity_;
@@ -161,8 +162,9 @@ BlockDataID addPdfFieldToStorage( const shared_ptr< BlockStorage_T > & blocks, c
                                   const Set<SUID> & requiredSelectors     = Set<SUID>::emptySet(),
                                   const Set<SUID> & incompatibleSelectors = Set<SUID>::emptySet() )
 {
+   const uint_t fSize = LatticeModel_T::Stencil::Q;
    return blocks->addBlockData( make_shared< internal::PdfFieldHandling< LatticeModel_T > >(
-                                   blocks, latticeModel, true, Vector3<real_t>(0), real_t(1), uint_t(1), layout ),
+                                   blocks, latticeModel, fSize, true, Vector3<real_t>(0), real_t(1), uint_t(1), layout ),
                                 identifier, requiredSelectors, incompatibleSelectors );
 }
 
@@ -176,8 +178,9 @@ BlockDataID addPdfFieldToStorage( const shared_ptr< BlockStorage_T > & blocks, c
                                   const Set<SUID> & requiredSelectors     = Set<SUID>::emptySet(),
                                   const Set<SUID> & incompatibleSelectors = Set<SUID>::emptySet() )
 {
+   const uint_t fSize = LatticeModel_T::Stencil::Q;
    return blocks->addBlockData( make_shared< internal::PdfFieldHandling< LatticeModel_T > >(
-                                   blocks, latticeModel, true, Vector3<real_t>(0), real_t(1), ghostLayers, layout ),
+                                   blocks, latticeModel, fSize, true, Vector3<real_t>(0), real_t(1), ghostLayers, layout ),
                                 identifier, requiredSelectors, incompatibleSelectors );
 }
 
@@ -191,8 +194,9 @@ BlockDataID addPdfFieldToStorage( const shared_ptr< BlockStorage_T > & blocks, c
                                   const Set<SUID> & requiredSelectors     = Set<SUID>::emptySet(),
                                   const Set<SUID> & incompatibleSelectors = Set<SUID>::emptySet() )
 {
+   const uint_t fSize = LatticeModel_T::Stencil::Q;
    return blocks->addBlockData( make_shared< internal::PdfFieldHandling< LatticeModel_T > >(
-                                   blocks, latticeModel, true, initialVelocity, initialDensity, uint_t(1), layout ),
+                                   blocks, latticeModel, fSize, true, initialVelocity, initialDensity, uint_t(1), layout ),
                                 identifier, requiredSelectors, incompatibleSelectors );
 }
 
@@ -207,8 +211,9 @@ BlockDataID addPdfFieldToStorage( const shared_ptr< BlockStorage_T > & blocks, c
                                   const Set<SUID> & requiredSelectors     = Set<SUID>::emptySet(),
                                   const Set<SUID> & incompatibleSelectors = Set<SUID>::emptySet() )
 {
+   const uint_t fSize = LatticeModel_T::Stencil::Q;
    return blocks->addBlockData( make_shared< internal::PdfFieldHandling< LatticeModel_T > >(
-                                   blocks, latticeModel, true, initialVelocity, initialDensity, ghostLayers, layout ),
+                                   blocks, latticeModel, fSize, true, initialVelocity, initialDensity, ghostLayers, layout ),
                                 identifier, requiredSelectors, incompatibleSelectors );
 }
 
@@ -225,7 +230,7 @@ struct PdfFieldCreator : public domain_decomposition::BlockDataCreator< lbm::Pdf
                     const LatticeModel_T & latticeModel,
                     const field::Layout & layout = field::zyxf ) :
       domain_decomposition::BlockDataCreator< lbm::PdfField< LatticeModel_T > >( make_shared< internal::PdfFieldHandling< LatticeModel_T > >(
-                                                                                    blocks, latticeModel, false, Vector3<real_t>(0), real_t(1), uint_t(1), layout ),
+                                                                                    blocks, latticeModel, LatticeModel_T::Stencil::Q, false, Vector3<real_t>(0), real_t(1), uint_t(1), layout ),
                                                                                  identifier, requiredSelectors, incompatibleSelectors )
    {}
 
@@ -234,7 +239,7 @@ struct PdfFieldCreator : public domain_decomposition::BlockDataCreator< lbm::Pdf
                     const LatticeModel_T & latticeModel, const uint_t ghostLayers,
                     const field::Layout & layout = field::zyxf ) :
       domain_decomposition::BlockDataCreator< lbm::PdfField< LatticeModel_T > >( make_shared< internal::PdfFieldHandling< LatticeModel_T > >(
-                                                                                    blocks, latticeModel, false, Vector3<real_t>(0), real_t(1), ghostLayers, layout ),
+                                                                                    blocks, latticeModel, LatticeModel_T::Stencil::Q, false, Vector3<real_t>(0), real_t(1), ghostLayers, layout ),
                                                                                  identifier, requiredSelectors, incompatibleSelectors )
    {}
 
@@ -243,7 +248,7 @@ struct PdfFieldCreator : public domain_decomposition::BlockDataCreator< lbm::Pdf
                     const LatticeModel_T & latticeModel, const Vector3< real_t > & initialVelocity, const real_t initialDensity,
                     const field::Layout & layout = field::zyxf ) :
       domain_decomposition::BlockDataCreator< lbm::PdfField< LatticeModel_T > >( make_shared< internal::PdfFieldHandling< LatticeModel_T > >(
-                                                                                    blocks, latticeModel, true, initialVelocity, initialDensity, uint_t(1), layout ),
+                                                                                    blocks, latticeModel, LatticeModel_T::Stencil::Q, true, initialVelocity, initialDensity, uint_t(1), layout ),
                                                                                  identifier, requiredSelectors, incompatibleSelectors )
    {}
 
@@ -252,7 +257,7 @@ struct PdfFieldCreator : public domain_decomposition::BlockDataCreator< lbm::Pdf
                     const LatticeModel_T & latticeModel, const Vector3< real_t > & initialVelocity, const real_t initialDensity, const uint_t ghostLayers,
                     const field::Layout & layout = field::zyxf ) :
       domain_decomposition::BlockDataCreator< lbm::PdfField< LatticeModel_T > >( make_shared< internal::PdfFieldHandling< LatticeModel_T > >(
-                                                                                    blocks, latticeModel, true, initialVelocity, initialDensity, ghostLayers, layout ),
+                                                                                    blocks, latticeModel, LatticeModel_T::Stencil::Q, true, initialVelocity, initialDensity, ghostLayers, layout ),
                                                                                  identifier, requiredSelectors, incompatibleSelectors )
    {}
 };

@@ -110,8 +110,8 @@ namespace internal {
 class BlockCellDataWriter
 {
 public:
-            BlockCellDataWriter( const std::string& id ) : block_( NULL ), blockStorage_( NULL ), identifier_( id ) {}
-   virtual ~BlockCellDataWriter() {}
+            BlockCellDataWriter( const std::string& id ) : block_( nullptr ), blockStorage_( nullptr ), identifier_( id ) {}
+   virtual ~BlockCellDataWriter() = default;
 
    void configure( const IBlock& block, const StructuredBlockStorage& sbs ) { block_ = &block; blockStorage_ = &sbs; configure(); }
 
@@ -131,9 +131,9 @@ public:
                                                 const real_t globalX,    const real_t globalY,    const real_t globalZ,
                                                 const real_t samplingDx, const real_t samplingDy, const real_t samplingDz );
 
-           uint_t xSize() const { WALBERLA_ASSERT_NOT_NULLPTR( block_ ); WALBERLA_ASSERT_NOT_NULLPTR( blockStorage_ ); return blockStorage_->getNumberOfXCells( *block_ ); }
-           uint_t ySize() const { WALBERLA_ASSERT_NOT_NULLPTR( block_ ); WALBERLA_ASSERT_NOT_NULLPTR( blockStorage_ ); return blockStorage_->getNumberOfYCells( *block_ ); }
-           uint_t zSize() const { WALBERLA_ASSERT_NOT_NULLPTR( block_ ); WALBERLA_ASSERT_NOT_NULLPTR( blockStorage_ ); return blockStorage_->getNumberOfZCells( *block_ ); }
+           uint_t xSize() const { WALBERLA_ASSERT_NOT_NULLPTR( block_ ) WALBERLA_ASSERT_NOT_NULLPTR( blockStorage_ ) return blockStorage_->getNumberOfXCells( *block_ ); }
+           uint_t ySize() const { WALBERLA_ASSERT_NOT_NULLPTR( block_ ) WALBERLA_ASSERT_NOT_NULLPTR( blockStorage_ ) return blockStorage_->getNumberOfYCells( *block_ ); }
+           uint_t zSize() const { WALBERLA_ASSERT_NOT_NULLPTR( block_ ) WALBERLA_ASSERT_NOT_NULLPTR( blockStorage_ ) return blockStorage_->getNumberOfZCells( *block_ ); }
    virtual uint_t fSize() const = 0; //!< must return the size of the fourth dimension
                                      /*!< (data fields storing scalar values return "1", data fields storing
                                       *    vector data return the size of the vector) */
@@ -168,10 +168,9 @@ protected:
    const StructuredBlockStorage* blockStorage_;
 
    std::string identifier_;
-
 private:
 
-   BlockCellDataWriter() {}
+  BlockCellDataWriter() = default;
 
 }; // class BlockCellDataWriter
 
@@ -213,7 +212,7 @@ typedef internal::BlockCellDataWriter BlockCellDataWriterInterface;
 *   will be used for resampling the data).
 */
 //**********************************************************************************************************************
-template< typename T, uint_t F_SIZE_ARG = 1u >
+template< typename T >
 class BlockCellDataWriter : public BlockCellDataWriterInterface
 {
 
@@ -221,17 +220,15 @@ public:
 
    typedef T value_type;
 
-   static const uint_t F_SIZE = F_SIZE_ARG;
+   BlockCellDataWriter( const std::string & id) : BlockCellDataWriterInterface( id ), fSize_(0) {}
+   ~BlockCellDataWriter() override = default;
 
-            BlockCellDataWriter( const std::string & id ) : BlockCellDataWriterInterface( id ) {}
-   virtual ~BlockCellDataWriter() {}
-
-   void push( std::ostream & os, const cell_idx_t x, const cell_idx_t y, const cell_idx_t z, const cell_idx_t f )
+   void push( std::ostream & os, const cell_idx_t x, const cell_idx_t y, const cell_idx_t z, const cell_idx_t f ) override
    {
       vtk::toStream( os, evaluate( x, y, z, f ) );
    }
 
-   void push( vtk::Base64Writer & b64, const cell_idx_t x, const cell_idx_t y, const cell_idx_t z, const cell_idx_t f )
+   void push( vtk::Base64Writer & b64, const cell_idx_t x, const cell_idx_t y, const cell_idx_t z, const cell_idx_t f ) override
    {
       b64 << evaluate( x, y, z, f );
    }
@@ -239,7 +236,7 @@ public:
    void push( std::ostream& os,  const cell_idx_t x,      const cell_idx_t y,      const cell_idx_t z,      const cell_idx_t f,
                                  const real_t localXCell, const real_t localYCell, const real_t localZCell,
                                  const real_t globalX,    const real_t globalY,    const real_t globalZ,
-                                 const real_t samplingDx, const real_t samplingDy, const real_t samplingDz )
+                                 const real_t samplingDx, const real_t samplingDy, const real_t samplingDz ) override
    {
       vtk::toStream( os, evaluate( x, y, z, f, localXCell, localYCell, localZCell,
                                    globalX, globalY, globalZ, samplingDx, samplingDy, samplingDz ) );
@@ -248,14 +245,14 @@ public:
    void push( Base64Writer& b64, const cell_idx_t x,      const cell_idx_t y,      const cell_idx_t z,      const cell_idx_t f,
                                  const real_t localXCell, const real_t localYCell, const real_t localZCell,
                                  const real_t globalX,    const real_t globalY,    const real_t globalZ,
-                                 const real_t samplingDx, const real_t samplingDy, const real_t samplingDz )
+                                 const real_t samplingDx, const real_t samplingDy, const real_t samplingDz ) override
    {
       b64 << evaluate( x, y, z, f, localXCell, localYCell, localZCell, globalX, globalY, globalZ, samplingDx, samplingDy, samplingDz );
    }
 
-   uint_t fSize() const { return F_SIZE; }
+   uint_t fSize() const override { return fSize_; }
 
-   std::string typeString() const { return vtk::typeToString< T >(); }
+   std::string typeString() const override { return vtk::typeToString< T >(); }
 
 protected:
    virtual T evaluate( const cell_idx_t x, const cell_idx_t y, const cell_idx_t z, const cell_idx_t f ) = 0;
@@ -266,13 +263,14 @@ protected:
                        const real_t samplingDx, const real_t samplingDy, const real_t samplingDz );
 
    // virtual void configure() = 0; // -> don't forget to implement this member function!
+   uint_t fSize_;
 
 }; // class BlockCellDataWriter
 
 
 
-template< typename T, uint_t F_SIZE_ARG >
-inline T BlockCellDataWriter< T, F_SIZE_ARG >::evaluate( const cell_idx_t x, const cell_idx_t y, const cell_idx_t z, const cell_idx_t f,
+template< typename T >
+inline T BlockCellDataWriter< T >::evaluate( const cell_idx_t x, const cell_idx_t y, const cell_idx_t z, const cell_idx_t f,
                                                          const real_t /*localXCell*/, const real_t /*localYCell*/, const real_t /*localZCell*/,
                                                          const real_t /*globalX*/,    const real_t /*globalY*/,    const real_t /*globalZ*/,
                                                          const real_t /*samplingDx*/, const real_t /*samplingDy*/, const real_t /*samplingDz*/ )
@@ -286,7 +284,6 @@ class BlockCellDataWriterScalingAdapter : public T
 {
 public:
    typedef typename T::value_type value_type;
-   static const uint_t F_SIZE = T::F_SIZE;
 
    BlockCellDataWriterScalingAdapter( const std::string& id, const T & base, value_type factor ) 
       : T( base ), factor_( factor ) { this->setIdentifier( id ); }

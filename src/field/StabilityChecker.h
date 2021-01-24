@@ -401,10 +401,10 @@ void StabilityChecker< Field_T, Filter_T >::operator()()
          vtkWriter->write();
       }
 
-      WALBERLA_LOG_WARNING_ON_ROOT( "Field stability check failed - aborting program ..." );
-      WALBERLA_MPI_WORLD_BARRIER();
+      WALBERLA_LOG_WARNING_ON_ROOT( "Field stability check failed - aborting program ..." )
+      WALBERLA_MPI_WORLD_BARRIER()
 
-      WALBERLA_ABORT_NO_DEBUG_INFO("");
+      WALBERLA_ABORT_NO_DEBUG_INFO("")
    }
 }
 

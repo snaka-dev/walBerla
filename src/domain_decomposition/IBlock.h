@@ -50,7 +50,7 @@ private:
 
    class DataBase {
    public:
-      virtual ~DataBase() {}
+      virtual ~DataBase() = default;
       virtual bool operator==( const DataBase& rhs ) const = 0;
       virtual bool isOfSameType( const DataBase& rhs ) const = 0;
    };
@@ -59,13 +59,13 @@ private:
    class Data : public DataBase {
    public:
       Data( T* data ) : data_( data ) {}
-      ~Data() { delete data_; }
-      bool operator==( const DataBase& rhs ) const {
+      ~Data() override { delete data_; }
+      bool operator==( const DataBase& rhs ) const override {
          const Data<T>* rhsData = dynamic_cast< const Data<T>* >( &rhs );
          return ( rhsData == &rhs ) && ( *data_ == *(rhsData->data_) ); // every object that is registered as block data
                                                                         // must be comparable with "==" !
       }
-      bool isOfSameType( const DataBase& rhs ) const { return dynamic_cast< const Data<T>* >( &rhs ) == &rhs; }
+      bool isOfSameType( const DataBase& rhs ) const override { return dynamic_cast< const Data<T>* >( &rhs ) == &rhs; }
    private:
       T* data_;
    };
@@ -212,8 +212,6 @@ public:
    friend class           BlockStorage;
    friend class StructuredBlockStorage;
 
-public:
-
    virtual const IBlockID& getId() const = 0;
 
    bool operator==( const IBlock& rhs ) const;
@@ -297,9 +295,9 @@ private:
 //**********************************************************************************************************************
 inline bool IBlock::isBlockDataAllocated( const ConstBlockDataID & index ) const {
 
-   WALBERLA_ASSERT_LESS( uint_t( index ), data_.size() );
+   WALBERLA_ASSERT_LESS( uint_t( index ), data_.size() )
 
-   return ( data_[index] != NULL );
+   return ( data_[index] != nullptr );
 }
 
 
@@ -312,9 +310,9 @@ inline bool IBlock::isBlockDataAllocated( const ConstBlockDataID & index ) const
 template< typename T >
 inline const T* IBlock::getData( const ConstBlockDataID & index ) const {
 
-   WALBERLA_ASSERT_LESS( uint_t( index ), data_.size() );
+   WALBERLA_ASSERT_LESS( uint_t( index ), data_.size() )
 
-   if( data_[index] == NULL )
+   if( data_[index] == nullptr )
       return NULL;
 
    return data_[index]->template get< T >();
@@ -335,9 +333,9 @@ inline const T* IBlock::getData( const ConstBlockDataID & index ) const {
 template< typename T >
 inline const T* IBlock::getData( const BlockDataID & index ) const {
 
-   WALBERLA_ASSERT_LESS( uint_t( index ), data_.size() );
+   WALBERLA_ASSERT_LESS( uint_t( index ), data_.size() )
 
-   if( data_[index] == NULL )
+   if( data_[index] == nullptr )
       return NULL;
 
    return data_[index]->template get< T >();
@@ -366,9 +364,9 @@ inline T* IBlock::getData( const BlockDataID & index ) {
 //**********************************************************************************************************************
 inline void IBlock::deleteData( const BlockDataID & index )
 {
-   WALBERLA_ASSERT_LESS( uint_t( index ), data_.size() );
+   WALBERLA_ASSERT_LESS( uint_t( index ), data_.size() )
    delete data_[index];
-   data_[index] = NULL;
+   data_[index] = nullptr;
 }
 
 
@@ -383,8 +381,8 @@ inline void IBlock::deleteData( const BlockDataID & index )
 template< typename T >
 inline bool IBlock::isDataOfType( const ConstBlockDataID & index ) const
 {
-   WALBERLA_ASSERT_LESS( uint_t( index ), data_.size() );
-   WALBERLA_ASSERT_NOT_NULLPTR( data_[index] );
+   WALBERLA_ASSERT_LESS( uint_t( index ), data_.size() )
+   WALBERLA_ASSERT_NOT_NULLPTR( data_[index] )
 
    return data_[index]->template isOfType<T>();
 }
@@ -399,8 +397,8 @@ inline bool IBlock::isDataOfType( const ConstBlockDataID & index ) const
 template< typename T >
 inline bool IBlock::isDataClassOrSubclassOf( const ConstBlockDataID & index ) const
 {
-   WALBERLA_ASSERT_LESS( uint_t( index ), data_.size() );
-   WALBERLA_ASSERT_NOT_NULLPTR( data_[index] );
+   WALBERLA_ASSERT_LESS( uint_t( index ), data_.size() )
+   WALBERLA_ASSERT_NOT_NULLPTR( data_[index] )
 
    return data_[index]->template isClassOrSubclassOf<T>();
 }
@@ -416,8 +414,8 @@ inline bool IBlock::isDataClassOrSubclassOf( const ConstBlockDataID & index ) co
 template< typename T >
 inline bool IBlock::isDataSubclassOf( const ConstBlockDataID & index ) const
 {
-   WALBERLA_ASSERT_LESS( uint_t( index ), data_.size() );
-   WALBERLA_ASSERT_NOT_NULLPTR( data_[index] );
+   WALBERLA_ASSERT_LESS( uint_t( index ), data_.size() )
+   WALBERLA_ASSERT_NOT_NULLPTR( data_[index] )
 
    return data_[index]->template isSubclassOf<T>();
 }
@@ -432,10 +430,10 @@ inline bool IBlock::isDataSubclassOf( const ConstBlockDataID & index ) const
 //**********************************************************************************************************************
 inline bool IBlock::isDataOfSameType( const ConstBlockDataID & indexA, const ConstBlockDataID & indexB ) const
 {
-   WALBERLA_ASSERT_LESS( uint_t( indexA ), data_.size() );
-   WALBERLA_ASSERT_LESS( uint_t( indexB ), data_.size() );
-   WALBERLA_ASSERT_NOT_NULLPTR( data_[indexA] );
-   WALBERLA_ASSERT_NOT_NULLPTR( data_[indexB] );
+   WALBERLA_ASSERT_LESS( uint_t( indexA ), data_.size() )
+   WALBERLA_ASSERT_LESS( uint_t( indexB ), data_.size() )
+   WALBERLA_ASSERT_NOT_NULLPTR( data_[indexA] )
+   WALBERLA_ASSERT_NOT_NULLPTR( data_[indexB] )
 
    return data_[indexA]->isOfSameType( *data_[indexB] );
 }
@@ -445,10 +443,10 @@ inline bool IBlock::isDataOfSameType( const ConstBlockDataID & indexA, const Con
 inline void IBlock::addData( const BlockDataID & index, BlockData * const data )
 {
    if( data_.size() <= index )
-      data_.resize( index+1, NULL );
+      data_.resize( index+1, nullptr );
 
-   if( data != NULL ) {
-      WALBERLA_ASSERT_NULLPTR( data_[index] );
+   if( data != nullptr ) {
+      WALBERLA_ASSERT_NULLPTR( data_[index] )
       data_[index] = data;
    }
 }
@@ -463,9 +461,9 @@ inline void IBlock::addData( const BlockDataID & index, BlockData * const data )
 template< typename T >
 inline const T* IBlock::uncheckedFastGetData( const ConstBlockDataID & index ) const {
 
-   WALBERLA_ASSERT_LESS( uint_t( index ), data_.size() );
+   WALBERLA_ASSERT_LESS( uint_t( index ), data_.size() )
 
-   if( data_[index] == NULL )
+   if( data_[index] == nullptr )
       return NULL;
 
    return data_[index]->template uncheckedFastGet< T >();
@@ -483,9 +481,9 @@ inline const T* IBlock::uncheckedFastGetData( const ConstBlockDataID & index ) c
 template< typename T >
 inline const T* IBlock::uncheckedFastGetData( const BlockDataID & index ) const {
 
-   WALBERLA_ASSERT_LESS( uint_t( index ), data_.size() );
+   WALBERLA_ASSERT_LESS( uint_t( index ), data_.size() )
 
-   if( data_[index] == NULL )
+   if( data_[index] == nullptr )
       return NULL;
 
    return data_[index]->template uncheckedFastGet< T >();

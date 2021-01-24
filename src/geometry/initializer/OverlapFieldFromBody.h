@@ -101,7 +101,7 @@ namespace initializer {
       * Interface implementation for Initializer - sets a body on a scalar field with options from configuration file
       *
       *****************************************************************************************************************/
-      virtual void init( BlockStorage & blockStorage, const Config::BlockHandle & blockHandle );
+      void init( BlockStorage & blockStorage, const Config::BlockHandle & blockHandle ) override;
 
 
 
@@ -144,7 +144,7 @@ namespace initializer {
       {
          IBlock * block = &(*blockIt);
 
-         GhostLayerField<real_t,1> * ff = block->getData<GhostLayerField<real_t,1> >( scalarFieldID_ );
+         GhostLayerField<real_t> * ff = block->getData<GhostLayerField<real_t> >( scalarFieldID_ );
          auto gl = cell_idx_c( ff->nrOfGhostLayers() );
 
          // If Block (extended with ghost layers) does not intersect body - skip the complete block
@@ -171,7 +171,7 @@ namespace initializer {
                {
                   real_t overlap = overlapFraction( body, currentMidpoint, dxVec, superSamplingDepth );
                   real_t & val = ff->get(x,y,z);
-                  WALBERLA_ASSERT( val >=0 && val <= 1);
+                  WALBERLA_ASSERT( val >=0 && val <= 1)
 
                   if ( addOrSubtract ) {
                      val += overlap;

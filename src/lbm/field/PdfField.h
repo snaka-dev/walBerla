@@ -71,7 +71,7 @@ namespace lbm {
 //**********************************************************************************************************************
 
 template< typename LatticeModel_T >
-class PdfField : public GhostLayerField< real_t, LatticeModel_T::Stencil::Size >
+class PdfField : public GhostLayerField< real_t >
 {
 public:
 
@@ -81,23 +81,23 @@ public:
    typedef LatticeModel_T                    LatticeModel;
    typedef typename LatticeModel_T::Stencil  Stencil;
 
-   typedef typename GhostLayerField< real_t, Stencil::Size >::value_type             value_type;
+   typedef typename GhostLayerField< real_t >::value_type             value_type;
 
-   typedef typename GhostLayerField< real_t, Stencil::Size >::iterator               iterator;
-   typedef typename GhostLayerField< real_t, Stencil::Size >::const_iterator         const_iterator;
+   typedef typename GhostLayerField< real_t >::iterator               iterator;
+   typedef typename GhostLayerField< real_t >::const_iterator         const_iterator;
 
-   typedef typename GhostLayerField< real_t, Stencil::Size >::reverse_iterator       reverse_iterator;
-   typedef typename GhostLayerField< real_t, Stencil::Size >::const_reverse_iterator const_reverse_iterator;
+   typedef typename GhostLayerField< real_t >::reverse_iterator       reverse_iterator;
+   typedef typename GhostLayerField< real_t >::const_reverse_iterator const_reverse_iterator;
 
-   typedef typename GhostLayerField< real_t, Stencil::Size >::base_iterator          base_iterator;
-   typedef typename GhostLayerField< real_t, Stencil::Size >::const_base_iterator    const_base_iterator;
+   typedef typename GhostLayerField< real_t >::base_iterator          base_iterator;
+   typedef typename GhostLayerField< real_t >::const_base_iterator    const_base_iterator;
 
-   typedef typename GhostLayerField< real_t, Stencil::Size >::Ptr                    Ptr;
-   typedef typename GhostLayerField< real_t, Stencil::Size >::ConstPtr               ConstPtr;
+   typedef typename GhostLayerField< real_t >::Ptr                    Ptr;
+   typedef typename GhostLayerField< real_t >::ConstPtr               ConstPtr;
    //@}
    //*******************************************************************************************************************
 
-   PdfField( const uint_t _xSize, const uint_t _ySize, const uint_t _zSize,
+   PdfField( const uint_t _xSize, const uint_t _ySize, const uint_t _zSize, const uint_t _fSize,
              const LatticeModel_T & _latticeModel,
              const bool initialize = true, const Vector3< real_t > & initialVelocity = Vector3< real_t >( real_t(0.0) ),
              const real_t initialDensity = real_t(1.0),
@@ -124,14 +124,14 @@ public:
    // Access functions (with stencil::Direction!) //
    /////////////////////////////////////////////////
 
-   using GhostLayerField< real_t, Stencil::Size >::get;
+   using GhostLayerField< real_t >::get;
 
          real_t & get( cell_idx_t x, cell_idx_t y, cell_idx_t z, stencil::Direction d )       { return get( x, y, z, Stencil::idx[d] ); }
    const real_t & get( cell_idx_t x, cell_idx_t y, cell_idx_t z, stencil::Direction d ) const { return get( x, y, z, Stencil::idx[d] ); }
          real_t & get( const Cell & c, stencil::Direction d )       { return get( c.x(), c.y(), c.z(), Stencil::idx[d] ); }
    const real_t & get( const Cell & c, stencil::Direction d ) const { return get( c.x(), c.y(), c.z(), Stencil::idx[d] ); }
 
-   using GhostLayerField< real_t, Stencil::Size >::operator();
+   using GhostLayerField< real_t >::operator();
 
          real_t & operator()( cell_idx_t x, cell_idx_t y, cell_idx_t z, stencil::Direction d )       { return get( x, y, z, Stencil::idx[d] ); }
    const real_t & operator()( cell_idx_t x, cell_idx_t y, cell_idx_t z, stencil::Direction d ) const { return get( x, y, z, Stencil::idx[d] ); }
@@ -282,7 +282,7 @@ protected:
    /*! \name Shallow Copy */
    //@{
    inline PdfField( const PdfField< LatticeModel_T > & other );
-   Field< real_t, Stencil::Size > * cloneShallowCopyInternal() const { return new PdfField< LatticeModel_T >( *this ); }
+   Field< real_t > * cloneShallowCopyInternal() const { return new PdfField< LatticeModel_T >( *this ); }
    //@}
    //*******************************************************************************************************************
 
@@ -292,13 +292,13 @@ protected:
 
 
 template< typename LatticeModel_T >
-PdfField< LatticeModel_T >::PdfField( const uint_t _xSize, const uint_t _ySize, const uint_t _zSize,
+PdfField< LatticeModel_T >::PdfField( const uint_t _xSize, const uint_t _ySize, const uint_t _zSize, const uint_t _fSize,
                                       const LatticeModel_T & _latticeModel,
                                       const bool initialize, const Vector3< real_t > & initialVelocity, const real_t initialDensity,
                                       const uint_t ghostLayers, const field::Layout & _layout,
                                       const shared_ptr< field::FieldAllocator<real_t> > & alloc ) :
 
-   GhostLayerField< real_t, Stencil::Size >( _xSize, _ySize, _zSize, ghostLayers, _layout, alloc ),
+   GhostLayerField< real_t >( _xSize, _ySize, _zSize, _fSize, ghostLayers, _layout, alloc ),
    latticeModel_( _latticeModel )
 {
 #ifdef _OPENMP
@@ -315,19 +315,19 @@ PdfField< LatticeModel_T >::PdfField( const uint_t _xSize, const uint_t _ySize, 
 template< typename LatticeModel_T >
 inline PdfField< LatticeModel_T > * PdfField< LatticeModel_T >::clone() const
 {
-   return dynamic_cast< PdfField * >( GhostLayerField< real_t, Stencil::Size >::clone() );
+   return dynamic_cast< PdfField * >( GhostLayerField< real_t >::clone() );
 }
 
 template< typename LatticeModel_T >
 inline PdfField< LatticeModel_T > * PdfField< LatticeModel_T >::cloneUninitialized() const
 {
-   return dynamic_cast< PdfField * >( GhostLayerField< real_t, Stencil::Size >::cloneUninitialized() );
+   return dynamic_cast< PdfField * >( GhostLayerField< real_t >::cloneUninitialized() );
 }
 
 template< typename LatticeModel_T >
 inline PdfField< LatticeModel_T > * PdfField< LatticeModel_T >::cloneShallowCopy() const
 {
-   return dynamic_cast< PdfField * >( GhostLayerField< real_t, Stencil::Size >::cloneShallowCopy() );
+   return dynamic_cast< PdfField * >( GhostLayerField< real_t >::cloneShallowCopy() );
 }
 
 
@@ -397,7 +397,7 @@ inline real_t PdfField< LatticeModel_T >::getDensity( const Cell & cell ) const
 template< typename LatticeModel_T >
 inline real_t PdfField< LatticeModel_T >::getDensitySI( const cell_idx_t x, const cell_idx_t y, const cell_idx_t z, const real_t rho_SI ) const
 {
-   return getDensity(x,y,z) * rho_SI;
+   return getDensity(x, y, z) * rho_SI;
 }
 
 template< typename LatticeModel_T >
@@ -766,7 +766,7 @@ inline void PdfField< LatticeModel_T >::getPressureTensor( Matrix3< real_t > & p
 
 template< typename LatticeModel_T >
 inline PdfField< LatticeModel_T >::PdfField( const PdfField< LatticeModel_T > & other )
-   : GhostLayerField< real_t, Stencil::Size >::GhostLayerField( other ),
+   : GhostLayerField< real_t >::GhostLayerField( other ),
      latticeModel_( other.latticeModel_ )
 {
 }
