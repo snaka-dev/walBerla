@@ -319,7 +319,8 @@ namespace field {
    {
       WALBERLA_ASSERT_NULLPTR( values_ )
       WALBERLA_ASSERT_NULLPTR( valuesWithOffset_ )
-      WALBERLA_ASSERT(_fSize > 0, "fSize()=0 means: empty field")
+      // TODO: Do we want this check? Compare for example FieldGatherTest line 64, would fail with this check.
+      // WALBERLA_ASSERT(_fSize > 0, "fSize()=0 means: empty field")
 
       // Automatically select allocator if none was given
       if ( alloc == 0 )

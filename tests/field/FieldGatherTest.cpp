@@ -42,8 +42,8 @@ int main( int argc, char ** argv )
                                                        1.0,           // dx
                                                        oneBlockPerProcess
                                                        );
-   typedef GhostLayerField<cell_idx_t,3> MyField;
-   BlockDataID fieldID = field::addToStorage<MyField>( blocks, "Field" );
+   typedef GhostLayerField<cell_idx_t> MyField;
+   BlockDataID fieldID = field::addToStorage<MyField>( blocks, "Field", 3 );
 
 
    for( auto blockIt = blocks->begin(); blockIt != blocks->end(); ++blockIt )
@@ -61,7 +61,7 @@ int main( int argc, char ** argv )
    }
 
 
-   MyField gatheredField(0,0,0,0);
+   MyField gatheredField(0,0,0,0,0);
    CellInterval boundingBox = blocks->getDomainCellBB();
    boundingBox.min()[ 1 ] = 10;
    boundingBox.max()[ 1 ] = 29;

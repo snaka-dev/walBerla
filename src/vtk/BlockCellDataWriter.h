@@ -221,6 +221,7 @@ public:
    typedef T value_type;
 
    BlockCellDataWriter( const std::string & id) : BlockCellDataWriterInterface( id ), fSize_(0) {}
+   BlockCellDataWriter( const std::string & id, const uint_t fSize) : BlockCellDataWriterInterface( id ), fSize_(fSize) {}
    ~BlockCellDataWriter() override = default;
 
    void push( std::ostream & os, const cell_idx_t x, const cell_idx_t y, const cell_idx_t z, const cell_idx_t f ) override

@@ -47,22 +47,20 @@ class StencilRestrictedPackInfo : public walberla::communication::UniformPackInf
 {
 public:
    StencilRestrictedPackInfo( const BlockDataID & fieldId ) : fieldId_( fieldId ) {}
-   virtual ~StencilRestrictedPackInfo() {}
+   ~StencilRestrictedPackInfo() override = default;
 
-   bool constantDataExchange() const { return true; }
-   bool threadsafeReceiving()  const { return true; }
+   bool constantDataExchange() const override { return true; }
+   bool threadsafeReceiving()  const override { return true; }
 
-   void unpackData( IBlock * receiver, stencil::Direction dir, mpi::RecvBuffer & buffer );
+   void unpackData( IBlock * receiver, stencil::Direction dir, mpi::RecvBuffer & buffer ) override;
 
-   void communicateLocal( const IBlock * sender, IBlock * receiver, stencil::Direction dir );
+   void communicateLocal( const IBlock * sender, IBlock * receiver, stencil::Direction dir ) override;
 
 protected:
 
-   void packDataImpl( const IBlock * sender, stencil::Direction dir, mpi::SendBuffer & outBuffer ) const;
+   void packDataImpl( const IBlock * sender, stencil::Direction dir, mpi::SendBuffer & outBuffer ) const override;
 
    const BlockDataID fieldId_;
-
-   static_assert(GhostLayerField_T::F_SIZE == Stencil_T::Size, "Size of stencil and f size of field have to be equal");
 };
 
 
@@ -73,8 +71,9 @@ void StencilRestrictedPackInfo<GhostLayerField_T, Stencil>::unpackData( IBlock *
       return;
 
    GhostLayerField_T * pdfField = receiver->getData< GhostLayerField_T >( fieldId_ );
-   WALBERLA_ASSERT_NOT_NULLPTR( pdfField );
-   WALBERLA_ASSERT_EQUAL( pdfField->nrOfGhostLayers(), 1 );
+   WALBERLA_ASSERT_NOT_NULLPTR( pdfField )
+   WALBERLA_ASSERT_EQUAL( pdfField->nrOfGhostLayers(), 1 )
+   WALBERLA_ASSERT(Stencil::Size == pdfField->fSize(), "Size of stencil and f size of field have to be equal")
 
    stencil::Direction packerDirection = stencil::inverseDir[dir];
 
@@ -94,7 +93,11 @@ void StencilRestrictedPackInfo<GhostLayerField_T, Stencil>::communicateLocal( co
    const GhostLayerField_T * sf = sender  ->getData< GhostLayerField_T >( fieldId_ );
          GhostLayerField_T * rf = receiver->getData< GhostLayerField_T >( fieldId_ );
 
-   WALBERLA_ASSERT_EQUAL( sf->xyzSize(), rf->xyzSize() );
+   WALBERLA_ASSERT_EQUAL( sf->xyzSize(), rf->xyzSize() )
+   WALBERLA_ASSERT(Stencil::Size == sf->fSize(), "Size of stencil and f size of field have to be equal")
+   WALBERLA_ASSERT(Stencil::Size == rf->fSize(), "Size of stencil and f size of field have to be equal")
+
+
 
    typename GhostLayerField_T::const_iterator srcIter = sf->beginSliceBeforeGhostLayerXYZ(dir);
    typename GhostLayerField_T::iterator       dstIter = rf->beginGhostLayerOnlyXYZ(stencil::inverseDir[dir]);
@@ -107,8 +110,8 @@ void StencilRestrictedPackInfo<GhostLayerField_T, Stencil>::communicateLocal( co
       ++srcIter;
       ++dstIter;
    }
-   WALBERLA_ASSERT( srcIter == sf->end() );
-   WALBERLA_ASSERT( dstIter == rf->end() );
+   WALBERLA_ASSERT( srcIter == sf->end() )
+   WALBERLA_ASSERT( dstIter == rf->end() )
 }
 
 
@@ -120,8 +123,9 @@ void StencilRestrictedPackInfo<GhostLayerField_T, Stencil>::packDataImpl( const 
       return;
 
    const GhostLayerField_T * pdfField = sender->getData< GhostLayerField_T >( fieldId_ );
-   WALBERLA_ASSERT_NOT_NULLPTR( pdfField );
-   WALBERLA_ASSERT_EQUAL( pdfField->nrOfGhostLayers(), 1 );
+   WALBERLA_ASSERT_NOT_NULLPTR( pdfField )
+   WALBERLA_ASSERT_EQUAL( pdfField->nrOfGhostLayers(), 1 )
+   WALBERLA_ASSERT(Stencil::Size == pdfField->fSize(), "Size of stencil and f size of field have to be equal")
 
    for( auto i = pdfField->beginSliceBeforeGhostLayerXYZ(dir); i != pdfField->end(); ++i )
       for(uint_t f = 0; f < Stencil::d_per_d_length[dir]; ++f)
