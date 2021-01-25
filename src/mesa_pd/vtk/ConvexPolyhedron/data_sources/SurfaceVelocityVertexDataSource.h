@@ -38,14 +38,14 @@ public:
 
    SurfaceVelocityVertexDataSource(const std::string& name, const Accessor & ac) : Base(name), ac_(ac) { }
 
-   virtual uint_t numComponents() {
+   uint_t numComponents() override {
       return uint_t(3);
    }
 
    using Base::getData;
-   virtual void getData( const MeshType & mesh, const Vertices & vertices, std::vector<Type> & data,
+   void getData( const MeshType & mesh, const Vertices & vertices, std::vector<Type> & data,
                          const ParticleIdxVertexPropertyManager<MeshType> & vertexToParticleIdxManager,
-                         shared_ptr<walberla::mesa_pd::data::ParticleStorage>) {
+                         shared_ptr<walberla::mesa_pd::data::ParticleStorage>) override {
       for (const auto & vertex: vertices) {
          size_t particleIdx = vertexToParticleIdxManager[vertex];
          auto vertexPosition = mesh::toWalberlaNumericCast<real_t>(mesh.point(vertex));

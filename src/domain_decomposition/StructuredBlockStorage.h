@@ -437,7 +437,7 @@ protected:
    {
    public:
       CellBoundingBoxHandling( const StructuredBlockStorage & storage ) : storage_( storage ) {}
-      CellInterval * initialize( IBlock * const block ) { return storage_.initializeCellBoundingBox( block ); }
+      CellInterval * initialize( IBlock * const block ) override { return storage_.initializeCellBoundingBox( block ); }
    private:
       const StructuredBlockStorage & storage_;
    };

@@ -51,7 +51,7 @@ public:
 
 protected:
 
-   void configure()
+   void configure() override
    {
       WALBERLA_ASSERT_NOT_NULLPTR( this->block_ );
       flagField_ = this->block_->template getData< FlagField_T >( flagId_ );
@@ -64,7 +64,7 @@ protected:
       }
    }
 
-   T evaluate( const cell_idx_t x, const cell_idx_t y, const cell_idx_t z, const cell_idx_t /*f*/ )
+   T evaluate( const cell_idx_t x, const cell_idx_t y, const cell_idx_t z, const cell_idx_t /*f*/ ) override
    {
       WALBERLA_ASSERT_NOT_NULLPTR( flagField_ );
       T result = 0;

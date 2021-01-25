@@ -68,7 +68,7 @@ public:
       typedef typename VTKMeshWriter::Vertices Vertices;
 
       VertexDataSource( const std::string & _name ) : DataSource<T>( _name ) { }
-      virtual ~VertexDataSource() = default;
+      ~VertexDataSource() override = default;
       virtual void getData( const MeshType &, const Vertices & vertices, std::vector<T> & ) = 0;
    };
 
@@ -80,7 +80,7 @@ public:
       typedef typename VTKMeshWriter::Faces Faces;
 
       FaceDataSource( const std::string & _name ) : DataSource<T>( _name ) { }
-      virtual ~FaceDataSource() = default;
+      ~FaceDataSource() override = default;
       virtual void getData( const MeshType &, const Faces & faces, std::vector<T> & ) = 0;
    };
 

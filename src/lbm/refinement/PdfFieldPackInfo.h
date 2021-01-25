@@ -60,31 +60,31 @@ public:
       equalLevelCells_( equalLevelCells() ) {}
 #endif
 
-   virtual ~PdfFieldPackInfo() {}
+   ~PdfFieldPackInfo() override {}
 
-   bool optimizedEqualLevelCommunication() const { return optimizedEqualLevelCommunication_; }
-   void optimizeEqualLevelCommunication( const bool value = true ) { optimizedEqualLevelCommunication_ = value; }
+   bool optimizedEqualLevelCommunication() const override { return optimizedEqualLevelCommunication_; }
+   void optimizeEqualLevelCommunication( const bool value = true ) override { optimizedEqualLevelCommunication_ = value; }
    
-   bool optimizedForLinearExplosion() const { return optimizedForLinearExplosion_; }
-   void optimizeForLinearExplosion( const bool value = true ) { optimizedForLinearExplosion_ = value; }
+   bool optimizedForLinearExplosion() const override { return optimizedForLinearExplosion_; }
+   void optimizeForLinearExplosion( const bool value = true ) override { optimizedForLinearExplosion_ = value; }
    
-   bool constantDataExchange() const { return true; }
-   bool threadsafeReceiving()  const { return true; }
+   bool constantDataExchange() const override { return true; }
+   bool threadsafeReceiving()  const override { return true; }
 
-   void       unpackDataEqualLevel( Block * receiver, stencil::Direction dir, mpi::RecvBuffer & buffer );
-   void communicateLocalEqualLevel( const Block * sender, Block * receiver, stencil::Direction dir );
+   void       unpackDataEqualLevel( Block * receiver, stencil::Direction dir, mpi::RecvBuffer & buffer ) override;
+   void communicateLocalEqualLevel( const Block * sender, Block * receiver, stencil::Direction dir ) override;
 
-   void       unpackDataCoarseToFine( Block * fineReceiver, const BlockID & coarseSender, stencil::Direction dir, mpi::RecvBuffer & buffer );
-   void communicateLocalCoarseToFine( const Block * coarseSender, Block * fineReceiver, stencil::Direction dir );
+   void       unpackDataCoarseToFine( Block * fineReceiver, const BlockID & coarseSender, stencil::Direction dir, mpi::RecvBuffer & buffer ) override;
+   void communicateLocalCoarseToFine( const Block * coarseSender, Block * fineReceiver, stencil::Direction dir ) override;
 
-   void       unpackDataFineToCoarse( Block * coarseReceiver, const BlockID & fineSender, stencil::Direction dir, mpi::RecvBuffer & buffer );
-   void communicateLocalFineToCoarse( const Block * fineSender, Block * coarseReceiver, stencil::Direction dir );
+   void       unpackDataFineToCoarse( Block * coarseReceiver, const BlockID & fineSender, stencil::Direction dir, mpi::RecvBuffer & buffer ) override;
+   void communicateLocalFineToCoarse( const Block * fineSender, Block * coarseReceiver, stencil::Direction dir ) override;
 
 protected:
 
-   void packDataEqualLevelImpl( const Block * sender, stencil::Direction dir, mpi::SendBuffer & buffer ) const;
-   void packDataCoarseToFineImpl( const Block * coarseSender, const BlockID &   fineReceiver, stencil::Direction dir, mpi::SendBuffer & buffer ) const;
-   void packDataFineToCoarseImpl( const Block *   fineSender, const BlockID & coarseReceiver, stencil::Direction dir, mpi::SendBuffer & buffer ) const;
+   void packDataEqualLevelImpl( const Block * sender, stencil::Direction dir, mpi::SendBuffer & buffer ) const override;
+   void packDataCoarseToFineImpl( const Block * coarseSender, const BlockID &   fineReceiver, stencil::Direction dir, mpi::SendBuffer & buffer ) const override;
+   void packDataFineToCoarseImpl( const Block *   fineSender, const BlockID & coarseReceiver, stencil::Direction dir, mpi::SendBuffer & buffer ) const override;
 
    ///////////////////////////////////////////////////////////////////////
    // Helper functions for determining packing/unpacking cell intervals //

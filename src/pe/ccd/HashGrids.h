@@ -277,7 +277,7 @@ public:
    //**Destructor**********************************************************************************
    /*!\name Destructor */
    //@{
-   ~HashGrids();
+   ~HashGrids() override;
    //@}
    //**********************************************************************************************
 
@@ -286,7 +286,7 @@ public:
    //@{
    inline void add   ( BodyID body );
           void remove( BodyID body );
-   inline int getObservedBodyCount() const { return observedBodyCount_ + static_cast<int> (globalStorage_.size()); }
+   inline int getObservedBodyCount() const override { return observedBodyCount_ + static_cast<int> (globalStorage_.size()); }
    //@}
    //**********************************************************************************************
 
@@ -294,12 +294,12 @@ public:
    /*!\name Utility functions */
    //@{
           void clear       ();
-          void reloadBodies();
+          void reloadBodies() override;
    //@}
    //**********************************************************************************************
 
    //**Implementation of ICCD interface ********************************************************
-   virtual PossibleContacts& generatePossibleContacts( WcTimingTree* tt = NULL );
+   PossibleContacts& generatePossibleContacts( WcTimingTree* tt = NULL ) override;
    void update(WcTimingTree* tt = NULL);
    
    bool active() const { return gridActive_; }

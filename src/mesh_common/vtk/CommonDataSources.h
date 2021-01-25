@@ -183,8 +183,8 @@ public:
    ColorFaceDataSource( const std::string & _name = "color" )
       : VTKMeshWriter<MeshType>::template FaceDataSource< uint8_t >( _name ) {}
 
-   virtual uint_t numComponents() { return uint_t(3); }
-   virtual void   getData( const MeshType & mesh, const Faces & faces, std::vector<value_type> & data )
+   uint_t numComponents() override { return uint_t(3); }
+   void   getData( const MeshType & mesh, const Faces & faces, std::vector<value_type> & data ) override
    {
       WALBERLA_CHECK( mesh.has_face_colors(), "Cannot write face colors, because the faces do not have them!" );
 
@@ -211,8 +211,8 @@ public:
    ColorVertexDataSource( const std::string & _name = "color" )
       : VTKMeshWriter<MeshType>::template VertexDataSource< uint8_t >( _name ) {}
 
-   virtual uint_t numComponents() { return uint_t(3); }
-   virtual void   getData( const MeshType & mesh, const Vertices & vertices, std::vector<value_type> & data )
+   uint_t numComponents() override { return uint_t(3); }
+   void   getData( const MeshType & mesh, const Vertices & vertices, std::vector<value_type> & data ) override
    {
       WALBERLA_CHECK( mesh.has_vertex_colors(), "Cannot write vertex colors, because the vertices do not have them!" );
 

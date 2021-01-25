@@ -223,7 +223,7 @@ public:
    BlockForest( const uint_t process, const SetupBlockForest& forest, const bool keepGlobalBlockInformation = false );
    BlockForest( const uint_t process, const char* const filename, const bool broadcastFile = true, const bool keepGlobalBlockInformation = false );
 
-   ~BlockForest() {}
+   ~BlockForest() override {}
 
    uint_t getProcess()        const { return process_; }
    uint_t getProcessIdBytes() const { return processIdBytes_; }
@@ -277,45 +277,45 @@ public:
    inline void getBlocks( std::vector< const Block* >& blocks, const uint_t level ) const;
    inline void getBlocks( std::vector<       Block* >& blocks, const uint_t level );
 
-   inline void getBlocksContainedWithinAABB( std::vector< const IBlock* >& blocks, const AABB& aabb ) const;
-   inline void getBlocksContainedWithinAABB( std::vector<       IBlock* >& blocks, const AABB& aabb );
+   inline void getBlocksContainedWithinAABB( std::vector< const IBlock* >& blocks, const AABB& aabb ) const override;
+   inline void getBlocksContainedWithinAABB( std::vector<       IBlock* >& blocks, const AABB& aabb ) override;
 
-   inline void getBlocksOverlappedByAABB( std::vector< const IBlock* >& blocks, const AABB& aabb ) const;
-   inline void getBlocksOverlappedByAABB( std::vector<       IBlock* >& blocks, const AABB& aabb );
+   inline void getBlocksOverlappedByAABB( std::vector< const IBlock* >& blocks, const AABB& aabb ) const override;
+   inline void getBlocksOverlappedByAABB( std::vector<       IBlock* >& blocks, const AABB& aabb ) override;
 
    using BlockStorage::getBlock;
 
-   inline const Block* getBlock( const IBlockID& id ) const;
-   inline       Block* getBlock( const IBlockID& id );
+   inline const Block* getBlock( const IBlockID& id ) const override;
+   inline       Block* getBlock( const IBlockID& id ) override;
 
-   inline const Block* getBlock( const real_t x, const real_t y, const real_t z ) const;
-   inline       Block* getBlock( const real_t x, const real_t y, const real_t z );
+   inline const Block* getBlock( const real_t x, const real_t y, const real_t z ) const override;
+   inline       Block* getBlock( const real_t x, const real_t y, const real_t z ) override;
 
    inline const Block* getRootBlock( const uint_t x, const uint_t y, const uint_t z ) const;
    inline       Block* getRootBlock( const uint_t x, const uint_t y, const uint_t z );
 
 
 
-   bool containsGlobalBlockInformation() const { return blockInformation_->active(); }
+   bool containsGlobalBlockInformation() const override { return blockInformation_->active(); }
 
-   inline void getAllBlocks( std::vector< shared_ptr< IBlockID > >& blocks ) const;
+   inline void getAllBlocks( std::vector< shared_ptr< IBlockID > >& blocks ) const override;
 
-   inline bool blockExists        ( const real_t x, const real_t y, const real_t z ) const;
-   inline bool blockExistsLocally ( const real_t x, const real_t y, const real_t z ) const;
-   inline bool blockExistsRemotely( const real_t x, const real_t y, const real_t z ) const;
+   inline bool blockExists        ( const real_t x, const real_t y, const real_t z ) const override;
+   inline bool blockExistsLocally ( const real_t x, const real_t y, const real_t z ) const override;
+   inline bool blockExistsRemotely( const real_t x, const real_t y, const real_t z ) const override;
 
-   inline bool blockExists        ( const IBlockID& id ) const;
-   inline bool blockExistsLocally ( const IBlockID& id ) const;
-   inline bool blockExistsRemotely( const IBlockID& id ) const;
+   inline bool blockExists        ( const IBlockID& id ) const override;
+   inline bool blockExistsLocally ( const IBlockID& id ) const override;
+   inline bool blockExistsRemotely( const IBlockID& id ) const override;
 
    inline bool rootBlockExists        ( const uint_t x, const uint_t y, const uint_t z ) const;
    inline bool rootBlockExistsLocally ( const uint_t x, const uint_t y, const uint_t z ) const;
    inline bool rootBlockExistsRemotely( const uint_t x, const uint_t y, const uint_t z ) const;
 
-   void getBlockID( IBlockID& id, const real_t x, const real_t y, const real_t z ) const;
-   void getAABB       ( AABB&      aabb,  const IBlockID& id ) const;
-   void getState      ( Set<SUID>& state, const IBlockID& id ) const;
-   void getProcessRank( uint_t&    rank,  const IBlockID& id ) const;
+   void getBlockID( IBlockID& id, const real_t x, const real_t y, const real_t z ) const override;
+   void getAABB       ( AABB&      aabb,  const IBlockID& id ) const override;
+   void getState      ( Set<SUID>& state, const IBlockID& id ) const override;
+   void getProcessRank( uint_t&    rank,  const IBlockID& id ) const override;
 
    void getRootBlockAABB       ( AABB&      aabb,  const uint_t x, const uint_t y, const uint_t z ) const;
    void getRootBlockState      ( Set<SUID>& state, const uint_t x, const uint_t y, const uint_t z ) const;
@@ -324,7 +324,7 @@ public:
    const BlockInformation & getBlockInformation() const { return *blockInformation_; }
 
 
-   inline uint_t getLevel( const IBlock& block ) const;
+   inline uint_t getLevel( const IBlock& block ) const override;
    inline uint_t getLevelFromBlockId( const BlockID& id ) const;
    inline uint_t getAABBFromBlockId( AABB& aabb, const BlockID& id ) const;
    inline AABB   getAABBFromBlockId( const BlockID& id ) const;
@@ -338,9 +338,9 @@ public:
    bool insertBuffersIntoProcessNetwork() const { return insertBuffersIntoProcessNetwork_; }
 
    const std::vector< uint_t > & getNeighborhood() const { return neighborhood_; }
-   const std::vector< uint_t > & getNeighboringProcesses() const { return getNeighborhood(); }
+   const std::vector< uint_t > & getNeighboringProcesses() const override { return getNeighborhood(); }
 
-   std::map< uint_t, std::vector< Vector3<real_t> > > getNeighboringProcessOffsets() const;
+   std::map< uint_t, std::vector< Vector3<real_t> > > getNeighboringProcessOffsets() const override;
 
 
    
@@ -484,7 +484,7 @@ public:
 
 protected:
 
-   bool equal( const BlockStorage* rhs ) const;
+   bool equal( const BlockStorage* rhs ) const override;
    
    void addBlockData( IBlock * const block, const BlockDataID & index, domain_decomposition::internal::BlockData * const data )
    { BlockStorage::addBlockData( block, index, data ); }

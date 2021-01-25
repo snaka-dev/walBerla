@@ -68,18 +68,18 @@ public:
    SparsePdfFieldPackInfo( const BlockDataID & pdfFieldId, const BlockDataID & flagFieldId, FlagUID flag, bool flagFieldConstant )
       : pdfFieldId_( pdfFieldId ), flagFieldId_( flagFieldId ), flag_( flag ), flagFieldConstant_( flagFieldConstant ) {}
 
-   virtual ~SparsePdfFieldPackInfo() {}
+   ~SparsePdfFieldPackInfo() override {}
 
-   bool constantDataExchange() const { return flagFieldConstant_; }
-   bool threadsafeReceiving()  const { return true; }
+   bool constantDataExchange() const override { return flagFieldConstant_; }
+   bool threadsafeReceiving()  const override { return true; }
 
-   void unpackData( IBlock * receiver, stencil::Direction dir, mpi::RecvBuffer & buffer );
+   void unpackData( IBlock * receiver, stencil::Direction dir, mpi::RecvBuffer & buffer ) override;
 
-   void communicateLocal( const IBlock * sender, IBlock * receiver, stencil::Direction dir );
+   void communicateLocal( const IBlock * sender, IBlock * receiver, stencil::Direction dir ) override;
 
 protected:
 
-   void packDataImpl( const IBlock * sender, stencil::Direction dir, mpi::SendBuffer & outBuffer ) const;
+   void packDataImpl( const IBlock * sender, stencil::Direction dir, mpi::SendBuffer & outBuffer ) const override;
 
 
    BlockDataID pdfFieldId_;

@@ -46,18 +46,18 @@ public:
    inline BranchNode( const shared_ptr<const DistanceObject> & distanceObject, const AABB & aabb, const Scalar epsilon,
                       const uint_t maxDepth, const Scalar minAABBVolume );
 
-   virtual ~BranchNode() { for( int i = 0; i < 8; ++i ) delete children_[i]; }
+   ~BranchNode() override { for( int i = 0; i < 8; ++i ) delete children_[i]; }
 
-   virtual inline bool contains( const Point & p ) const;
+   inline bool contains( const Point & p ) const override;
 
-   virtual inline uint_t height() const;
-   virtual inline uint_t numNodes() const;
-   virtual inline void numNodes( uint_t & numInside, uint_t & numOutside, uint_t & numIndeterminate, uint_t & numBranch ) const;
-   virtual void volumes( KahanAccumulator & insideVolume, KahanAccumulator & outsideVolume, KahanAccumulator & indeterminateVolume, Scalar volume ) const;
-   virtual uint_t numChildren() const { return 8; }
+   inline uint_t height() const override;
+   inline uint_t numNodes() const override;
+   inline void numNodes( uint_t & numInside, uint_t & numOutside, uint_t & numIndeterminate, uint_t & numBranch ) const override;
+   void volumes( KahanAccumulator & insideVolume, KahanAccumulator & outsideVolume, KahanAccumulator & indeterminateVolume, Scalar volume ) const override;
+   uint_t numChildren() const override { return 8; }
    const Point & center() const { return center_; }
 
-   virtual const Node<ContainmentOctreeT> * getChild( const uint_t idx ) const { WALBERLA_ASSERT_LESS( idx, 8 ); return children_[idx]; }
+   const Node<ContainmentOctreeT> * getChild( const uint_t idx ) const override { WALBERLA_ASSERT_LESS( idx, 8 ); return children_[idx]; }
 
 private:
    BranchNode( const BranchNode & other );

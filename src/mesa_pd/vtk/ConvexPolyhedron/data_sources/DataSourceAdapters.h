@@ -46,11 +46,11 @@ public:
                vertexDataSource_(vertexDataSource), vertexToParticleIdxManager_(vertexToParticleIdxManager),
                ps_(ps) { }
 
-   virtual void getData(const MeshType & mesh, const Vertices & vertices, std::vector<T> & data) {
+   void getData(const MeshType & mesh, const Vertices & vertices, std::vector<T> & data) override {
       return vertexDataSource_->getData( mesh, vertices, data, vertexToParticleIdxManager_, ps_ );
    };
 
-   virtual uint_t numComponents() { return vertexDataSource_->numComponents(); }
+   uint_t numComponents() override { return vertexDataSource_->numComponents(); }
 
 protected:
    shared_ptr<VertexDataSource<MeshType, T>> vertexDataSource_;
@@ -75,11 +75,11 @@ public:
          faceDataSource_(faceDataSource), faceToParticleIdxManager_(faceToParticleIdxManager),
          ps_(std::move(ps)) { }
 
-   virtual void getData(const MeshType & mesh, const Faces & faces, std::vector<T> & data) {
+   void getData(const MeshType & mesh, const Faces & faces, std::vector<T> & data) override {
       return faceDataSource_->getData( mesh, faces, data, faceToParticleIdxManager_, ps_ );
    };
 
-   virtual uint_t numComponents() { return faceDataSource_->numComponents(); }
+   uint_t numComponents() override { return faceDataSource_->numComponents(); }
 
 protected:
    shared_ptr<FaceDataSource<MeshType, T>> faceDataSource_;

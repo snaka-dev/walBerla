@@ -43,8 +43,8 @@ public:
    {
    }
 
-   virtual uint_t numComponents() { return uint_t(1); }
-   virtual void   getData( const MeshType & /*mesh*/, const Faces & faces, std::vector<value_type> & data )
+   uint_t numComponents() override { return uint_t(1); }
+   void   getData( const MeshType & /*mesh*/, const Faces & faces, std::vector<value_type> & data ) override
    {
       data.reserve( faces.size() );
 

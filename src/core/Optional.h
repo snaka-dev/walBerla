@@ -29,7 +29,7 @@
 
 namespace walberla {
 
-using std::optional;
+using boost::optional;
 using std::nullopt;
 
 }
