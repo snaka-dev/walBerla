@@ -59,13 +59,13 @@ private:
    class Data : public DataBase {
    public:
       Data( T* data ) : data_( data ) {}
-      ~Data() { delete data_; }
-      bool operator==( const DataBase& rhs ) const {
+      ~Data() override { delete data_; }
+      bool operator==( const DataBase& rhs ) const override {
          const Data<T>* rhsData = dynamic_cast< const Data<T>* >( &rhs );
          return ( rhsData == &rhs ) && ( *data_ == *(rhsData->data_) ); // every object that is registered as block data
                                                                         // must be comparable with "==" !
       }
-      bool isOfSameType( const DataBase& rhs ) const { return dynamic_cast< const Data<T>* >( &rhs ) == &rhs; }
+      bool isOfSameType( const DataBase& rhs ) const override { return dynamic_cast< const Data<T>* >( &rhs ) == &rhs; }
    private:
       T* data_;
    };

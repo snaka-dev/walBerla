@@ -79,14 +79,14 @@ public:
    Block( BlockForest & forest, const BlockID & id, const AABB & aabb, const uint_t level, mpi::RecvBuffer & buffer,
           const std::function< uint_t ( const uint_t ) > & processMapping = std::function< uint_t ( const uint_t ) >() );
 
-   virtual ~Block() = default;
+   ~Block() override = default;
 
    void toBuffer( mpi::SendBuffer & buffer ) const;
 
    const BlockForest & getForest() const { return forest_; }
          BlockForest & getForest()       { return forest_; }
 
-   const BlockID & getId()      const { return id_; }
+   const BlockID & getId()      const override { return id_; }
          uint_t    getProcess() const;
          uint_t    getLevel()   const { return level_; }
 
@@ -135,7 +135,7 @@ public:
 
 protected:
 
-   bool equal( const IBlock* rhs ) const;
+   bool equal( const IBlock* rhs ) const override;
 
 private:
 

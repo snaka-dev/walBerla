@@ -72,7 +72,7 @@ public:
 
       const real_t & val() const { return val_; }
 
-      virtual void val( real_t& _val, cell_idx_t, cell_idx_t, cell_idx_t ) const { _val = val(); }
+      void val( real_t& _val, cell_idx_t, cell_idx_t, cell_idx_t ) const override { _val = val(); }
 
       real_t & val(){ return val_; }
 
