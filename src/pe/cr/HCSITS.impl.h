@@ -334,7 +334,7 @@ inline void HardContactSemiImplicitTimesteppingSolvers::timestep( const real_t d
       if (tt_ != nullptr) tt_->stop("Collision Response Body Caching");
    }
 
-   if (blockStorage_->size() == 0)
+   if (blockStorage_->empty())
    {
       // create artificial block to handle global bodies even on processes where there are no blocks
       BodyCache&    bodyCache    = blockToBodyCache_[0];

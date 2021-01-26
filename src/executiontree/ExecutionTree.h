@@ -122,7 +122,7 @@ public:
            const std::string &name,
            const TimingTreePtr & timingTree );
 
-   std::string getName() const override { return name_ != "" ? name_ : "Functor"; };
+   std::string getName() const override { return !name_.empty() ? name_ : "Functor"; };
    void operator() () override;
 
 private:
@@ -158,7 +158,7 @@ public:
 
    void push_back( const IFunctionNodePtr &fct ) { children_.push_back( fct ); }
    void push_front( const IFunctionNodePtr &fct ) { children_.push_front( fct ); }
-   std::string getName() const override { return name_ != "" ? name_ : "Sequence"; };
+   std::string getName() const override { return !name_.empty() ? name_ : "Sequence"; };
    std::deque< IFunctionNodePtr > getChildren() const override { return children_; };
 
 private:

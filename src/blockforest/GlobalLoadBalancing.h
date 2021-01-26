@@ -673,7 +673,7 @@ void GlobalLoadBalancing::reorderProcessesByBFS( std::vector< BLOCK* > & blocks,
       uint_t startIndex = numberOfProcesses;
       for( uint_t i = previousStartIndex; i < numberOfProcesses; ++i )
       {
-         if( !processed[i] && processNeighbors[i].size() != 0 )
+         if( !processed[i] && !processNeighbors[i].empty() )
          {
             startIndex = i;
             break;

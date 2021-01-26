@@ -221,7 +221,7 @@ size_t SelectableObject<T,A,S>::get( T& object, const S& selector ) const {
 
    select( index, selector );
 
-   if( index.size() >= 1 ) {
+   if( !index.empty() ) {
       WALBERLA_ASSERT_LESS( index[0], object_.size() );
       object = object_[ index[0] ];
    }
@@ -270,7 +270,7 @@ size_t SelectableObject<T,A,S>::get( T& object, std::string& identifier, const S
 
    select( index, selector );
 
-   if( index.size() >= 1 ) {
+   if( !index.empty() ) {
       WALBERLA_ASSERT_LESS( index[0], object_.size() );
       object = object_[ index[0] ];
       identifier = identifier_[ index[0] ];
