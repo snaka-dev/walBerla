@@ -117,7 +117,7 @@ public:
                                                         domain_decomposition::BlockDataID   storageID,
                                                         domain_decomposition::BlockDataID   ccdID,
                                                         domain_decomposition::BlockDataID   fcdID,
-                                                        WcTimingTree* tt = NULL );
+                                                        WcTimingTree* tt = nullptr );
    //@}
    //**********************************************************************************************
    //**Destructor**********************************************************************************

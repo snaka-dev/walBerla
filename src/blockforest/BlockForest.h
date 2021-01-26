@@ -179,13 +179,13 @@ public:
       bool getState( Set<SUID>& state, const BlockID& id ) const
          { const Node* node = getNode( id ); if( node ) { state = node->state_; return true; } return false; }
 
-      bool exists( const real_t x, const real_t y, const real_t z ) const { return getNode(x,y,z) != NULL; }
-      bool exists( const BlockID& id ) const { return getNode( id ) != NULL; }
+      bool exists( const real_t x, const real_t y, const real_t z ) const { return getNode(x,y,z) != nullptr; }
+      bool exists( const BlockID& id ) const { return getNode( id ) != nullptr; }
 
       bool existsRemotely( const real_t x, const real_t y, const real_t z ) const
-         { const Node* node = getNode( x, y, z ); return ( node != NULL && node->process_ != forest_.getProcess() ); }
+         { const Node* node = getNode( x, y, z ); return ( node != nullptr && node->process_ != forest_.getProcess() ); }
       bool existsRemotely( const BlockID& id ) const
-         { const Node* node = getNode( id ); return ( node != NULL && node->process_ != forest_.getProcess() ); }
+         { const Node* node = getNode( id ); return ( node != nullptr && node->process_ != forest_.getProcess() ); }
 
       bool getId( BlockID& id, const real_t x, const real_t y, const real_t z ) const;
 
@@ -197,10 +197,10 @@ public:
       bool getRootBlockState( Set<SUID>& state, const uint_t x, const uint_t y, const uint_t z ) const
          { const Node* node = getRootNode(x,y,z); if( node ) { state = node->state_; return true; } return false; }
 
-      bool rootBlockExists( const uint_t x, const uint_t y, const uint_t z ) const { return getRootNode(x,y,z) != NULL; }
+      bool rootBlockExists( const uint_t x, const uint_t y, const uint_t z ) const { return getRootNode(x,y,z) != nullptr; }
 
       bool rootBlockExistsRemotely( const uint_t x, const uint_t y, const uint_t z ) const
-         { const Node* node = getRootNode(x,y,z); return ( node != NULL && node->process_ != forest_.getProcess() ); }
+         { const Node* node = getRootNode(x,y,z); return ( node != nullptr && node->process_ != forest_.getProcess() ); }
 
    private:
 
@@ -210,7 +210,7 @@ public:
       const Node * getRootNode( const uint_t x, const uint_t y, const uint_t z ) const {
          const uint_t index =  z * forest_.getYSize() * forest_.getXSize() + y * forest_.getXSize() + x;
          if( index >= nodes_.size() )
-            return NULL;
+            return nullptr;
          return nodes_[ index ].get();
       }
 
@@ -643,7 +643,7 @@ inline const Block* BlockForest::getBlock( const IBlockID& id ) const {
    if( it != blocks_.end() )
       return it->second.get();
 
-   return NULL;
+   return nullptr;
 }
 
 
@@ -657,7 +657,7 @@ inline Block* BlockForest::getBlock( const IBlockID& id ) {
    if( it != blocks_.end() )
       return it->second.get();
 
-   return NULL;
+   return nullptr;
 }
 
 
@@ -667,7 +667,7 @@ inline const Block* BlockForest::getBlock( const real_t x, const real_t y, const
    for( auto it = blocks_.begin(); it != blocks_.end(); ++it )
       if( it->second->getAABB().contains(x,y,z) ) return it->second.get();
 
-   return NULL;
+   return nullptr;
 }
 
 
@@ -677,7 +677,7 @@ inline Block* BlockForest::getBlock( const real_t x, const real_t y, const real_
    for( auto it = blocks_.begin(); it != blocks_.end(); ++it )
       if( it->second->getAABB().contains(x,y,z) ) return it->second.get();
 
-   return NULL;
+   return nullptr;
 }
 
 
@@ -721,14 +721,14 @@ inline bool BlockForest::blockExists( const real_t x, const real_t y, const real
    if( blockInformation_->active() )
       return blockInformation_->exists(x,y,z);
 
-   return getBlock(x,y,z) != NULL;
+   return getBlock(x,y,z) != nullptr;
 }
 
 
 
 inline bool BlockForest::blockExistsLocally( const real_t x, const real_t y, const real_t z ) const {
 
-   return getBlock(x,y,z) != NULL;
+   return getBlock(x,y,z) != nullptr;
 }
 
 
@@ -738,7 +738,7 @@ inline bool BlockForest::blockExistsRemotely( const real_t x, const real_t y, co
    if( blockInformation_->active() )
       return blockInformation_->existsRemotely(x,y,z);
 
-   return getBlock(x,y,z) == NULL;
+   return getBlock(x,y,z) == nullptr;
 }
 
 
@@ -750,14 +750,14 @@ inline bool BlockForest::blockExists( const IBlockID& id ) const {
    if( blockInformation_->active() )
       return blockInformation_->exists( *static_cast< const BlockID* >( &id ) );
 
-   return getBlock( id ) != NULL;
+   return getBlock( id ) != nullptr;
 }
 
 
 
 inline bool BlockForest::blockExistsLocally( const IBlockID& id ) const {
 
-   return getBlock( id ) != NULL;
+   return getBlock( id ) != nullptr;
 }
 
 
@@ -769,7 +769,7 @@ inline bool BlockForest::blockExistsRemotely( const IBlockID& id ) const {
    if( blockInformation_->active() )
       return blockInformation_->existsRemotely( *static_cast< const BlockID* >( &id ) );
 
-   return getBlock( id ) == NULL;
+   return getBlock( id ) == nullptr;
 }
 
 
@@ -779,14 +779,14 @@ inline bool BlockForest::rootBlockExists( const uint_t x, const uint_t y, const 
    if( blockInformation_->active() )
       return blockInformation_->rootBlockExists(x,y,z);
 
-   return getRootBlock(x,y,z) != NULL;
+   return getRootBlock(x,y,z) != nullptr;
 }
 
 
 
 inline bool BlockForest::rootBlockExistsLocally( const uint_t x, const uint_t y, const uint_t z ) const {
 
-   return getRootBlock(x,y,z) != NULL;
+   return getRootBlock(x,y,z) != nullptr;
 }
 
 
@@ -796,7 +796,7 @@ inline bool BlockForest::rootBlockExistsRemotely( const uint_t x, const uint_t y
    if( blockInformation_->active() )
       return blockInformation_->rootBlockExistsRemotely(x,y,z);
 
-   return getRootBlock(x,y,z) == NULL;
+   return getRootBlock(x,y,z) == nullptr;
 }
 
 

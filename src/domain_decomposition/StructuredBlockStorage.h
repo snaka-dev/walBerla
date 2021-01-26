@@ -693,10 +693,10 @@ inline const IBlock* StructuredBlockStorage::getBlock( const Cell& cell, const u
    getCellCenter( x, y, z, cell, level );
 
    const IBlock* block = blockStorage_->getBlock(x,y,z);
-   if( block == NULL )
-      return NULL;
+   if( block == nullptr )
+      return nullptr;
 
-   return ( getLevel( *block ) == level ) ? block : NULL;
+   return ( getLevel( *block ) == level ) ? block : nullptr;
 }
 
 
@@ -716,10 +716,10 @@ inline IBlock* StructuredBlockStorage::getBlock( const Cell& cell, const uint_t 
    getCellCenter( x, y, z, cell, level );
 
    IBlock* block = blockStorage_->getBlock(x,y,z);
-   if( block == NULL )
-      return NULL;
+   if( block == nullptr )
+      return nullptr;
 
-   return ( getLevel( *block ) == level ) ? block : NULL;
+   return ( getLevel( *block ) == level ) ? block : nullptr;
 }
 
 

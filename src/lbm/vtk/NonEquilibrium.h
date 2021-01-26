@@ -45,7 +45,7 @@ public:
    typedef typename LatticeModel_T::Stencil Stencil;
 
    NonEqulibriumVTKWriter( const ConstBlockDataID & pdf, const std::string & id ) :
-      vtk::BlockCellDataWriter< OutputType, Stencil::Size >( id ), bdid_( pdf ), pdf_( NULL ) {}
+      vtk::BlockCellDataWriter< OutputType, Stencil::Size >( id ), bdid_( pdf ), pdf_( nullptr ) {}
 
 protected:
 

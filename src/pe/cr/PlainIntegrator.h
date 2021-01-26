@@ -46,7 +46,7 @@ public:
                           const shared_ptr<BodyStorage>&      globalBodyStorage,
                           const shared_ptr<BlockStorage>&     blockStorage,
                           domain_decomposition::BlockDataID   storageID,
-                          WcTimingTree* tt = NULL );
+                          WcTimingTree* tt = nullptr );
 
    /// forwards to timestep
    /// Convenience operator to make class a functor.
@@ -67,7 +67,7 @@ public:
    PlainIntegrator(  const shared_ptr<BodyStorage>&    globalBodyStorage
                    , const shared_ptr<BlockStorage>&   blockStorage
                    , domain_decomposition::BlockDataID storageID
-                   , WcTimingTree*                     tt = NULL)
+                   , WcTimingTree*                     tt = nullptr)
    : PlainIntegratorSolver<IntegrateImplicitEuler>( IntegrateImplicitEuler(), globalBodyStorage, blockStorage,
                                                    storageID, tt )
    {

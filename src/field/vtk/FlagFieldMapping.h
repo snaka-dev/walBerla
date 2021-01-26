@@ -41,7 +41,7 @@ public:
       vtk::BlockCellDataWriter<T,1>( id ), flagId_( flagId ), flagField_( NULL ) {}
 
    FlagFieldMapping( const ConstBlockDataID flagId, const std::string& id, const std::map< FlagUID, T > mapping ) :
-      vtk::BlockCellDataWriter<T,1>( id ), flagId_( flagId ), flagField_( NULL ), mapping_( mapping ) {}
+      vtk::BlockCellDataWriter<T,1>( id ), flagId_( flagId ), flagField_( nullptr ), mapping_( mapping ) {}
 
    void addMapping( const FlagUID& flag, const T& value )
    {

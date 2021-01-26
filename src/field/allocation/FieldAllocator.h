@@ -344,7 +344,7 @@ namespace field {
 
          virtual void deallocate(T *& values) {
             delete[] values;
-            values = 0;
+            values = nullptr;
          }
    };
 

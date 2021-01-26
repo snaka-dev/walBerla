@@ -299,7 +299,7 @@ inline bool IBlock::isBlockDataAllocated( const ConstBlockDataID & index ) const
 
    WALBERLA_ASSERT_LESS( uint_t( index ), data_.size() );
 
-   return ( data_[index] != NULL );
+   return ( data_[index] != nullptr );
 }
 
 
@@ -314,8 +314,8 @@ inline const T* IBlock::getData( const ConstBlockDataID & index ) const {
 
    WALBERLA_ASSERT_LESS( uint_t( index ), data_.size() );
 
-   if( data_[index] == NULL )
-      return NULL;
+   if( data_[index] == nullptr )
+      return nullptr;
 
    return data_[index]->template get< T >();
 }
@@ -337,8 +337,8 @@ inline const T* IBlock::getData( const BlockDataID & index ) const {
 
    WALBERLA_ASSERT_LESS( uint_t( index ), data_.size() );
 
-   if( data_[index] == NULL )
-      return NULL;
+   if( data_[index] == nullptr )
+      return nullptr;
 
    return data_[index]->template get< T >();
 }
@@ -368,7 +368,7 @@ inline void IBlock::deleteData( const BlockDataID & index )
 {
    WALBERLA_ASSERT_LESS( uint_t( index ), data_.size() );
    delete data_[index];
-   data_[index] = NULL;
+   data_[index] = nullptr;
 }
 
 
@@ -445,9 +445,9 @@ inline bool IBlock::isDataOfSameType( const ConstBlockDataID & indexA, const Con
 inline void IBlock::addData( const BlockDataID & index, BlockData * const data )
 {
    if( data_.size() <= index )
-      data_.resize( index+1, NULL );
+      data_.resize( index+1, nullptr );
 
-   if( data != NULL ) {
+   if( data != nullptr ) {
       WALBERLA_ASSERT_NULLPTR( data_[index] );
       data_[index] = data;
    }
@@ -465,7 +465,7 @@ inline const T* IBlock::uncheckedFastGetData( const ConstBlockDataID & index ) c
 
    WALBERLA_ASSERT_LESS( uint_t( index ), data_.size() );
 
-   if( data_[index] == NULL )
+   if( data_[index] == nullptr )
       return NULL;
 
    return data_[index]->template uncheckedFastGet< T >();
@@ -485,8 +485,8 @@ inline const T* IBlock::uncheckedFastGetData( const BlockDataID & index ) const 
 
    WALBERLA_ASSERT_LESS( uint_t( index ), data_.size() );
 
-   if( data_[index] == NULL )
-      return NULL;
+   if( data_[index] == nullptr )
+      return nullptr;
 
    return data_[index]->template uncheckedFastGet< T >();
 }

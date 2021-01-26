@@ -124,7 +124,7 @@ public:
    {
       WALBERLA_ASSERT_NOT_NULLPTR( block );
       T * ptr = dataHandling_->initialize( block );
-      return ptr ? new BlockData( ptr ) : NULL;
+      return ptr ? new BlockData( ptr ) : nullptr;
    }
    
    void serialize( IBlock * const block, const BlockDataID & id, mpi::SendBuffer & buffer )
@@ -149,21 +149,21 @@ public:
    {
       WALBERLA_ASSERT_NOT_NULLPTR( block );
       T * ptr = dataHandling_->deserialize( block );
-      return ptr ? new BlockData( ptr ) : NULL;
+      return ptr ? new BlockData( ptr ) : nullptr;
    }
    
    BlockData * deserializeCoarseToFine( Block * const block )
    {
       WALBERLA_ASSERT_NOT_NULLPTR( block );
       T * ptr = dataHandling_->deserializeCoarseToFine( block );
-      return ptr ? new BlockData( ptr ) : NULL;
+      return ptr ? new BlockData( ptr ) : nullptr;
    }
    
    BlockData * deserializeFineToCoarse( Block * const block )
    {
       WALBERLA_ASSERT_NOT_NULLPTR( block );
       T * ptr = dataHandling_->deserializeFineToCoarse( block );
-      return ptr ? new BlockData( ptr ) : NULL;
+      return ptr ? new BlockData( ptr ) : nullptr;
    }
    
    void deserialize( IBlock * const block, const BlockDataID & id, mpi::RecvBuffer & buffer )

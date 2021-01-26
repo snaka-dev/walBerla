@@ -51,7 +51,7 @@ public:
             , domain_decomposition::BlockDataID storageID
             , domain_decomposition::BlockDataID ccdID
             , domain_decomposition::BlockDataID fcdID
-            , WcTimingTree*                     tt = NULL);
+            , WcTimingTree*                     tt = nullptr);
 
    /// forwards to timestep
    /// Convenience operator to make class a functor.
@@ -87,7 +87,7 @@ public:
        , domain_decomposition::BlockDataID storageID
        , domain_decomposition::BlockDataID ccdID
        , domain_decomposition::BlockDataID fcdID
-       , WcTimingTree*                     tt = NULL)
+       , WcTimingTree*                     tt = nullptr)
    : DEMSolver<IntegrateImplicitEuler, ResolveContactSpringDashpotHaffWerner>(
               IntegrateImplicitEuler(), ResolveContactSpringDashpotHaffWerner(),
               globalBodyStorage, blockStorage, storageID, ccdID, fcdID, tt )

@@ -110,7 +110,7 @@ namespace internal {
 class BlockCellDataWriter
 {
 public:
-            BlockCellDataWriter( const std::string& id ) : block_( NULL ), blockStorage_( NULL ), identifier_( id ) {}
+            BlockCellDataWriter( const std::string& id ) : block_( nullptr ), blockStorage_( nullptr ), identifier_( id ) {}
    virtual ~BlockCellDataWriter() {}
 
    void configure( const IBlock& block, const StructuredBlockStorage& sbs ) { block_ = &block; blockStorage_ = &sbs; configure(); }

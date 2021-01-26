@@ -217,7 +217,7 @@ inline StructuredBlockForest::StructuredBlockForest( const shared_ptr< BlockFore
 
 inline bool StructuredBlockForest::blockExistsLocally( const Cell& cell, const uint_t level ) const {
 
-   return getBlock( cell, level ) != NULL;
+   return getBlock( cell, level ) != nullptr;
 }
 
 

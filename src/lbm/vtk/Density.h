@@ -39,7 +39,7 @@ public:
    typedef PdfField< LatticeModel_T > PdfField_T;
 
    DensityVTKWriter( const ConstBlockDataID & pdf, const std::string & id ) :
-      vtk::BlockCellDataWriter< OutputType >( id ), bdid_( pdf ), pdf_( NULL ) {}
+      vtk::BlockCellDataWriter< OutputType >( id ), bdid_( pdf ), pdf_( nullptr ) {}
 
 protected:
 

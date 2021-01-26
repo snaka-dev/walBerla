@@ -39,7 +39,7 @@ public:
    typedef PdfField< LatticeModel_T > PdfField_T;
 
    VelocityVTKWriter( const ConstBlockDataID & pdfFieldId, const std::string & id ) :
-      vtk::BlockCellDataWriter< OutputType, 3 >( id ), bdid_( pdfFieldId ), pdf_( NULL ) {}
+      vtk::BlockCellDataWriter< OutputType, 3 >( id ), bdid_( pdfFieldId ), pdf_( nullptr ) {}
 
 protected:
 
@@ -66,7 +66,7 @@ public:
    typedef PdfField< LatticeModel_T > PdfField_T;
 
    VelocityMagnitudeVTKWriter( const ConstBlockDataID & pdfFieldId, const std::string & id ) :
-      vtk::BlockCellDataWriter< OutputType, 1 >( id ), bdid_( pdfFieldId ), pdf_( NULL ) {}
+      vtk::BlockCellDataWriter< OutputType, 1 >( id ), bdid_( pdfFieldId ), pdf_( nullptr ) {}
 
 protected:
 

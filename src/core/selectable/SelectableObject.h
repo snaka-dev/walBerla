@@ -325,7 +325,7 @@ const T* SelectableObject<T,A,S>::getUnique( const S& selector ) const {
       return &(object_[ index[0] ]);
    }
 
-   return NULL;
+   return nullptr;
 }
 
 
@@ -363,7 +363,7 @@ const T* SelectableObject<T,A,S>::getUnique( const S& selector, std::string & id
       return &(object_[ index[0] ]);
    }
 
-   return NULL;
+   return nullptr;
 }
 
 

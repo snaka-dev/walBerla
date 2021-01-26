@@ -31,7 +31,7 @@ public:
    explicit SimpleCCD(BodyStorage& globalStorage, Storage& storage);
    ~SimpleCCD();
 
-   virtual PossibleContacts& generatePossibleContacts( WcTimingTree* tt = NULL );
+   virtual PossibleContacts& generatePossibleContacts( WcTimingTree* tt = nullptr );
 
    int getObservedBodyCount() const;
 private:

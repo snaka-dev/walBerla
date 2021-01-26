@@ -108,7 +108,7 @@ public:
    typedef vtk::BlockCellDataWriter<OutputType, OutputTrait::F_SIZE * Field_T::F_SIZE> base_t;
 
    VTKWriter( const ConstBlockDataID bdid, const std::string& id ) :
-      base_t( id ), bdid_( bdid ), field_( NULL ) {}
+      base_t( id ), bdid_( bdid ), field_( nullptr ) {}
 
 protected:
 

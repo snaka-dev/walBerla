@@ -397,14 +397,14 @@ void TimeStep< LatticeModel_T, Sweep_T, BoundaryHandling_T >::consistencyChecks(
          continue;
 
       auto *  pdfField = block->template getData< PdfField< LatticeModel_T > >( pdfFieldId );
-      if( pdfField == NULL )
+      if( pdfField == nullptr )
       {
          WALBERLA_ABORT( "Could not get the PDF field from block " << block->getId() << ". Check if it is allocated on "
                          "the block and if the LatticeModel matches!" );
       }
 
       auto * boundaryHandling = block->template getData< BoundaryHandling_T >( boundaryHandlingId );
-      if( boundaryHandling == NULL )
+      if( boundaryHandling == nullptr )
       {
          WALBERLA_ABORT( "Could not get the boundary handling from block " << block->getId() << ". Check if it is "
                          "allocated on the block and if its type matches!" );
