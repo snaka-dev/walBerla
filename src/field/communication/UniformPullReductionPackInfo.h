@@ -57,7 +57,7 @@ public:
    UniformPullReductionPackInfo( const BlockDataID & bdID, const uint_t numberOfGhostLayers ) : bdID_( bdID ),
                                  communicateAllGhostLayers_( false ), numberOfGhostLayers_(  numberOfGhostLayers ) {}
 
-   virtual ~UniformPullReductionPackInfo() {}
+   virtual ~UniformPullReductionPackInfo() = default;
 
    bool constantDataExchange() const { return mpi::BufferSizeTrait<T>::constantSize; }
    bool threadsafeReceiving()  const { return true; }

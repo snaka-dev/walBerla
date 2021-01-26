@@ -39,7 +39,7 @@ public:
    UniformMPIDatatypeInfo( BlockDataID blockDataID, const uint_t numberOfGhostLayers ) : blockDataID_( blockDataID ),
       communicateAllGhostLayers_( false ), numberOfGhostLayers_( numberOfGhostLayers ) {}
 
-   virtual ~UniformMPIDatatypeInfo() {}
+   virtual ~UniformMPIDatatypeInfo() = default;
 
    virtual shared_ptr<mpi::Datatype> getSendDatatype ( IBlock * block, const stencil::Direction dir )
    {

@@ -36,7 +36,7 @@ template< typename T >
 class BlockDataHandling : public domain_decomposition::BlockDataHandling<T>
 {
 public:
-   virtual ~BlockDataHandling() {}
+   virtual ~BlockDataHandling() = default;
 
    /// must be thread-safe !
    virtual void serializeCoarseToFine( Block * const block, const BlockDataID & id, mpi::SendBuffer & buffer, const uint_t child ) = 0;
@@ -60,7 +60,7 @@ template< typename T >
 class AlwaysInitializeBlockDataHandling : public BlockDataHandling<T>
 {
 public:
-   ~AlwaysInitializeBlockDataHandling() {}
+   ~AlwaysInitializeBlockDataHandling() = default;
 
    void serialize( IBlock * const, const BlockDataID &, mpi::SendBuffer & ) {}
    void serializeCoarseToFine( Block * const, const BlockDataID &, mpi::SendBuffer &, const uint_t ) {}
@@ -81,7 +81,7 @@ template< typename T >
 class AlwaysCreateBlockDataHandling : public AlwaysInitializeBlockDataHandling<T>
 {
 public:
-   ~AlwaysCreateBlockDataHandling() {}
+   ~AlwaysCreateBlockDataHandling() = default;
 
    T * initialize( IBlock * const /*block*/ ) {return new T();}
 };
@@ -97,7 +97,7 @@ class BlockDataHandlingWrapper : public domain_decomposition::internal::BlockDat
 public:
    typedef domain_decomposition::internal::BlockData BlockData;
 
-   virtual ~BlockDataHandlingWrapper() {}
+   virtual ~BlockDataHandlingWrapper() = default;
    
    virtual void serializeCoarseToFine( Block * const block, const BlockDataID & id, mpi::SendBuffer & buffer, const uint_t child ) = 0;
    virtual void serializeFineToCoarse( Block * const block, const BlockDataID & id, mpi::SendBuffer & buffer ) = 0;
@@ -118,7 +118,7 @@ public:
    typedef domain_decomposition::internal::BlockData BlockData;
 
    BlockDataHandlingHelper( const shared_ptr< BlockDataHandling<T> > & dataHandling ) : dataHandling_( dataHandling ) {}
-   ~BlockDataHandlingHelper() {}
+   ~BlockDataHandlingHelper() = default;
    
    BlockData * initialize( IBlock * const block )
    {

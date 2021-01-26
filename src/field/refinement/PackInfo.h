@@ -39,7 +39,7 @@ class PackInfo : public blockforest::communication::NonUniformPackInfo
 public:
 
    PackInfo( const BlockDataID & fieldId ) : fieldId_( fieldId ) {}
-   virtual ~PackInfo() {}
+   virtual ~PackInfo() = default;
 
    bool constantDataExchange() const { return true; }
    bool threadsafeReceiving()  const { return true; }

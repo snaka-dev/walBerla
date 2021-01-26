@@ -43,7 +43,7 @@ namespace internal {
          : communicator_( communicator), tag_(tag)
       {}
 
-      virtual ~AbstractCommunication() {}
+      virtual ~AbstractCommunication() = default;
 
 
       struct ReceiveInfo {
@@ -110,7 +110,7 @@ namespace internal {
       KnownSizeCommunication( const MPI_Comm & communicator, int tag = 0 )
            : AbstractCommunication<RecvBuffer_T, SendBuffer_T>( communicator, tag ), sending_(false), receiving_(false) {}
 
-      virtual ~KnownSizeCommunication() {}
+      virtual ~KnownSizeCommunication() = default;
 
       virtual void send( MPIRank receiver, const SendBuffer_T & sendBuffer );
       virtual void waitForSends();
@@ -138,7 +138,7 @@ namespace internal {
       UnknownSizeCommunication( const MPI_Comm & communicator, int tag = 0 )
            :  AbstractCommunication<RecvBuffer_T, SendBuffer_T>( communicator, tag ), sending_(false), receiving_(false) {}
 
-      virtual ~UnknownSizeCommunication() {}
+      virtual ~UnknownSizeCommunication() = default;
 
       virtual void send( MPIRank receiver, const SendBuffer_T & sendBuffer );
       virtual void waitForSends();
@@ -170,7 +170,7 @@ namespace internal {
       UnknownSizeCommunicationIProbe( const MPI_Comm & communicator, int tag = 0 )
            :  AbstractCommunication<RecvBuffer_T, SendBuffer_T>( communicator, tag ), sending_(false), receiving_(false) {}
 
-      virtual ~UnknownSizeCommunicationIProbe() {}
+      virtual ~UnknownSizeCommunicationIProbe() = default;
 
       virtual void send( MPIRank receiver, const SendBuffer_T & sendBuffer );
       virtual void waitForSends();
@@ -198,7 +198,7 @@ namespace internal {
       NoMPICommunication( const MPI_Comm & communicator, int tag = 0 )
          : AbstractCommunication<RecvBuffer_T, SendBuffer_T>( communicator, tag ), received_( false ) {}
 
-      virtual ~NoMPICommunication() {}
+      virtual ~NoMPICommunication() = default;
 
       virtual void send( MPIRank receiver, const SendBuffer_T & sendBuffer );
       virtual void waitForSends();

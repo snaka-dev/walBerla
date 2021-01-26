@@ -40,7 +40,7 @@ class AABBRefinementSelection
 {
 public:
 
-   AABBRefinementSelection(){}
+   AABBRefinementSelection()= default;
 
    AABBRefinementSelection( const Config::BlockHandle & configBlock )
    {

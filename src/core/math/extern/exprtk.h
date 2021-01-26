@@ -760,16 +760,16 @@ namespace exprtk
 
          namespace details
          {
-            struct unknown_type_tag { unknown_type_tag() {} };
-            struct real_type_tag    { real_type_tag   () {} };
-            struct complex_type_tag { complex_type_tag() {} };
-            struct int_type_tag     { int_type_tag    () {} };
+            struct unknown_type_tag { unknown_type_tag() = default; };
+            struct real_type_tag    { real_type_tag   () = default; };
+            struct complex_type_tag { complex_type_tag() = default; };
+            struct int_type_tag     { int_type_tag    () = default; };
 
             template <typename T>
             struct number_type
             {
                typedef unknown_type_tag type;
-               number_type() {}
+               number_type() = default;
             };
 
             #define exprtk_register_real_type_tag(T)             \
@@ -2867,7 +2867,7 @@ namespace exprtk
          virtual void reset()                    {              }
          virtual bool result()                   { return true; }
          virtual std::size_t process(generator&) { return 0;    }
-         virtual ~helper_interface()             {              }
+         virtual ~helper_interface()             = default;
       };
 
       class token_scanner : public helper_interface
@@ -2875,7 +2875,7 @@ namespace exprtk
       public:
 
          virtual ~token_scanner()
-         {}
+         = default;
 
          explicit token_scanner(const std::size_t& stride)
          : stride_(stride)
@@ -5047,7 +5047,7 @@ namespace exprtk
          typedef expression_node<T>* expression_ptr;
 
          virtual ~expression_node()
-         {}
+         = default;
 
          inline virtual T value() const
          {
@@ -5360,7 +5360,7 @@ namespace exprtk
          {
          public:
 
-            virtual ~vector_holder_base() {}
+            virtual ~vector_holder_base() = default;
 
             inline value_ptr operator[](const std::size_t& index) const
             {
@@ -5660,7 +5660,7 @@ namespace exprtk
          typedef range_pack<T> range_t;
 
          virtual ~range_interface()
-         {}
+         = default;
 
          virtual range_t& range_ref() = 0;
 
@@ -5676,7 +5676,7 @@ namespace exprtk
          typedef range_data_type<T> range_data_type_t;
 
          virtual ~string_base_node()
-         {}
+         = default;
 
          virtual std::string str () const = 0;
 
@@ -6874,7 +6874,7 @@ namespace exprtk
       public:
 
          virtual ~ivariable()
-         {}
+         = default;
 
          virtual T& ref() = 0;
          virtual const T& ref() const = 0;
@@ -7089,7 +7089,7 @@ namespace exprtk
          typedef vec_data_store<T>           vds_t;
 
          virtual ~vector_interface()
-         {}
+         = default;
 
          virtual std::size_t size   () const = 0;
 
@@ -11888,7 +11888,7 @@ namespace exprtk
       public:
 
          virtual ~null_igenfunc()
-         {}
+         = default;
 
          typedef type_store<T> generic_type;
          typedef typename generic_type::parameter_list parameter_list_t;
@@ -13221,7 +13221,7 @@ namespace exprtk
       public:
 
          virtual ~vov_base_node()
-         {}
+         = default;
 
          inline virtual operator_type operation() const
          {
@@ -13239,7 +13239,7 @@ namespace exprtk
       public:
 
        virtual ~cov_base_node()
-          {}
+          = default;
 
          inline virtual operator_type operation() const
          {
@@ -13257,7 +13257,7 @@ namespace exprtk
       public:
 
          virtual ~voc_base_node()
-         {}
+         = default;
 
          inline virtual operator_type operation() const
          {
@@ -13275,7 +13275,7 @@ namespace exprtk
       public:
 
          virtual ~vob_base_node()
-         {}
+         = default;
 
          virtual const T& v() const = 0;
       };
@@ -13286,7 +13286,7 @@ namespace exprtk
       public:
 
          virtual ~bov_base_node()
-         {}
+         = default;
 
          virtual const T& v() const = 0;
       };
@@ -13297,7 +13297,7 @@ namespace exprtk
       public:
 
        virtual ~cob_base_node()
-       {}
+       = default;
 
          inline virtual operator_type operation() const
          {
@@ -13317,7 +13317,7 @@ namespace exprtk
       public:
 
          virtual ~boc_base_node()
-         {}
+         = default;
 
          inline virtual operator_type operation() const
          {
@@ -13337,7 +13337,7 @@ namespace exprtk
       public:
 
          virtual ~uv_base_node()
-         {}
+         = default;
 
          inline virtual operator_type operation() const
          {
@@ -13353,7 +13353,7 @@ namespace exprtk
       public:
 
          virtual ~sos_base_node()
-         {}
+         = default;
 
          inline virtual operator_type operation() const
          {
@@ -13367,7 +13367,7 @@ namespace exprtk
       public:
 
          virtual ~sosos_base_node()
-         {}
+         = default;
 
          inline virtual operator_type operation() const
          {
@@ -13381,7 +13381,7 @@ namespace exprtk
       public:
 
          virtual ~T0oT1oT2_base_node()
-         {}
+         = default;
 
          virtual std::string type_id() const = 0;
       };
@@ -13392,7 +13392,7 @@ namespace exprtk
       public:
 
          virtual ~T0oT1oT2oT3_base_node()
-         {}
+         = default;
 
          virtual std::string type_id() const = 0;
       };
@@ -14155,7 +14155,7 @@ namespace exprtk
       public:
 
          virtual ~sf3ext_type_node()
-         {}
+         = default;
 
          virtual T0 t0() const = 0;
 
@@ -15969,7 +15969,7 @@ namespace exprtk
       {}
 
       virtual ~ifunction()
-      {}
+      = default;
 
       #define empty_method_body                      \
       {                                              \
@@ -16060,7 +16060,7 @@ namespace exprtk
    public:
 
       virtual ~ivararg_function()
-      {}
+      = default;
 
       inline virtual T operator() (const std::vector<T>&)
       {
@@ -16091,7 +16091,7 @@ namespace exprtk
       {}
 
       virtual ~igeneric_function()
-      {}
+      = default;
 
       #define igeneric_function_empty_body(N)        \
       {                                              \
@@ -19233,7 +19233,7 @@ namespace exprtk
          {}
 
          virtual ~unknown_symbol_resolver()
-         {}
+         = default;
 
          virtual bool process(const std::string& /*unknown_symbol*/,
                               usr_symbol_type&   st,
@@ -20064,7 +20064,7 @@ namespace exprtk
       }
 
      ~parser()
-      {}
+      = default;
 
       inline void init_precompilation()
       {
@@ -35952,7 +35952,7 @@ namespace exprtk
       }
 
       virtual ~polynomial()
-      {}
+      = default;
 
       #define poly_rtrn(NN) \
       return (NN != N) ? std::numeric_limits<T>::quiet_NaN() :
@@ -36048,7 +36048,7 @@ namespace exprtk
       struct function
       {
          function()
-         {}
+         = default;
 
          function(const std::string& n)
          : name_(n)
@@ -36158,7 +36158,7 @@ namespace exprtk
          }
 
          virtual ~base_func()
-         {}
+         = default;
 
          inline void update(const T& v0)
          {

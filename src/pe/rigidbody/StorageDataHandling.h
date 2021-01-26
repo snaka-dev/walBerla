@@ -40,7 +40,7 @@ namespace pe{
 template<typename BodyTuple>
 class StorageDataHandling : public blockforest::BlockDataHandling<Storage>{
 public:
-   virtual ~StorageDataHandling() {}
+   virtual ~StorageDataHandling() = default;
 
    /// must be thread-safe !
    virtual Storage * initialize( IBlock * const block ) override;

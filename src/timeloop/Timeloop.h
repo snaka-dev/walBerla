@@ -111,7 +111,7 @@ public:
    //@{
    Timeloop( uint_t nrOfTimeSteps );
 
-   virtual ~Timeloop() {}
+   virtual ~Timeloop() = default;
    //@}
    //****************************************************************************************************************
 

@@ -111,7 +111,7 @@ class BlockCellDataWriter
 {
 public:
             BlockCellDataWriter( const std::string& id ) : block_( nullptr ), blockStorage_( nullptr ), identifier_( id ) {}
-   virtual ~BlockCellDataWriter() {}
+   virtual ~BlockCellDataWriter() = default;
 
    void configure( const IBlock& block, const StructuredBlockStorage& sbs ) { block_ = &block; blockStorage_ = &sbs; configure(); }
 
@@ -171,7 +171,7 @@ protected:
 
 private:
 
-   BlockCellDataWriter() {}
+   BlockCellDataWriter() = default;
 
 }; // class BlockCellDataWriter
 
@@ -224,7 +224,7 @@ public:
    static const uint_t F_SIZE = F_SIZE_ARG;
 
             BlockCellDataWriter( const std::string & id ) : BlockCellDataWriterInterface( id ) {}
-   virtual ~BlockCellDataWriter() {}
+   virtual ~BlockCellDataWriter() = default;
 
    void push( std::ostream & os, const cell_idx_t x, const cell_idx_t y, const cell_idx_t z, const cell_idx_t f )
    {

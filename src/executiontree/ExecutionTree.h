@@ -107,7 +107,7 @@ std::ostream &operator<<( std::ostream &os, const IFunctionNode &node );
 class IFunctionNode
 {
 public:
-   virtual ~IFunctionNode() {}
+   virtual ~IFunctionNode() = default;
    virtual void operator()() = 0;
    virtual std::string getName() const = 0;
    virtual std::deque< shared_ptr< IFunctionNode > > getChildren() const { return {}; }

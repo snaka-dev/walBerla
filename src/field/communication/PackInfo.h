@@ -50,7 +50,7 @@ public:
    PackInfo( const BlockDataID & bdId, const uint_t numberOfGhostLayers ) : bdId_( bdId ),
       communicateAllGhostLayers_( false ), numberOfGhostLayers_(  numberOfGhostLayers ) {}
 
-   virtual ~PackInfo() {}
+   virtual ~PackInfo() = default;
 
    bool constantDataExchange() const { return mpi::BufferSizeTrait<T>::constantSize; }
    bool threadsafeReceiving()  const { return true; }

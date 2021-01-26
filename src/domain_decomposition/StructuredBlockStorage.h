@@ -426,7 +426,7 @@ protected:
    StructuredBlockStorage( const shared_ptr<BlockStorage> & blockStorage,
                            const std::vector< uint_t > & xCells, const std::vector< uint_t > & yCells, const std::vector< uint_t > & zCells );
 
-   virtual ~StructuredBlockStorage() {} ///< Must not be made public! No one should be allowed to delete a variable of type 'StructuredBlockStorage*'
+   virtual ~StructuredBlockStorage() = default; ///< Must not be made public! No one should be allowed to delete a variable of type 'StructuredBlockStorage*'
 
    void resetCellDecomposition( const std::vector< uint_t > & xCells, const std::vector< uint_t > & yCells, const std::vector< uint_t > & zCells );
 

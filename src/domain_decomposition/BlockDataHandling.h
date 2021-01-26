@@ -47,7 +47,7 @@ class BlockDataHandling
 public:
    typedef T value_type;
 
-   virtual ~BlockDataHandling() {}
+   virtual ~BlockDataHandling() = default;
    
    /// must be thread-safe !
    virtual T * initialize( IBlock * const block ) = 0;
@@ -66,7 +66,7 @@ template< typename T >
 class AlwaysInitializeBlockDataHandling : public BlockDataHandling<T>
 {
 public:
-   ~AlwaysInitializeBlockDataHandling() {}
+   ~AlwaysInitializeBlockDataHandling() = default;
 
    void serialize( IBlock * const, const BlockDataID &, mpi::SendBuffer & ) {}
    T * deserialize( IBlock * const block ) { return this->initialize( block ); }
@@ -86,7 +86,7 @@ public:
 
    BlockDataHandlingFunctionAdaptor( const Function & function ) : function_( function ) {}
 
-   ~BlockDataHandlingFunctionAdaptor() {}
+   ~BlockDataHandlingFunctionAdaptor() = default;
 
    T * initialize( IBlock * const block ) { return function_( block ); }
    
@@ -155,7 +155,7 @@ namespace internal {
 class BlockDataHandlingWrapper
 {
 public:
-   virtual ~BlockDataHandlingWrapper() {}
+   virtual ~BlockDataHandlingWrapper() = default;
 
    virtual BlockData * initialize( IBlock * const block ) = 0;
    

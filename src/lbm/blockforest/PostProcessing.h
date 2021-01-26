@@ -377,7 +377,7 @@ public:
       pdfFieldId_( pdfFieldId ), filter_( filter )
    {}
 
-   virtual ~MarkerData() {}
+   virtual ~MarkerData() = default;
 
    internal::MarkerField_T * initialize( IBlock * const ) { return allocate(); }
 

@@ -50,7 +50,7 @@ public:
           op_()
    {}
 
-   virtual ~ReducePackInfo() {}
+   virtual ~ReducePackInfo() = default;
 
    bool constantDataExchange() const { return false; }
    bool threadsafeReceiving()  const { return false; }

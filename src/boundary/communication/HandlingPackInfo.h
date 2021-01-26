@@ -39,7 +39,7 @@ public:
    HandlingPackInfo( const BlockDataID & bdId, const bool assumeIdenticalFlagMapping = true, const uint_t numberOfLayers = 0 ) :
       bdId_( bdId ), numberOfLayers_( numberOfLayers ), assumeIdenticalFlagMapping_( assumeIdenticalFlagMapping ) {}
 
-   ~HandlingPackInfo() {}
+   ~HandlingPackInfo() = default;
 
    bool constantDataExchange() const { return false; }
    bool threadsafeReceiving()  const { return false; }

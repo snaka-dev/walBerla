@@ -98,7 +98,7 @@ public:
 
    public:
 
-      iterator( const iterator& it ) : forest_( it.forest_ ), block_( it.block_ ) {}
+      iterator( const iterator& it )  = default;
 
       iterator& operator++() { WALBERLA_ASSERT_NOT_NULLPTR( block_ ); block_ = forest_->getNextBlock( block_ ); return *this; } // prefix ++X
       iterator  operator++(int) { iterator it( *this ); operator++(); return it; };                                             // postfix X++
@@ -127,7 +127,7 @@ public:
    public:
 
       const_iterator( const       iterator& it ) : forest_( it.forest_ ), block_( it.block_ ) {}
-      const_iterator( const const_iterator& it ) : forest_( it.forest_ ), block_( it.block_ ) {}
+      const_iterator( const const_iterator& it )  = default;
 
       const_iterator& operator++() { WALBERLA_ASSERT_NOT_NULLPTR( block_ ); block_ = forest_->getNextBlock( block_ ); return *this; } // prefix ++X
       const_iterator  operator++(int) { const_iterator it( *this ); operator++(); return it; };                                       // postfix X++

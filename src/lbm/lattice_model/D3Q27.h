@@ -64,7 +64,7 @@ public:
       static_assert( (std::is_same< ForceModel_T, force_model::None >::value), "This constructor is only available if the force model is equal to force_model::None!" );
    }
 
-   virtual ~D3Q27() {}
+   virtual ~D3Q27() = default;
 
 protected:
 

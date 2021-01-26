@@ -138,7 +138,7 @@ public:
 
 
 
-   virtual ~SelectableObject() {}
+   virtual ~SelectableObject() = default;
 
    void add( const T& object, const A& attributes, const std::string& identifier = std::string() );
 

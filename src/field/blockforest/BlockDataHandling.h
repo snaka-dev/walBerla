@@ -45,7 +45,7 @@ public:
    typedef typename Field_T::value_type Value_T;
    typedef std::function< void ( Field_T * field, IBlock * const block ) > InitializationFunction_T;
 
-   virtual ~BlockDataHandling() {}
+   virtual ~BlockDataHandling() = default;
 
    void addInitializationFunction( const InitializationFunction_T & initFunction ) { initFunction_ = initFunction; }
 

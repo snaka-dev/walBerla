@@ -56,7 +56,7 @@ public:
 
    /*! \name Constructors */
    //@{
-   CellVector() {}
+   CellVector() = default;
    CellVector(size_type n, const Cell & value = Cell()) : cells_(n, value) {}
    template <class InputIterator>
       CellVector(InputIterator first, InputIterator last) : cells_(first, last) { }

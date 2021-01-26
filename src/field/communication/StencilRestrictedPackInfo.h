@@ -47,7 +47,7 @@ class StencilRestrictedPackInfo : public walberla::communication::UniformPackInf
 {
 public:
    StencilRestrictedPackInfo( const BlockDataID & fieldId ) : fieldId_( fieldId ) {}
-   virtual ~StencilRestrictedPackInfo() {}
+   virtual ~StencilRestrictedPackInfo() = default;
 
    bool constantDataExchange() const { return true; }
    bool threadsafeReceiving()  const { return true; }

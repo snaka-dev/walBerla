@@ -33,7 +33,7 @@ namespace ccd {
 
 class ICCD : private NonCopyable {
 public:
-   virtual ~ICCD() {}
+   virtual ~ICCD() = default;
 
    /// Generates a list of possible contact pairs.
    /// This list is also stored in the member variable contacts_ for reuse lateron.

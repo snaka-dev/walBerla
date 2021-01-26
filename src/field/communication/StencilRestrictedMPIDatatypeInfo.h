@@ -39,7 +39,7 @@ class StencilRestrictedMPIDatatypeInfo : public walberla::communication::Uniform
 public:
     StencilRestrictedMPIDatatypeInfo( BlockDataID fieldID ) : fieldID_( fieldID ) {}
 
-    virtual ~StencilRestrictedMPIDatatypeInfo() {}
+    virtual ~StencilRestrictedMPIDatatypeInfo() = default;
 
     virtual shared_ptr<mpi::Datatype> getSendDatatype ( IBlock * block, const stencil::Direction dir )
     {

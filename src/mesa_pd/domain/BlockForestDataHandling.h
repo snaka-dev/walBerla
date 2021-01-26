@@ -68,7 +68,7 @@ class BlockForestDataHandling: public blockforest::BlockDataHandling<internal::P
 {
 public:
    BlockForestDataHandling(const std::shared_ptr<data::ParticleStorage>& ps) : ps_(ps) {}
-   virtual ~BlockForestDataHandling() {}
+   virtual ~BlockForestDataHandling() = default;
 
    virtual internal::ParticleDeleter* initialize( IBlock * const block ) override;
 

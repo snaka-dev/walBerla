@@ -104,7 +104,7 @@ public:
              const uint_t ghostLayers = uint_t(1), const field::Layout & _layout = field::zyxf,
              const shared_ptr< field::FieldAllocator<real_t> > & alloc = shared_ptr< field::FieldAllocator<real_t> >() );
 
-   virtual ~PdfField() {}
+   virtual ~PdfField() = default;
 
 
 

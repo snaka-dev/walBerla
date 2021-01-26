@@ -60,7 +60,7 @@ public:
       equalLevelCells_( equalLevelCells() ) {}
 #endif
 
-   virtual ~PdfFieldPackInfo() {}
+   virtual ~PdfFieldPackInfo() = default;
 
    bool optimizedEqualLevelCommunication() const { return optimizedEqualLevelCommunication_; }
    void optimizeEqualLevelCommunication( const bool value = true ) { optimizedEqualLevelCommunication_ = value; }

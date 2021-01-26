@@ -223,7 +223,7 @@ public:
    BlockForest( const uint_t process, const SetupBlockForest& forest, const bool keepGlobalBlockInformation = false );
    BlockForest( const uint_t process, const char* const filename, const bool broadcastFile = true, const bool keepGlobalBlockInformation = false );
 
-   ~BlockForest() {}
+   ~BlockForest() = default;
 
    uint_t getProcess()        const { return process_; }
    uint_t getProcessIdBytes() const { return processIdBytes_; }

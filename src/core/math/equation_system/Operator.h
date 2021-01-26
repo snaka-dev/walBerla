@@ -42,7 +42,7 @@ namespace math {
       OpType( const char& sign, const std::string& n, const unsigned int strength ) :
          sign_(sign), name_(n), strength_(strength) {}
 
-      virtual ~OpType() {}
+      virtual ~OpType() = default;
 
    private:
       OpType& operator=( const OpType& ){ return *this; }

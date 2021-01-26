@@ -50,7 +50,7 @@ private:
 
    class DataBase {
    public:
-      virtual ~DataBase() {}
+      virtual ~DataBase() = default;
       virtual bool operator==( const DataBase& rhs ) const = 0;
       virtual bool isOfSameType( const DataBase& rhs ) const = 0;
    };

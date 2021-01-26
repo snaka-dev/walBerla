@@ -79,7 +79,7 @@ public:
    Block( BlockForest & forest, const BlockID & id, const AABB & aabb, const uint_t level, mpi::RecvBuffer & buffer,
           const std::function< uint_t ( const uint_t ) > & processMapping = std::function< uint_t ( const uint_t ) >() );
 
-   virtual ~Block() {}
+   virtual ~Block() = default;
 
    void toBuffer( mpi::SendBuffer & buffer ) const;
 
