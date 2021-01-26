@@ -642,7 +642,7 @@ void GlobalLoadBalancing::prepareProcessReordering( const std::vector< BLOCK* > 
          const BLOCK* const block = (*it).second;
 
          for( uint_t i = 0; i != block->getNeighborhoodSize(); ++i )
-            if( neighbors.insert( block->getNeighborTargetProcess(i) ).second == true )
+            if( static_cast<bool>(neighbors.insert( block->getNeighborTargetProcess(i) ).second) )
                processNeighbors[ uint_c(p) ].push_back( block->getNeighborTargetProcess(i) );
 
 //       for( uint_t n = 0; n != 26; ++n )

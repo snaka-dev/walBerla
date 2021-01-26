@@ -525,7 +525,7 @@ inline bool Matrix3<Type>::operator==( const Matrix3<Other>& rhs ) const
 {
    // In order to compare the vector and the scalar value, the data values of the lower-order
    // data type are converted to the higher-order data type.
-   if( !equal( v_[0], rhs.v_[0] ) ||
+   return !static_cast<bool>(!equal( v_[0], rhs.v_[0] ) ||
        !equal( v_[1], rhs.v_[1] ) ||
        !equal( v_[2], rhs.v_[2] ) ||
        !equal( v_[3], rhs.v_[3] ) ||
@@ -533,9 +533,7 @@ inline bool Matrix3<Type>::operator==( const Matrix3<Other>& rhs ) const
        !equal( v_[5], rhs.v_[5] ) ||
        !equal( v_[6], rhs.v_[6] ) ||
        !equal( v_[7], rhs.v_[7] ) ||
-       !equal( v_[8], rhs.v_[8] ) )
-      return false;
-   else return true;
+       !equal( v_[8], rhs.v_[8] ));
 }
 //**********************************************************************************************************************
 
@@ -553,7 +551,7 @@ inline bool Matrix3<Type>::operator!=( const Matrix3<Other>& rhs ) const
 {
    // In order to compare the vector and the scalar value, the data values of the lower-order
    // data type are converted to the higher-order data type.
-   if( !equal( v_[0], rhs.v_[0] ) ||
+   return static_cast<bool>(!equal( v_[0], rhs.v_[0] ) ||
        !equal( v_[1], rhs.v_[1] ) ||
        !equal( v_[2], rhs.v_[2] ) ||
        !equal( v_[3], rhs.v_[3] ) ||
@@ -561,9 +559,7 @@ inline bool Matrix3<Type>::operator!=( const Matrix3<Other>& rhs ) const
        !equal( v_[5], rhs.v_[5] ) ||
        !equal( v_[6], rhs.v_[6] ) ||
        !equal( v_[7], rhs.v_[7] ) ||
-       !equal( v_[8], rhs.v_[8] ) )
-      return true;
-   else return false;
+       !equal( v_[8], rhs.v_[8] ));
 }
 //**********************************************************************************************************************
 
@@ -1129,9 +1125,7 @@ inline const Matrix3<HIGH> Matrix3<Type>::diagRotate( const Matrix3<Other>& m ) 
 template< typename Type >
 inline bool Matrix3<Type>::isSingular() const
 {
-   if( equal( getDeterminant(), Type(0) ) )
-      return true;
-   else return false;
+   return static_cast<bool>(equal( getDeterminant(), Type(0) ));
 }
 //**********************************************************************************************************************
 
@@ -1145,9 +1139,7 @@ inline bool Matrix3<Type>::isSingular() const
 template< typename Type >
 inline bool Matrix3<Type>::isSymmetric() const
 {
-   if( !equal( v_[1], v_[3] ) || !equal( v_[2], v_[6] ) || !equal( v_[5], v_[7] ) )
-      return false;
-   else return true;
+   return !static_cast<bool>(!equal( v_[1], v_[3] ) || !equal( v_[2], v_[6] ) || !equal( v_[5], v_[7] ));
 }
 //**********************************************************************************************************************
 
@@ -1160,7 +1152,7 @@ inline bool Matrix3<Type>::isSymmetric() const
 template< typename Type >
 inline bool Matrix3<Type>::isZero() const
 {
-   if( equal( v_[0], Type(0) ) &&
+   return static_cast<bool>(equal( v_[0], Type(0) ) &&
        equal( v_[1], Type(0) ) &&
        equal( v_[2], Type(0) ) &&
        equal( v_[3], Type(0) ) &&
@@ -1168,9 +1160,7 @@ inline bool Matrix3<Type>::isZero() const
        equal( v_[5], Type(0) ) &&
        equal( v_[6], Type(0) ) &&
        equal( v_[7], Type(0) ) &&
-       equal( v_[8], Type(0) ) )
-      return true;
-   else return false;
+       equal( v_[8], Type(0) ));
 }
 //**********************************************************************************************************************
 
@@ -1595,11 +1585,9 @@ std::ostream& operator<<( std::ostream& os, const Matrix3<Type>& m )
 template< typename Type >
 inline bool isnan( const Matrix3<Type>& m )
 {
-   if( math::isnan( m[0] ) || math::isnan( m[1] ) || math::isnan( m[2] ) ||
+   return static_cast<bool>(math::isnan( m[0] ) || math::isnan( m[1] ) || math::isnan( m[2] ) ||
        math::isnan( m[3] ) || math::isnan( m[4] ) || math::isnan( m[5] ) ||
-       math::isnan( m[6] ) || math::isnan( m[7] ) || math::isnan( m[8] ) )
-      return true;
-   else return false;
+       math::isnan( m[6] ) || math::isnan( m[7] ) || math::isnan( m[8] ));
 }
 //**********************************************************************************************************************
 
@@ -1658,11 +1646,9 @@ inline const Matrix3<Type> fabs( const Matrix3<Type>& m )
 template< typename Type >
 inline bool isinf( const Matrix3<Type>& m )
 {
-   if( math::isinf( m[0] ) || math::isinf( m[1] ) || math::isinf( m[2] ) ||
+   return static_cast<bool>(math::isinf( m[0] ) || math::isinf( m[1] ) || math::isinf( m[2] ) ||
        math::isinf( m[3] ) || math::isinf( m[4] ) || math::isinf( m[5] ) ||
-       math::isinf( m[6] ) || math::isinf( m[7] ) || math::isinf( m[8] ) )
-      return true;
-   else return false;
+       math::isinf( m[6] ) || math::isinf( m[7] ) || math::isinf( m[8] ));
 }
 //**********************************************************************************************************************
 

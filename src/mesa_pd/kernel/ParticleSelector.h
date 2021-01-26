@@ -59,8 +59,7 @@ public:
    bool operator()(const size_t idx, Accessor& ac) const
    {
       using namespace walberla::mesa_pd::data::particle_flags;
-      if (isSet(ac.getFlags(idx), GHOST)) return true;
-      return false;
+      return static_cast<bool>(isSet(ac.getFlags(idx), GHOST));
    }
 };
 
@@ -71,8 +70,7 @@ public:
    bool operator()(const size_t idx, const size_t jdx, Accessor& ac) const
    {
       using namespace walberla::mesa_pd::data::particle_flags;
-      if (isSet(ac.getFlags(idx), INFINITE) && isSet(ac.getFlags(jdx), INFINITE)) return false;
-      return true;
+      return !static_cast<bool>(isSet(ac.getFlags(idx), INFINITE) && isSet(ac.getFlags(jdx), INFINITE));
    }
 };
 
