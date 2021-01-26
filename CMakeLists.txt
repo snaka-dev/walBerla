@@ -76,6 +76,7 @@ option ( WALBERLA_BUILD_WITH_LTO            "Enable link time optimizations"    
 option ( WALBERLA_BUILD_WITH_OPENMP         "Enable OpenMP support"                              )
 option ( WALBERLA_BUILD_WITH_PYTHON         "Support for embedding Python"                       )
 option ( WALBERLA_BUILD_WITH_CODEGEN        "Enable pystencils code generation"              OFF )
+option ( WALBERLA_ENABLE_CCACHE             "Use ccache to speed up compilation"             OFF )
 
 
 option ( WALBERLA_BUILD_WITH_LIKWID_MARKERS "Compile in markers for likwid-perfctr"              )
@@ -712,6 +713,25 @@ if ( NOT WIN32 AND (WALBERLA_CXX_COMPILER_IS_GNU OR WALBERLA_CXX_COMPILER_IS_INT
       set ( WALBERLA_BUILD_WITH_BACKTRACE ON )
       set ( WALBERLA_BACKTRACE_HEADER ${Backtrace_HEADER} )
    endif ( Backtrace_FOUND )
+endif()
+
+
+
+############################################################################################################################
+##
+## CCache
+##
+############################################################################################################################
+
+if ( WALBERLA_ENABLE_CCACHE )
+    find_program(CCACHE_PROGRAM ccache)
+    if(CCACHE_PROGRAM)
+        set(CMAKE_CXX_COMPILER_LAUNCHER "${CCACHE_PROGRAM}")
+        set(CMAKE_CUDA_COMPILER_LAUNCHER "${CCACHE_PROGRAM}") # CMake 3.9+
+        message(STATUS "Found CCache: " ${CCACHE_PROGRAM})
+    else()
+        message(WARNING "CCache not found")
+    endif()
 endif()
 
 
