@@ -64,7 +64,7 @@ option ( WALBERLA_BUILD_BENCHMARKS          "Build Benchmarks"                  
 option ( WALBERLA_BUILD_TOOLS               "Build Tools"                                        )
 option ( WALBERLA_BUILD_TUTORIALS           "Build Tutorials"                                 ON )
 option ( WALBERLA_BUILD_SHOWCASES           "Build Showcases"                                OFF )
-option ( WALBERLA_BUILD_DOC                 "Build Documentation"                             ON )
+option ( WALBERLA_BUILD_DOC                 "Build Documentation"                            OFF )
 
 option ( WALBERLA_BUILD_WITH_MPI            "Build with MPI"                                  ON )
 option ( WALBERLA_BUILD_WITH_METIS          "Build with metis graph partitioner"             OFF )
@@ -1163,17 +1163,11 @@ endif()
 ############################################################################################################################
 # Documentation Generation
 #
-if (WALBERLA_BUILD_DOC)
-  # Build documentation using Doxygen (www.doxygen.org)
-  ############################################################################################################################
-  find_package ( Doxygen  )
-  find_package ( HTMLHelp )
+# Build documentation using Doxygen (www.doxygen.org)
+############################################################################################################################
 
-  if ( HTML_HELP_COMPILER EQUAL "" )
-     set ( HTML_HELP_FOUND "NO" )
-  else ( )
-     set ( HTML_HELP_FOUND "YES" )
-  endif ( )
+if (WALBERLA_BUILD_DOC)
+  find_package ( Doxygen REQUIRED )
 
   if ( DOXYGEN_FOUND )
      set ( DOXYGEN_HTML_HEADER ${walberla_SOURCE_DIR}/doc/header.html )
