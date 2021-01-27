@@ -844,40 +844,43 @@ endif(WALBERLA_ENABLE_GUI)
 ############################################################################################################################
 
 if ( WALBERLA_BUILD_WITH_METIS )
-    find_package ( Metis QUIET )
+    find_package ( Metis )
 
     if ( METIS_FOUND )
         include_directories( ${METIS_INCLUDE_DIRS} )
         link_directories   ( ${METIS_LIBRARY_DIR}  )
         list ( APPEND SERVICE_LIBS ${METIS_LIBRARIES} )
-        set  ( WALBERLA_BUILD_WITH_METIS TRUE )
     else()
-        set  ( WALBERLA_BUILD_WITH_METIS OFF CACHE BOOL "Build with metis graph partitioner" FORCE )
+        message( FATAL_ERROR "Could NOT find Metis" )
     endif()
-else()
-    set ( METIS_FOUND OFF CACHE BOOL "Metis found" FORCE )
 endif()
 
 
 if ( WALBERLA_BUILD_WITH_PARMETIS )
-   find_path(PARMETIS_INCLUDE_DIR parmetis.h
-      /usr/local/include
-      /usr/include
-      ${PARMETIS_ROOT}/include
-      $ENV{PARMETIS_ROOT}/include
-   )
+    if ( NOT WALBERLA_BUILD_WITH_METIS )
+        message( FATAL_ERROR "You need to enable Metis alongside ParMetis" )
+    endif()
 
-  find_library(PARMETIS_LIBRARY parmetis
-    /usr/local/lib
-    /usr/lib
-    ${PARMETIS_ROOT}/lib
-    $ENV{PARMETIS_ROOT}/lib
-  )
+    find_path(PARMETIS_INCLUDE_DIR parmetis.h
+            /usr/local/include
+            /usr/include
+            ${PARMETIS_ROOT}/include
+            $ENV{PARMETIS_ROOT}/include
+            )
 
-  if( PARMETIS_INCLUDE_DIR AND PARMETIS_LIBRARY AND METIS_LIBRARY )
-    include_directories( ${PARMETIS_INCLUDE_DIR} )
-    list ( APPEND SERVICE_LIBS ${PARMETIS_LIBRARY} ${METIS_LIBRARY} )
-  endif()
+    find_library(PARMETIS_LIBRARY parmetis
+            /usr/local/lib
+            /usr/lib
+            ${PARMETIS_ROOT}/lib
+            $ENV{PARMETIS_ROOT}/lib
+            )
+
+    if( PARMETIS_INCLUDE_DIR AND PARMETIS_LIBRARY )
+        include_directories( ${PARMETIS_INCLUDE_DIR} )
+        list ( APPEND SERVICE_LIBS ${PARMETIS_LIBRARY} )
+    else()
+        message( FATAL_ERROR "Could NOT find ParMetis" )
+    endif()
 endif()
 
 ############################################################################################################################
