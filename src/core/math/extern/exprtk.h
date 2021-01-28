@@ -3684,11 +3684,11 @@ namespace exprtk
 
                if (invalid_bracket_check(t0.type,t1.type))
                {
-                  error_list_.push_back(std::make_pair(t0,t1));
+                  error_list_.emplace_back(t0,t1);
                }
                else if (invalid_comb_.find(p) != invalid_comb_.end())
                {
-                  error_list_.push_back(std::make_pair(t0,t1));
+                  error_list_.emplace_back(t0,t1);
                }
 
                return true;
@@ -3851,7 +3851,7 @@ namespace exprtk
 
                if (invalid_comb_.find(p) != invalid_comb_.end())
                {
-                  error_list_.push_back(std::make_pair(t0,t1));
+                  error_list_.emplace_back(t0,t1);
                }
 
                return true;
@@ -23420,7 +23420,7 @@ namespace exprtk
                  return true;
               }
               else
-                 error_list.push_back(std::make_pair(diff_index, diff_value));
+                 error_list.emplace_back(diff_index, diff_value);
             }
 
             if (1 == error_list.size())
@@ -23507,7 +23507,7 @@ namespace exprtk
              {
                  if (*iter == delimiter)
                  {
-                     result.push_back(std::string(current_begin, iter));
+                     result.emplace_back(current_begin, iter);
                      ++iter;
                      current_begin = iter;
                  }
@@ -23517,7 +23517,7 @@ namespace exprtk
 
              if (current_begin != iter)
              {
-                 result.push_back(std::string(current_begin, iter));
+                 result.emplace_back(current_begin, iter);
              }
 
              return result;

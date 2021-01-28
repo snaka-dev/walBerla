@@ -351,7 +351,7 @@ inline void VTKOutput::addAABBInclusionFilter( const AABB & aabb )
    if( pointDataSource_ || polylineDataSource_ )
       aabbInclusionFilters_.push_back( aabb );
    else
-      cellInclusionFunctions_.push_back( AABBCellFilter(aabb) );
+      cellInclusionFunctions_.emplace_back(AABBCellFilter(aabb) );
 }
 
 
@@ -368,7 +368,7 @@ inline void VTKOutput::addAABBExclusionFilter( const AABB & aabb )
    if( pointDataSource_ || polylineDataSource_ )
       aabbExclusionFilters_.push_back( aabb );
    else
-      cellExclusionFunctions_.push_back( AABBCellFilter(aabb) );
+      cellExclusionFunctions_.emplace_back(AABBCellFilter(aabb) );
 }
 
 

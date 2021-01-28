@@ -296,7 +296,7 @@ inline void Block::addNeighbor( const BlockID & id, const uint_t process, const 
       WALBERLA_ASSERT( neighborhood_[i].getId() < id || id < neighborhood_[i].getId() );
 #endif
 
-   neighborhood_.push_back( NeighborBlock( forest_, id, process, state ) );
+   neighborhood_.emplace_back( forest_, id, process, state );
 }
 
 
