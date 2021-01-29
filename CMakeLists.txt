@@ -900,7 +900,7 @@ if( WALBERLA_BUILD_WITH_FFT )
         find_package( FFTW3 REQUIRED )
         find_package( FFTW3_MPI REQUIRED )
 
-        include_directories( SYSTEM ${PFFT_INCLUDE_DIR} ${FFTW3_MPI_INCLUDE_DIR} )
+        include_directories( SYSTEM ${PFFT_INCLUDE_DIR} ${FFTW3_INCLUDE_DIR} ${FFTW3_MPI_INCLUDE_DIR} )
         list( APPEND SERVICE_LIBS ${PFFT_LIBRARIES} ${FFTW3_LIBRARIES} ${FFTW3_MPI_LIBRARIES} )
     else()
         find_package( FFTW3 REQUIRED )
