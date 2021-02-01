@@ -1783,6 +1783,7 @@ coverage:
          -DWARNING_ERROR=ON
          -G "$CMAKE_GENERATOR"
          -DCMAKE_DISABLE_FIND_PACKAGE_Boost=TRUE
+         -DWALBERLA_BUILD_WTIH_FFT=OFF
       - MSBuild.exe walberla.sln /property:Configuration=$BUILD_CONFIGURATION /verbosity:minimal /maxcpucount:4
       - ctest -LE $CTEST_EXCLUDE_LABELS -C $BUILD_CONFIGURATION --output-on-failure -j 4
    variables:
