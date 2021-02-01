@@ -28,16 +28,11 @@ The following cache variables may also be set:
 
 #]=======================================================================]
 
-find_package(PkgConfig)
-pkg_check_modules(PC_FFTW3 QUIET fftw3)
-
 find_path(FFTW3_INCLUDE_DIR
   NAMES fftw3.h
-  PATHS ${PC_FFTW3_INCLUDE_DIRS}
 )
 find_library(FFTW3_LIBRARY
   NAMES fftw3
-  PATHS ${PC_FFTW3_LIBRARY_DIRS}
 )
 
 include(FindPackageHandleStandardArgs)

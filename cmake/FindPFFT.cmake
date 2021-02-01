@@ -28,16 +28,11 @@ The following cache variables may also be set:
 
 #]=======================================================================]
 
-find_package(PkgConfig)
-pkg_check_modules(PC_PFFT QUIET pfft)
-
 find_path(PFFT_INCLUDE_DIR
   NAMES pfft.h
-  PATHS ${PC_PFFT_INCLUDE_DIRS}
 )
 find_library(PFFT_LIBRARY
   NAMES pfft
-  PATHS ${PC_PFFT_LIBRARY_DIRS}
 )
 
 include(FindPackageHandleStandardArgs)
