@@ -62,7 +62,7 @@ public:
     {
         if (ended_ || rhs.ended_)
         {
-           return static_cast<bool>(ended_ == rhs.ended_);
+           return ended_ == rhs.ended_;
         }
 
         return it_ == rhs.it_;

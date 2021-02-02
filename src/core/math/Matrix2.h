@@ -375,10 +375,10 @@ inline bool Matrix2<Type>::operator==( const Matrix2<Other>& rhs ) const
 {
    // In order to compare the vector and the scalar value, the data values of the lower-order
    // data type are converted to the higher-order data type.
-   return !static_cast<bool>(!equal( v_[0], rhs.v_[0] ) ||
-       !equal( v_[1], rhs.v_[1] ) ||
-       !equal( v_[2], rhs.v_[2] ) ||
-       !equal( v_[3], rhs.v_[3] ));
+   return equal( v_[0], rhs.v_[0] ) &&
+          equal( v_[1], rhs.v_[1] ) &&
+          equal( v_[2], rhs.v_[2] ) &&
+          equal( v_[3], rhs.v_[3] );
 }
 //**********************************************************************************************************************
 
@@ -396,10 +396,7 @@ inline bool Matrix2<Type>::operator!=( const Matrix2<Other>& rhs ) const
 {
    // In order to compare the vector and the scalar value, the data values of the lower-order
    // data type are converted to the higher-order data type.
-   return static_cast<bool>(!equal( v_[0], rhs.v_[0] ) ||
-       !equal( v_[1], rhs.v_[1] ) ||
-       !equal( v_[2], rhs.v_[2] ) ||
-       !equal( v_[3], rhs.v_[3] ));
+   return !(*this == rhs);
 }
 //**********************************************************************************************************************
 
@@ -777,7 +774,7 @@ inline const Matrix2<Type> Matrix2<Type>::getInverse() const
 template< typename Type >
 inline bool Matrix2<Type>::isSingular() const
 {
-   return static_cast<bool>(equal( getDeterminant(), Type(0) ));
+   return equal( getDeterminant(), Type(0) );
 }
 //**********************************************************************************************************************
 
@@ -869,8 +866,8 @@ std::ostream& operator<<( std::ostream& os, const Matrix2<Type>& m )
 template< typename Type >
 inline bool isnan( const Matrix2<Type>& m )
 {
-   return static_cast<bool>(math::isnan( m[0] ) || math::isnan( m[1] )||
-       math::isnan( m[2] ) || math::isnan( m[3] ));
+   return math::isnan( m[0] ) || math::isnan( m[1] )||
+       math::isnan( m[2] ) || math::isnan( m[3] );
 }
 //**********************************************************************************************************************
 

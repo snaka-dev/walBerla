@@ -333,7 +333,7 @@ inline bool Vector3<Type>::operator==( Other rhs ) const
 {
    // In order to compare the vector and the scalar value, the data values of the lower-order
    // data type are converted to the higher-order data type within the equal function.
-   return !static_cast<bool>(!equal( v_[0], rhs ) || !equal( v_[1], rhs ) || !equal( v_[2], rhs ));
+   return equal( v_[0], rhs ) && equal( v_[1], rhs ) && equal( v_[2], rhs );
 }
 //**********************************************************************************************************************
 
@@ -351,7 +351,7 @@ inline bool Vector3<Type>::operator==( const Vector3<Other>& rhs ) const
 {
    // In order to compare the two vectors, the data values of the lower-order data
    // type are converted to the higher-order data type within the equal function.
-   return !static_cast<bool>(!equal( v_[0], rhs.v_[0] ) || !equal( v_[1], rhs.v_[1] ) || !equal( v_[2], rhs.v_[2] ));
+   return equal( v_[0], rhs.v_[0] ) && equal( v_[1], rhs.v_[1] ) && equal( v_[2], rhs.v_[2] );
 }
 //**********************************************************************************************************************
 
@@ -372,7 +372,7 @@ inline bool Vector3<Type>::operator!=( Other rhs ) const
 {
    // In order to compare the vector and the scalar value, the data values of the lower-order
    // data type are converted to the higher-order data type within the equal function.
-   return static_cast<bool>(!equal( v_[0], rhs ) || !equal( v_[1], rhs ) || !equal( v_[2], rhs ));
+   return !(*this == rhs);
 }
 //**********************************************************************************************************************
 
@@ -390,7 +390,7 @@ inline bool Vector3<Type>::operator!=( const Vector3<Other>& rhs ) const
 {
    // In order to compare the two vectors, the data values of the lower-order data
    // type are converted to the higher-order data type within the equal function.
-   return static_cast<bool>(!equal( v_[0], rhs.v_[0] ) || !equal( v_[1], rhs.v_[1] ) || !equal( v_[2], rhs.v_[2] ));
+   return !(*this == rhs);
 }
 //**********************************************************************************************************************
 

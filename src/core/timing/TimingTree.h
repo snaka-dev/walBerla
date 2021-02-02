@@ -179,7 +179,7 @@ bool TimingTree<TP>::isTimerRunning(const std::string& name) const
 {
    WALBERLA_ASSERT_NOT_NULLPTR( current_->last_ );
    auto timerIt = current_->last_->tree_.find(name);
-   return !static_cast<bool>((timerIt == current_->last_->tree_.end()) || (&(timerIt->second) != current_));
+   return !((timerIt == current_->last_->tree_.end()) || (&(timerIt->second) != current_));
 }
 
 template< typename TP >  // Timing policy

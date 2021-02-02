@@ -145,11 +145,11 @@ private:
       for( auto region = regions_.begin(); region != regions_.end(); ++region )
       {
          aabbs.emplace_back( math::AABB( simulationDomain.xMin() + region->first.xMin() * simulationDomain.xSize(),
-                                                      simulationDomain.yMin() + region->first.yMin() * simulationDomain.ySize(),
-                                                      simulationDomain.zMin() + region->first.zMin() * simulationDomain.zSize(),
-                                                      simulationDomain.xMin() + region->first.xMax() * simulationDomain.xSize(),
-                                                      simulationDomain.yMin() + region->first.yMax() * simulationDomain.ySize(),
-                                                      simulationDomain.zMin() + region->first.zMax() * simulationDomain.zSize() ), region->second );
+                                         simulationDomain.yMin() + region->first.yMin() * simulationDomain.ySize(),
+                                         simulationDomain.zMin() + region->first.zMin() * simulationDomain.zSize(),
+                                         simulationDomain.xMin() + region->first.xMax() * simulationDomain.xSize(),
+                                         simulationDomain.yMin() + region->first.yMax() * simulationDomain.ySize(),
+                                         simulationDomain.zMin() + region->first.zMax() * simulationDomain.zSize() ), region->second );
       }
       return aabbs;
    }
