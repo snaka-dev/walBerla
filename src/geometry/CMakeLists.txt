@@ -9,6 +9,7 @@ waLBerla_add_module( DEPENDS core
                              boundary
                              field
                              python_coupling
-                             stencil )
+                             stencil 
+                             lodepng )
 
 ###################################################################################################

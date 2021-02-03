@@ -1233,6 +1233,8 @@ endif()
 include_directories ( ${CMAKE_CURRENT_BINARY_DIR}/src )
 # All include paths are specified relative to src/ directory
 include_directories ( ${CMAKE_CURRENT_SOURCE_DIR}/src )
+# include headers from external libraries
+include_directories ( SYSTEM ${CMAKE_CURRENT_SOURCE_DIR}/extern )
 
 
 # Generate file with compile options, and add install rule for it
@@ -1240,6 +1242,9 @@ configure_file ( src/waLBerlaDefinitions.in.h
                  src/waLBerlaDefinitions.h    )
 
 install( FILES ${walberla_BINARY_DIR}/src/waLBerlaDefinitions.h DESTINATION walberla/ )
+
+# external libraries
+add_subdirectory( extern )
 
 # sources
 add_subdirectory ( src )

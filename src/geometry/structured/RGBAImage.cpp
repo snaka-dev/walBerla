@@ -20,7 +20,7 @@
 //======================================================================================================================
 
 #include "RGBAImage.h"
-#include "geometry/structured/extern/lodepng.h"
+#include "lodepng/lodepng.h"
 #include "core/Abort.h"
 
 #include <algorithm>
