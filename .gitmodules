@@ -4,3 +4,6 @@
 [submodule "extern/lodepng"]
 	path = extern/lodepng
 	url = https://github.com/lvandeve/lodepng.git
+[submodule "extern/exprtk"]
+	path = extern/exprtk
+	url = https://github.com/ArashPartow/exprtk.git

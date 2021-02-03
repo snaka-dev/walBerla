@@ -45,7 +45,7 @@
 #endif
 
 
-#include "extern/exprtk.h"
+#include "exprtk/exprtk.hpp"
 #include <algorithm>
 
 

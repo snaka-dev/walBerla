@@ -40,7 +40,7 @@
 #   pragma warning( disable : 1599 )
 #endif
 
-#include "core/math/extern/exprtk.h"
+#include "exprtk/exprtk.hpp"
 
 #if defined WALBERLA_CXX_COMPILER_IS_MSVC
 #   pragma warning( pop )
