@@ -41,9 +41,9 @@ FieldIterator<T>::FieldIterator( const typename FieldIterator<T>::FieldType * fi
 {
    if ( field->xyzSize().empty() )
    {
-      linePtr_ = NULL;
-      lineEnd_ = NULL;
-      f_       = NULL;
+      linePtr_ = nullptr;
+      lineEnd_ = nullptr;
+      f_       = nullptr;
       return;
    }
 
@@ -114,10 +114,7 @@ FieldIterator<T>::FieldIterator( const typename FieldIterator<T>::FieldType * fi
  **********************************************************************************************************************/
 template <typename T>
 FieldIterator<T>::FieldIterator()
-   : linePtr_(NULL), lineEnd_(NULL), f_(NULL)
-{
-}
-
+   : linePtr_(nullptr), lineEnd_(nullptr), f_(nullptr){}
 
 //**********************************************************************************************************************
 /*!\brief Copy Constructor. Required for pointer member cur*_
@@ -228,7 +225,7 @@ inline void FieldIterator<T>::incrementLine()
          if(cur_[0] == cell_idx_c(sizes_[0]) )
          {
             // iterator at end
-            linePtr_ = NULL;
+            linePtr_ = nullptr;
             return;
          }
       }
@@ -264,7 +261,7 @@ inline void FieldIterator<T>::decrementLine()
          if(cur_[0] < 0 )
          {
             // iterator at end
-            linePtr_ = NULL;
+            linePtr_ = nullptr;
             return;
          }
       }

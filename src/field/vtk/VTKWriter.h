@@ -107,11 +107,11 @@ public:
    typedef vtk::BlockCellDataWriter<OutputType> base_t;
 
    VTKWriter( const ConstBlockDataID bdid, const std::string& id ) :
-      base_t( id ), bdid_( bdid ), field_( NULL ), fSize_(0) {}
+      base_t( id ), bdid_( bdid ), field_( nullptr ), fSize_(0) {}
 
 protected:
 
-   void configure() {
+   void configure() override {
       WALBERLA_ASSERT_NOT_NULLPTR( this->block_ );
       field_ = this->block_->template getData< Field_T >( bdid_ );
 
@@ -119,7 +119,7 @@ protected:
       fSize_ = field_->fSize();
    }
 
-   OutputType evaluate( const cell_idx_t x, const cell_idx_t y, const cell_idx_t z, const cell_idx_t f )
+   OutputType evaluate( const cell_idx_t x, const cell_idx_t y, const cell_idx_t z, const cell_idx_t f ) override
    {
       if ( fSize_ == 1 )
       {

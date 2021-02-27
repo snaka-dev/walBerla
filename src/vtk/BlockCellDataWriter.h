@@ -170,7 +170,7 @@ protected:
    std::string identifier_;
 private:
 
-  BlockCellDataWriter() = default;
+   BlockCellDataWriter() = default;
 
 }; // class BlockCellDataWriter
 
