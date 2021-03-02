@@ -122,7 +122,7 @@ namespace field {
       Field<T> * clone()              const;
       Field<T> * cloneUninitialized() const;
       Field<T> * cloneShallowCopy()   const;
-      FlattenedField * flattenedShallowCopy() const;
+      virtual FlattenedField * flattenedShallowCopy() const;
       //@}
       //****************************************************************************************************************
 
@@ -270,7 +270,7 @@ namespace field {
 
       //** Slicing  ****************************************************************************************************
       /*! \name Slicing */
-      //@{
+      virtual //@{
       Field<T> * getSlicedField( const CellInterval & interval ) const;
       virtual void slice           ( const CellInterval & interval );
       virtual void shiftCoordinates( cell_idx_t cx, cell_idx_t cy, cell_idx_t cz );
@@ -397,6 +397,11 @@ class Field<T, fSize_> : public Field<T> {
       : Field<T>::Field(field)
    {}
 
+   typedef typename std::conditional<VectorTrait<T>::F_SIZE!=0,
+      Field<typename VectorTrait<T>::OutputType, VectorTrait<T>::F_SIZE*fSize_>,
+      Field<T, fSize_>>::type FlattenedField;
+
+
    template<typename ...Args>
    Field(uint_t xSize, uint_t ySize, uint_t zSize, Args&&... args)
       : Field<T>::Field(xSize, ySize, zSize, fSize_, std::forward<Args>(args)...)
@@ -413,6 +418,11 @@ class Field<T, fSize_> : public Field<T> {
    {
       Field<T>::resize(xSize, ySize, zSize, fSize_);
    }
+
+   template<typename ...Args>
+   Field<T, fSize_> * getSlicedField( const CellInterval & interval ) const;
+
+   FlattenedField * flattenedShallowCopy() const;
 };
 
 
