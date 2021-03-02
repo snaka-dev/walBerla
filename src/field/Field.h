@@ -63,8 +63,11 @@ namespace field {
    * See also \ref fieldPage
    */
    //*******************************************************************************************************************
+    template<typename T, uint_t... fSize_>
+    class Field {};
+
    template<typename T>
-   class Field
+   class Field<T>
    {
    public:
 
@@ -322,7 +325,7 @@ namespace field {
       //@{
       Field(const Field & other);
       template <typename T2>
-      Field(const Field<T2> & other);
+      Field<T>(const Field<T2> & other);
       virtual uint_t referenceCount() const;
 
 
@@ -378,7 +381,7 @@ namespace field {
 
       friend class FieldIterator<T>;
       friend class FieldIterator<const T>;
-      template <typename T2>
+      template <typename T2, uint_t... fSize2>
       friend class Field;
 
 #ifdef WALBERLA_FIELD_MONITORED_ACCESS
@@ -386,6 +389,32 @@ namespace field {
 #endif
 
    }; // class Field
+
+template<typename T, uint_t fSize_>
+class Field<T, fSize_> : public Field<T> {
+ public:
+   Field(Field<T> field)
+      : Field<T>::Field(field)
+   {}
+
+   template<typename ...Args>
+   Field(uint_t xSize, uint_t ySize, uint_t zSize, Args&&... args)
+      : Field<T>::Field(xSize, ySize, zSize, fSize_, std::forward<Args>(args)...)
+   {}
+
+   template<typename ...Args>
+   void init(uint_t xSize, uint_t ySize, uint_t zSize, Args&&... args)
+   {
+      Field<T>::init(xSize, ySize, zSize, fSize_, std::forward<Args>(args)...);
+   }
+
+   template<typename ...Args>
+   void resize(uint_t xSize, uint_t ySize, uint_t zSize)
+   {
+      Field<T>::resize(xSize, ySize, zSize, fSize_);
+   }
+};
+
 
 
 } // namespace field
