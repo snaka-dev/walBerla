@@ -4,7 +4,8 @@
 #
 ###################################################################################################
 
-waLBerla_compile_test( FILES SimpleGuiRun.cpp )
 waLBerla_compile_test( FILES GuiPdfView.cpp )
+waLBerla_execute_test(NAME GuiPdfView )
 
-#waLBerla_execute_test(NAME SimpleGuiRun )
+waLBerla_compile_test( FILES SimpleGuiRun.cpp )
+waLBerla_execute_test(NAME SimpleGuiRun )
