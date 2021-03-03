@@ -112,7 +112,7 @@ namespace field {
       inline GhostLayerField<T> * clone()              const;
       inline GhostLayerField<T> * cloneUninitialized() const;
       inline GhostLayerField<T> * cloneShallowCopy()   const;
-      inline FlattenedField * flattenedShallowCopy() const;
+      inline FlattenedField * flattenedShallowCopy() const override;
       //@}
       //****************************************************************************************************************
 
@@ -201,7 +201,7 @@ namespace field {
       //** Slicing  ****************************************************************************************************
       /*! \name Slicing */
       //@{
-      GhostLayerField<T> * getSlicedField( const CellInterval & interval ) const;
+      GhostLayerField<T> * getSlicedField( const CellInterval & interval ) const override;
       void slice           ( const CellInterval & interval ) override;
       void shiftCoordinates( cell_idx_t cx, cell_idx_t cy, cell_idx_t cz ) override;
       //@}
@@ -228,6 +228,10 @@ namespace field {
       friend class GhostLayerField;
    };
 
+#ifdef WALBERLA_CXX_COMPILER_IS_CLANG
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wsign-conversion"
+#endif
    template<typename T, uint_t fSize_>
    class GhostLayerField<T, fSize_> : public GhostLayerField<T> {
     public:
@@ -256,9 +260,10 @@ namespace field {
       {
          GhostLayerField<T>::resize(xSize, ySize, zSize, fSize_);
       }
-
-      FlattenedField * flattenedShallowCopy() const;
    };
+#ifdef WALBERLA_CXX_COMPILER_IS_CLANG
+#pragma clang diagnostic pop
+#endif
 
 } // namespace field
 } // namespace walberla

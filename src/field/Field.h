@@ -418,11 +418,6 @@ class Field<T, fSize_> : public Field<T> {
    {
       Field<T>::resize(xSize, ySize, zSize, fSize_);
    }
-
-   template<typename ...Args>
-   Field<T, fSize_> * getSlicedField( const CellInterval & interval ) const;
-
-   FlattenedField * flattenedShallowCopy() const;
 };
 
 

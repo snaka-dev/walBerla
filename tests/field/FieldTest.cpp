@@ -387,7 +387,7 @@ void sliceTest(field::Layout layout)
 
 
 
-   auto sliced = shared_ptr<Field<int,fSize> > ( field.getSlicedField(sliceInterval) );
+   auto sliced = field.getSlicedField(sliceInterval);
 
    WALBERLA_CHECK_EQUAL ( sliced->xSize(), sliceInterval.xSize() );
    WALBERLA_CHECK_EQUAL ( sliced->ySize(), sliceInterval.ySize() );
@@ -592,7 +592,7 @@ void flattenTest()
                   field( x,y,z,f )[g] = val;
                }
 
-   shared_ptr<Field<uint_t, 3*fSize>> flattened(field.flattenedShallowCopy());
+   auto flattened(field.flattenedShallowCopy());
 
    Field<uint_t, 3*fSize> cmp ( 2,2,1 );
    WALBERLA_CHECK_EQUAL(cmp.xSize(), flattened->xSize());
@@ -638,7 +638,7 @@ void ghostFlattenTest()
                   field( x,y,z,f )[g] = val;
                }
 
-   shared_ptr<GhostLayerField<uint_t, 3*fSize>> flattened(field.flattenedShallowCopy());
+   auto flattened(field.flattenedShallowCopy());
 
    GhostLayerField<uint_t, 3*fSize> cmp ( 2,2,1, 1 );
    WALBERLA_CHECK_EQUAL(cmp.xSize(), flattened->xSize());
