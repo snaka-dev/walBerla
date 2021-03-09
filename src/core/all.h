@@ -42,7 +42,6 @@
 #include "StringUtility.h"
 #include "VectorTrait.h"
 
-#include "cell/all.h"
 #include "config/all.h"
 #include "debug/all.h"
 #include "grid_generator/all.h"

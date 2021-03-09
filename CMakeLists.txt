@@ -25,7 +25,7 @@
 ##
 ############################################################################################################################
 
-CMAKE_MINIMUM_REQUIRED (VERSION 3.10)
+CMAKE_MINIMUM_REQUIRED (VERSION 3.13)
 
 
 PROJECT ( walberla )
@@ -1307,7 +1307,7 @@ else()
 endif()
 
 
-add_subdirectory ( apps )
+#add_subdirectory ( apps )
 
 waLBerla_export()
 
