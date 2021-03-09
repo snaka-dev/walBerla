@@ -48,5 +48,3 @@
 #include "Utility.h"
 #include "Vector2.h"
 #include "Vector3.h"
-
-#include "equation_system/all.h"
