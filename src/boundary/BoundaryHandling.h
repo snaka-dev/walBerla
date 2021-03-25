@@ -2234,7 +2234,7 @@ inline void BoundaryHandling< FlagField_T, Stencil, Boundaries... >::operator()(
    const int zMin = int_c( localCells.zMin() );
    const int zMax = int_c( localCells.zMax() );
    #pragma omp parallel for schedule(static) if(threadSafeBCs_)
-   for( int iz = zMin; iz <= zMax; ++iz ) {
+   for( auto iz = zMin; iz <= zMax; ++iz ) {
       cell_idx_t z = cell_idx_c( iz );
    #else
    for( cell_idx_t z = localCells.zMin(); z <= localCells.zMax(); ++z ) {

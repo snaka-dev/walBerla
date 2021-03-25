@@ -945,9 +945,9 @@ clang_6.0_hybrid_dbg_sp:
       - cuda
       - docker
 
-clang_7.0_serial:
+clang_7_serial:
    extends: .build_template
-   image: i10git.cs.fau.de:5005/walberla/buildenvs/clang:7.0
+   image: i10git.cs.fau.de:5005/walberla/buildenvs/clang:7
    before_script:
       - pip3 install lbmpy jinja2
       - cd python
@@ -969,9 +969,9 @@ clang_7.0_serial:
       - cuda
       - docker
 
-clang_7.0_mpionly:
+clang_7_mpionly:
    extends: .build_template
-   image: i10git.cs.fau.de:5005/walberla/buildenvs/clang:7.0
+   image: i10git.cs.fau.de:5005/walberla/buildenvs/clang:7
    before_script:
       - pip3 install lbmpy jinja2
       - cd python
@@ -991,9 +991,9 @@ clang_7.0_mpionly:
       - cuda
       - docker
 
-clang_7.0_hybrid:
+clang_7_hybrid:
    extends: .build_template
-   image: i10git.cs.fau.de:5005/walberla/buildenvs/clang:7.0
+   image: i10git.cs.fau.de:5005/walberla/buildenvs/clang:7
    before_script:
       - pip3 install lbmpy jinja2
       - cd python
@@ -1012,9 +1012,9 @@ clang_7.0_hybrid:
       - cuda
       - docker
 
-clang_7.0_serial_dbg:
+clang_7_serial_dbg:
    extends: .build_template
-   image: i10git.cs.fau.de:5005/walberla/buildenvs/clang:7.0
+   image: i10git.cs.fau.de:5005/walberla/buildenvs/clang:7
    before_script:
       - pip3 install lbmpy jinja2
       - cd python
@@ -1037,9 +1037,9 @@ clang_7.0_serial_dbg:
       - cuda
       - docker
 
-clang_7.0_mpionly_dbg:
+clang_7_mpionly_dbg:
    extends: .build_template
-   image: i10git.cs.fau.de:5005/walberla/buildenvs/clang:7.0
+   image: i10git.cs.fau.de:5005/walberla/buildenvs/clang:7
    before_script:
       - pip3 install lbmpy jinja2
       - cd python
@@ -1060,9 +1060,9 @@ clang_7.0_mpionly_dbg:
       - cuda
       - docker
 
-clang_7.0_hybrid_dbg:
+clang_7_hybrid_dbg:
    extends: .build_template
-   image: i10git.cs.fau.de:5005/walberla/buildenvs/clang:7.0
+   image: i10git.cs.fau.de:5005/walberla/buildenvs/clang:7
    before_script:
       - pip3 install lbmpy jinja2
       - cd python
@@ -1082,9 +1082,9 @@ clang_7.0_hybrid_dbg:
       - cuda
       - docker
 
-clang_7.0_hybrid_dbg_sp:
+clang_7_hybrid_dbg_sp:
    extends: .build_template
-   image: i10git.cs.fau.de:5005/walberla/buildenvs/clang:7.0
+   image: i10git.cs.fau.de:5005/walberla/buildenvs/clang:7
    variables:
       WALBERLA_BUILD_WITH_CUDA: "ON"
       CMAKE_BUILD_TYPE: "DebugOptimized"
@@ -1099,9 +1099,9 @@ clang_7.0_hybrid_dbg_sp:
       - cuda
       - docker
 
-clang_8.0_serial:
+clang_8_serial:
    extends: .build_template
-   image: i10git.cs.fau.de:5005/walberla/buildenvs/clang:8.0
+   image: i10git.cs.fau.de:5005/walberla/buildenvs/clang:8
    before_script:
       - pip3 install lbmpy jinja2
       - cd python
@@ -1123,9 +1123,9 @@ clang_8.0_serial:
       - cuda
       - docker
 
-clang_8.0_mpionly:
+clang_8_mpionly:
    extends: .build_template
-   image: i10git.cs.fau.de:5005/walberla/buildenvs/clang:8.0
+   image: i10git.cs.fau.de:5005/walberla/buildenvs/clang:8
    before_script:
       - pip3 install lbmpy jinja2
       - cd python
@@ -1145,9 +1145,9 @@ clang_8.0_mpionly:
       - cuda
       - docker
 
-clang_8.0_hybrid:
+clang_8_hybrid:
    extends: .build_template
-   image: i10git.cs.fau.de:5005/walberla/buildenvs/clang:8.0
+   image: i10git.cs.fau.de:5005/walberla/buildenvs/clang:8
    before_script:
       - pip3 install lbmpy jinja2
       - cd python
@@ -1166,9 +1166,9 @@ clang_8.0_hybrid:
       - cuda
       - docker
 
-clang_8.0_serial_dbg:
+clang_8_serial_dbg:
    extends: .build_template
-   image: i10git.cs.fau.de:5005/walberla/buildenvs/clang:8.0
+   image: i10git.cs.fau.de:5005/walberla/buildenvs/clang:8
    before_script:
       - pip3 install lbmpy jinja2
       - cd python
@@ -1191,9 +1191,9 @@ clang_8.0_serial_dbg:
       - cuda
       - docker
 
-clang_8.0_mpionly_dbg:
+clang_8_mpionly_dbg:
    extends: .build_template
-   image: i10git.cs.fau.de:5005/walberla/buildenvs/clang:8.0
+   image: i10git.cs.fau.de:5005/walberla/buildenvs/clang:8
    before_script:
       - pip3 install lbmpy jinja2
       - cd python
@@ -1214,9 +1214,9 @@ clang_8.0_mpionly_dbg:
       - cuda
       - docker
 
-clang_8.0_hybrid_dbg:
+clang_8_hybrid_dbg:
    extends: .build_template
-   image: i10git.cs.fau.de:5005/walberla/buildenvs/clang:8.0
+   image: i10git.cs.fau.de:5005/walberla/buildenvs/clang:8
    before_script:
       - pip3 install lbmpy jinja2
       - cd python
@@ -1236,9 +1236,9 @@ clang_8.0_hybrid_dbg:
       - cuda
       - docker
 
-clang_8.0_hybrid_dbg_sp:
+clang_8_hybrid_dbg_sp:
    extends: .build_template
-   image: i10git.cs.fau.de:5005/walberla/buildenvs/clang:8.0
+   image: i10git.cs.fau.de:5005/walberla/buildenvs/clang:8
    variables:
       WALBERLA_BUILD_WITH_CUDA: "ON"
       CMAKE_BUILD_TYPE: "DebugOptimized"
@@ -1253,9 +1253,9 @@ clang_8.0_hybrid_dbg_sp:
       - cuda
       - docker
 
-clang_9.0_serial:
+clang_9_serial:
    extends: .build_template
-   image: i10git.cs.fau.de:5005/walberla/buildenvs/clang:9.0
+   image: i10git.cs.fau.de:5005/walberla/buildenvs/clang:9
    before_script:
       - pip3 install lbmpy jinja2
       - cd python
@@ -1277,9 +1277,9 @@ clang_9.0_serial:
       - cuda
       - docker
 
-clang_9.0_mpionly:
+clang_9_mpionly:
    extends: .build_template
-   image: i10git.cs.fau.de:5005/walberla/buildenvs/clang:9.0
+   image: i10git.cs.fau.de:5005/walberla/buildenvs/clang:9
    before_script:
       - pip3 install lbmpy jinja2
       - cd python
@@ -1299,9 +1299,9 @@ clang_9.0_mpionly:
       - cuda
       - docker
 
-clang_9.0_hybrid:
+clang_9_hybrid:
    extends: .build_template
-   image: i10git.cs.fau.de:5005/walberla/buildenvs/clang:9.0
+   image: i10git.cs.fau.de:5005/walberla/buildenvs/clang:9
    before_script:
       - pip3 install lbmpy jinja2
       - cd python
@@ -1320,9 +1320,9 @@ clang_9.0_hybrid:
       - cuda
       - docker
 
-clang_9.0_serial_dbg:
+clang_9_serial_dbg:
    extends: .build_template
-   image: i10git.cs.fau.de:5005/walberla/buildenvs/clang:9.0
+   image: i10git.cs.fau.de:5005/walberla/buildenvs/clang:9
    before_script:
       - pip3 install lbmpy jinja2
       - cd python
@@ -1345,9 +1345,9 @@ clang_9.0_serial_dbg:
       - cuda
       - docker
 
-clang_9.0_mpionly_dbg:
+clang_9_mpionly_dbg:
    extends: .build_template
-   image: i10git.cs.fau.de:5005/walberla/buildenvs/clang:9.0
+   image: i10git.cs.fau.de:5005/walberla/buildenvs/clang:9
    before_script:
       - pip3 install lbmpy jinja2
       - cd python
@@ -1368,9 +1368,9 @@ clang_9.0_mpionly_dbg:
       - cuda
       - docker
 
-clang_9.0_hybrid_dbg:
+clang_9_hybrid_dbg:
    extends: .build_template
-   image: i10git.cs.fau.de:5005/walberla/buildenvs/clang:9.0
+   image: i10git.cs.fau.de:5005/walberla/buildenvs/clang:9
    before_script:
       - pip3 install lbmpy jinja2
       - cd python
@@ -1390,9 +1390,9 @@ clang_9.0_hybrid_dbg:
       - cuda
       - docker
 
-clang_9.0_hybrid_dbg_sp:
+clang_9_hybrid_dbg_sp:
    extends: .build_template
-   image: i10git.cs.fau.de:5005/walberla/buildenvs/clang:9.0
+   image: i10git.cs.fau.de:5005/walberla/buildenvs/clang:9
    variables:
       WALBERLA_BUILD_WITH_CUDA: "ON"
       CMAKE_BUILD_TYPE: "DebugOptimized"
@@ -1407,9 +1407,9 @@ clang_9.0_hybrid_dbg_sp:
       - cuda
       - docker
 
-clang_10.0_serial:
+clang_10_serial:
    extends: .build_template
-   image: i10git.cs.fau.de:5005/walberla/buildenvs/clang:10.0
+   image: i10git.cs.fau.de:5005/walberla/buildenvs/clang:10
    before_script:
       - pip3 install lbmpy jinja2
       - cd python
@@ -1431,9 +1431,9 @@ clang_10.0_serial:
       - cuda
       - docker
 
-clang_10.0_mpionly:
+clang_10_mpionly:
    extends: .build_template
-   image: i10git.cs.fau.de:5005/walberla/buildenvs/clang:10.0
+   image: i10git.cs.fau.de:5005/walberla/buildenvs/clang:10
    before_script:
       - pip3 install lbmpy jinja2
       - cd python
@@ -1453,9 +1453,9 @@ clang_10.0_mpionly:
       - cuda
       - docker
 
-clang_10.0_hybrid:
+clang_10_hybrid:
    extends: .build_template
-   image: i10git.cs.fau.de:5005/walberla/buildenvs/clang:10.0
+   image: i10git.cs.fau.de:5005/walberla/buildenvs/clang:10
    before_script:
       - pip3 install lbmpy jinja2
       - cd python
@@ -1466,13 +1466,17 @@ clang_10.0_hybrid:
       WALBERLA_BUILD_WITH_CUDA: "ON"
       WALBERLA_BUILD_WITH_CODEGEN: "ON"
       WALBERLA_BUILD_WITH_PYTHON: "ON"
+   only:
+      variables:
+         - $ENABLE_NIGHTLY_BUILDS
+   
    tags:
       - cuda
       - docker
 
-clang_10.0_serial_dbg:
+clang_10_serial_dbg:
    extends: .build_template
-   image: i10git.cs.fau.de:5005/walberla/buildenvs/clang:10.0
+   image: i10git.cs.fau.de:5005/walberla/buildenvs/clang:10
    before_script:
       - pip3 install lbmpy jinja2
       - cd python
@@ -1487,13 +1491,17 @@ clang_10.0_serial_dbg:
       CMAKE_BUILD_TYPE: "DebugOptimized"
       WALBERLA_BUILD_WITH_CODEGEN: "ON"
       WALBERLA_BUILD_WITH_PYTHON: "ON"
+   only:
+      variables:
+         - $ENABLE_NIGHTLY_BUILDS
+   
    tags:
       - cuda
       - docker
 
-clang_10.0_mpionly_dbg:
+clang_10_mpionly_dbg:
    extends: .build_template
-   image: i10git.cs.fau.de:5005/walberla/buildenvs/clang:10.0
+   image: i10git.cs.fau.de:5005/walberla/buildenvs/clang:10
    before_script:
       - pip3 install lbmpy jinja2
       - cd python
@@ -1506,13 +1514,17 @@ clang_10.0_mpionly_dbg:
       WALBERLA_BUILD_WITH_OPENMP: "OFF"
       WALBERLA_BUILD_WITH_CODEGEN: "ON"
       WALBERLA_BUILD_WITH_PYTHON: "ON"
+   only:
+      variables:
+         - $ENABLE_NIGHTLY_BUILDS
+   
    tags:
       - cuda
       - docker
 
-clang_10.0_hybrid_dbg:
+clang_10_hybrid_dbg:
    extends: .build_template
-   image: i10git.cs.fau.de:5005/walberla/buildenvs/clang:10.0
+   image: i10git.cs.fau.de:5005/walberla/buildenvs/clang:10
    before_script:
       - pip3 install lbmpy jinja2
       - cd python
@@ -1524,22 +1536,151 @@ clang_10.0_hybrid_dbg:
       CMAKE_BUILD_TYPE: "DebugOptimized"
       WALBERLA_BUILD_WITH_CODEGEN: "ON"
       WALBERLA_BUILD_WITH_PYTHON: "ON"
+   only:
+      variables:
+         - $ENABLE_NIGHTLY_BUILDS
+   
    tags:
       - cuda
       - docker
 
-clang_10.0_hybrid_dbg_sp:
+clang_10_hybrid_dbg_sp:
    extends: .build_template
-   image: i10git.cs.fau.de:5005/walberla/buildenvs/clang:10.0
+   image: i10git.cs.fau.de:5005/walberla/buildenvs/clang:10
+   variables:
+      WALBERLA_BUILD_WITH_CUDA: "ON"
+      CMAKE_BUILD_TYPE: "DebugOptimized"
+      WALBERLA_DOUBLE_ACCURACY: "OFF"
+      WALBERLA_BUILD_WITH_PARMETIS: "OFF"
+      WALBERLA_BUILD_WITH_METIS: "OFF"
+   only:
+      variables:
+         - $ENABLE_NIGHTLY_BUILDS
+   
+   tags:
+      - cuda
+      - docker
+
+clang_11_serial:
+   extends: .build_template
+   image: i10git.cs.fau.de:5005/walberla/buildenvs/clang:11
+   before_script:
+      - pip3 install lbmpy jinja2
+      - cd python
+      - python3 -m pytest --junitxml=report.xml pystencils_walberla lbmpy_walberla
+      - cd ..
+   variables:
+      WALBERLA_BUILD_WITH_CUDA: "OFF"
+      WALBERLA_BUILD_WITH_MPI: "OFF"
+      WALBERLA_BUILD_WITH_OPENMP: "OFF"
+      WALBERLA_BUILD_WITH_PARMETIS: "OFF"
+      WALBERLA_BUILD_WITH_CODEGEN: "ON"
+      WALBERLA_BUILD_WITH_PYTHON: "ON"
+   only:
+      variables:
+         - $ENABLE_NIGHTLY_BUILDS
+   
+   tags:
+      - docker
+
+clang_11_mpionly:
+   extends: .build_template
+   image: i10git.cs.fau.de:5005/walberla/buildenvs/clang:11
+   before_script:
+      - pip3 install lbmpy jinja2
+      - cd python
+      - python3 -m pytest --junitxml=report.xml pystencils_walberla lbmpy_walberla
+      - cd ..
+   variables:
+      WALBERLA_BUILD_WITH_CUDA: "OFF"
+      WALBERLA_BUILD_WITH_OPENMP: "OFF"
+      WALBERLA_BUILD_WITH_CODEGEN: "ON"
+      WALBERLA_BUILD_WITH_PYTHON: "ON"
+   only:
+      variables:
+         - $ENABLE_NIGHTLY_BUILDS
+   
+   tags:
+      - docker
+
+clang_11_hybrid:
+   extends: .build_template
+   image: i10git.cs.fau.de:5005/walberla/buildenvs/clang:11
+   before_script:
+      - pip3 install lbmpy jinja2
+      - cd python
+      - python3 -m pytest --junitxml=report.xml pystencils_walberla lbmpy_walberla
+      - cd ..
+   variables:
+      WALBERLA_BUILD_WITH_CUDA: "OFF"
+      WALBERLA_BUILD_WITH_CODEGEN: "ON"
+      WALBERLA_BUILD_WITH_PYTHON: "ON"
+   tags:
+      - docker
+
+clang_11_serial_dbg:
+   extends: .build_template
+   image: i10git.cs.fau.de:5005/walberla/buildenvs/clang:11
+   before_script:
+      - pip3 install lbmpy jinja2
+      - cd python
+      - python3 -m pytest --junitxml=report.xml pystencils_walberla lbmpy_walberla
+      - cd ..
+   variables:
+      WALBERLA_BUILD_WITH_CUDA: "OFF"
+      WALBERLA_BUILD_WITH_MPI: "OFF"
+      WALBERLA_BUILD_WITH_OPENMP: "OFF"
+      WALBERLA_BUILD_WITH_PARMETIS: "OFF"
+      CMAKE_BUILD_TYPE: "DebugOptimized"
+      WALBERLA_BUILD_WITH_CODEGEN: "ON"
+      WALBERLA_BUILD_WITH_PYTHON: "ON"
+   tags:
+      - docker
+
+clang_11_mpionly_dbg:
+   extends: .build_template
+   image: i10git.cs.fau.de:5005/walberla/buildenvs/clang:11
+   before_script:
+      - pip3 install lbmpy jinja2
+      - cd python
+      - python3 -m pytest --junitxml=report.xml pystencils_walberla lbmpy_walberla
+      - cd ..
+   variables:
+      WALBERLA_BUILD_WITH_CUDA: "OFF"
+      CMAKE_BUILD_TYPE: "DebugOptimized"
+      WALBERLA_BUILD_WITH_OPENMP: "OFF"
+      WALBERLA_BUILD_WITH_CODEGEN: "ON"
+      WALBERLA_BUILD_WITH_PYTHON: "ON"
+   tags:
+      - docker
+
+clang_11_hybrid_dbg:
+   extends: .build_template
+   image: i10git.cs.fau.de:5005/walberla/buildenvs/clang:11
+   before_script:
+      - pip3 install lbmpy jinja2
+      - cd python
+      - python3 -m pytest --junitxml=report.xml pystencils_walberla lbmpy_walberla
+      - cd ..
+   variables:
+      WALBERLA_BUILD_WITH_CUDA: "OFF"
+      CMAKE_BUILD_TYPE: "DebugOptimized"
+      WALBERLA_BUILD_WITH_CODEGEN: "ON"
+      WALBERLA_BUILD_WITH_PYTHON: "ON"
+   tags:
+      - docker
+
+clang_11_hybrid_dbg_sp:
+   extends: .build_template
+   image: i10git.cs.fau.de:5005/walberla/buildenvs/clang:11
    stage: pretest
    variables:
-      WALBERLA_BUILD_WITH_CUDA: "ON"
+      WALBERLA_BUILD_WITH_CUDA: "OFF"
       CMAKE_BUILD_TYPE: "DebugOptimized"
       WALBERLA_DOUBLE_ACCURACY: "OFF"
       WALBERLA_BUILD_WITH_PARMETIS: "OFF"
       WALBERLA_BUILD_WITH_METIS: "OFF"
    tags:
-      - cuda
       - docker
 
 
