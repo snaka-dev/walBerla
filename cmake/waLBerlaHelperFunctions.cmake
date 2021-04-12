@@ -307,10 +307,12 @@ endfunction()
 #######################################################################################################################
 #
 # updates all submodules in the walberla repository
+# this function will propagate GIT_FOUND to the parent scope
 #
 #######################################################################################################################
 function( git_update_submodules )
     find_package(Git QUIET)
+    set(GIT_FOUND ${GIT_FOUND} PARENT_SCOPE)
     if(GIT_FOUND AND EXISTS "${PROJECT_SOURCE_DIR}/.git")
         # Update submodules as needed
         if(WALBERLA_GIT_SUBMODULE_AUTO)
