@@ -33,6 +33,83 @@
 namespace walberla{
 namespace mesa_pd {
 
+void make_element(const shared_ptr< data::ParticleStorage >& ps, int myRank, int segment, int tube, const Vec3& pos,
+                  double theta, double phi, int64_t& numParticles)
+{
+   data::Particle&& sp = *ps->create();
+   sp.setPosition(pos);
+   sp.setOwner(myRank);
+   sp.setInteractionRadius(kernel::cnt::outer_radius);
+   sp.setSegmentID(segment);
+   sp.setClusterID(tube);
+   sp.getRotationRef().rotate(Vec3(0_r, 1_r, 0_r), -0.5_r * math::pi + theta);
+   sp.getRotationRef().rotate(Vec3(0_r, 0_r, 1_r), phi);
+   numParticles++;
+}
+
+void make_tube(const FilmSpecimen& spec, const shared_ptr< data::ParticleStorage >& ps, int myRank,
+               const domain::IDomain& domain, int id, int n, const Vec3& t_pos, double theta, double phi,
+               int64_t& numParticles)
+{
+   auto CNT_length = 2_r * spec.spacing * real_c(n);
+   Vec3 ax(std::sin(theta) * std::cos(phi), std::sin(theta) * std::sin(phi), std::cos(theta));
+   for (int segment = 0; segment < n; segment++)
+   {
+      auto r   = -0.5_r * CNT_length + 2_r * spec.spacing * real_c(segment);
+      Vec3 pos = t_pos + r * ax;
+
+      if ((pos[0] > spec.sizeX)) pos[0] -= spec.sizeX;
+      if ((pos[0] < 0)) pos[0] += spec.sizeX;
+      if ((pos[1] > spec.sizeY)) pos[1] -= spec.sizeY;
+      if ((pos[1] < 0)) pos[1] += spec.sizeY;
+      if (spec.oopp)
+      {
+         if ((pos[2] > spec.sizeZ)) pos[2] -= spec.sizeZ;
+         if ((pos[2] < 0)) pos[2] += spec.sizeZ;
+      }
+
+      if (domain.isContainedInProcessSubdomain(uint_c(myRank), pos))
+         make_element(ps, myRank, segment, id, pos, theta, phi, numParticles);
+   }
+}
+
+void make_bundle(const FilmSpecimen& spec, const shared_ptr< data::ParticleStorage >& ps, int myRank,
+                 const domain::IDomain& domain, int id, int side, int n, const Vec3& pos, double theta, double phi,
+                 double alf, int64_t& numParticles)
+{
+   double eq_dist = 17.15;
+   double shift_x = 0.5 * eq_dist;
+   double shift_y = 0.5 * sqrt(3.) * eq_dist;
+   int n_tu       = 2 * side - 1;
+   int ii         = 0;
+   Vec3 ax(-std::sin(phi), std::cos(phi), 0);
+   Mat3 m(ax, theta);
+   Vec3 ex        = m * Vec3(std::cos(alf), std::sin(alf), 0);
+   Vec3 ey        = m * Vec3(-std::sin(alf), std::cos(alf), 0);
+   Vec3 left_tube = pos - (side - 1) * eq_dist * ex;
+   Vec3 tube      = left_tube;
+   for (int i = 0; i < n_tu; i++)
+   {
+      make_tube(spec, ps, myRank, domain, id * 100000 + ii, n, tube, theta, phi, numParticles);
+      tube = tube + eq_dist * ex;
+      ii++;
+   }
+   for (int i = 1; i < side; i++)
+   {
+      n_tu--;
+      for (int k = -1; k < 3; k += 2)
+      {
+         tube = left_tube + i * (shift_x * ex + k * shift_y * ey);
+         for (int j = 0; j < n_tu; j++)
+         {
+            make_tube(spec, ps, myRank, domain, id * 100000 + ii, n, tube, theta, phi, numParticles);
+            tube = tube + eq_dist * ex;
+            ii++;
+         }
+      }
+   }
+}
+
 int64_t generateCNTs(const FilmSpecimen& spec,
                      const shared_ptr<data::ParticleStorage>& ps,
                      const domain::IDomain& domain)
@@ -44,6 +121,7 @@ int64_t generateCNTs(const FilmSpecimen& spec,
    auto rand0_1 = math::RealRandom<real_t>(static_cast<std::mt19937::result_type>(spec.seed));
    // Create an assembly of CNTs
    int64_t numParticles = 0;
+
    for (int tube = 0; tube < spec.numCNTs; tube++)
    {
       // This definition of theta provides uniform distribution of random orientations on a sphere when spec.OutOfPlane = 1.
@@ -52,41 +130,7 @@ int64_t generateCNTs(const FilmSpecimen& spec,
       real_t pos_x = spec.sizeX * rand0_1();
       real_t pos_y = spec.sizeY * rand0_1();
       real_t pos_z = spec.sizeZ * rand0_1();
-
-      for (int segment = 0; segment < spec.numSegs; segment++)
-      {
-         // Generate segment position
-         Vec3 pos;
-         auto r = -0.5_r * CNT_length + 2_r * spec.spacing * real_c(segment);
-         pos[0] = pos_x + r * std::sin(theta) * std::cos(phi);
-         pos[1] = pos_y + r * std::sin(theta) * std::sin(phi);
-         pos[2] = pos_z + r * std::cos(theta);
-
-         // Account for periodicity (will not work if CNTs are longer than domain size)
-         if ((pos[0] > spec.sizeX)) pos[0] -= spec.sizeX;
-         if ((pos[0] < 0)) pos[0] += spec.sizeX;
-         if ((pos[1] > spec.sizeY)) pos[1] -= spec.sizeY;
-         if ((pos[1] < 0)) pos[1] += spec.sizeY;
-         if (spec.oopp)
-         {
-            if ((pos[2] > spec.sizeZ)) pos[2] -= spec.sizeZ;
-            if ((pos[2] < 0)) pos[2] += spec.sizeZ;
-         }
-
-         //Only create segment if it is located on the process.
-         if (domain.isContainedInProcessSubdomain(uint_c(myRank), pos))
-         {
-            data::Particle &&sp = *ps->create();
-            sp.setPosition(pos);
-            sp.setOwner(myRank);
-            sp.setInteractionRadius(kernel::cnt::outer_radius);
-            sp.setSegmentID(segment);
-            sp.setClusterID(tube);
-            sp.getRotationRef().rotate( Vec3(0_r, 1_r, 0_r), -0.5_r * math::pi + theta);
-            sp.getRotationRef().rotate( Vec3(0_r, 0_r, 1_r), phi);
-            numParticles++;
-         }
-      }
+      make_tube(spec, ps, myRank, domain, tube, spec.numSegs, Vec3(pos_x, pos_y, pos_z), theta, phi, numParticles);
    }
 
    return numParticles;

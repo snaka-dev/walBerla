@@ -30,6 +30,17 @@
 namespace walberla{
 namespace mesa_pd {
 
+void make_element(const shared_ptr< data::ParticleStorage >& ps, int myRank, int segment, int tube, const Vec3& pos,
+                  double theta, double phi, int64_t& numParticles);
+
+void make_tube(const FilmSpecimen& spec, const shared_ptr< data::ParticleStorage >& ps, int myRank,
+               const domain::IDomain& domain, int id, int n, const Vec3& t_pos, double theta, double phi,
+               int64_t& numParticles);
+
+void make_bundle(const FilmSpecimen& spec, const shared_ptr< data::ParticleStorage >& ps, int myRank,
+                 const domain::IDomain& domain, int id, int side, int n, const Vec3& pos, double theta, double phi,
+                 double alf, int64_t& numParticles);
+
 int64_t generateCNTs(const FilmSpecimen& spec,
                      const shared_ptr<data::ParticleStorage>& ps,
                      const domain::IDomain& domain);
