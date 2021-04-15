@@ -34,7 +34,7 @@ namespace walberla{
 namespace mesa_pd {
 
 void make_element(const shared_ptr< data::ParticleStorage >& ps, int myRank, int segment, int tube, const Vec3& pos,
-                  double theta, double phi, int64_t& numParticles)
+                  real_t theta, real_t phi, int64_t& numParticles)
 {
    data::Particle&& sp = *ps->create();
    sp.setPosition(pos);
@@ -48,7 +48,7 @@ void make_element(const shared_ptr< data::ParticleStorage >& ps, int myRank, int
 }
 
 void make_tube(const FilmSpecimen& spec, const shared_ptr< data::ParticleStorage >& ps, int myRank,
-               const domain::IDomain& domain, int id, int n, const Vec3& t_pos, double theta, double phi,
+               const domain::IDomain& domain, int id, int n, const Vec3& t_pos, real_t theta, real_t phi,
                int64_t& numParticles)
 {
    auto CNT_length = 2_r * spec.spacing * real_c(n);
@@ -74,12 +74,12 @@ void make_tube(const FilmSpecimen& spec, const shared_ptr< data::ParticleStorage
 }
 
 void make_bundle(const FilmSpecimen& spec, const shared_ptr< data::ParticleStorage >& ps, int myRank,
-                 const domain::IDomain& domain, int id, int side, int n, const Vec3& pos, double theta, double phi,
-                 double alf, int64_t& numParticles)
+                 const domain::IDomain& domain, int id, int side, int n, const Vec3& pos, real_t theta, real_t phi,
+                 real_t alf, int64_t& numParticles)
 {
-   double eq_dist = 17.15;
-   double shift_x = 0.5 * eq_dist;
-   double shift_y = 0.5 * sqrt(3.) * eq_dist;
+   real_t eq_dist = 17.15;
+   real_t shift_x = 0.5 * eq_dist;
+   real_t shift_y = 0.5 * sqrt(3.) * eq_dist;
    int n_tu       = 2 * side - 1;
    int ii         = 0;
    Vec3 ax(-std::sin(phi), std::cos(phi), 0);
