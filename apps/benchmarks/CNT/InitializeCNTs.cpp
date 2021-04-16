@@ -77,16 +77,16 @@ void make_bundle(const FilmSpecimen& spec, const shared_ptr< data::ParticleStora
                  const domain::IDomain& domain, int id, int side, int n, const Vec3& pos, real_t theta, real_t phi,
                  real_t alf, int64_t& numParticles)
 {
-   real_t eq_dist = 17.15;
-   real_t shift_x = 0.5 * eq_dist;
-   real_t shift_y = 0.5 * sqrt(3.) * eq_dist;
+   real_t eq_dist = 17.15_r;
+   real_t shift_x = 0.5_r * eq_dist;
+   real_t shift_y = 0.5_r * std::sqrt(3_r) * eq_dist;
    int n_tu       = 2 * side - 1;
    int ii         = 0;
    Vec3 ax(-std::sin(phi), std::cos(phi), 0);
    Mat3 m(ax, theta);
    Vec3 ex        = m * Vec3(std::cos(alf), std::sin(alf), 0);
    Vec3 ey        = m * Vec3(-std::sin(alf), std::cos(alf), 0);
-   Vec3 left_tube = pos - (side - 1) * eq_dist * ex;
+   Vec3 left_tube = pos - real_t(side - 1) * eq_dist * ex;
    Vec3 tube      = left_tube;
    for (int i = 0; i < n_tu; i++)
    {
@@ -99,7 +99,7 @@ void make_bundle(const FilmSpecimen& spec, const shared_ptr< data::ParticleStora
       n_tu--;
       for (int k = -1; k < 3; k += 2)
       {
-         tube = left_tube + i * (shift_x * ex + k * shift_y * ey);
+         tube = left_tube + i * (shift_x * ex + real_t(k) * shift_y * ey);
          for (int j = 0; j < n_tu; j++)
          {
             make_tube(spec, ps, myRank, domain, id * 100000 + ii, n, tube, theta, phi, numParticles);
@@ -116,7 +116,7 @@ int64_t generateCNTs(const FilmSpecimen& spec,
 {
    auto myRank = mpi::MPIManager::instance()->rank();
 
-   auto CNT_length = 2_r * spec.spacing * real_c(spec.numSegs);
+   //auto CNT_length = 2_r * spec.spacing * real_c(spec.numSegs);
    // Fixed random seed is necessary for coordinated generation on all MPI proc.
    auto rand0_1 = math::RealRandom<real_t>(static_cast<std::mt19937::result_type>(spec.seed));
    // Create an assembly of CNTs
