@@ -36,7 +36,7 @@
 #include "mesa_pd/kernel/InsertParticleIntoLinkedCells.h"
 #include "mesa_pd/kernel/InsertParticleIntoSparseLinkedCells.h"
 #include "mesa_pd/kernel/ParticleSelector.h"
-#include "mesa_pd/kernel/cnt/AnisotropicVDWContact.h"
+#include "mesa_pd/kernel/cnt/AnisotropicNewVDWContact.h"
 #include "mesa_pd/kernel/cnt/VBondContact.h"
 #include "mesa_pd/kernel/cnt/ViscousDamping.h"
 #include "mesa_pd/kernel/cnt/Parameters.h"
@@ -135,6 +135,7 @@ int main(int argc, char **argv)
    WALBERLA_LOG_INFO_ON_ROOT("setting up VTK output");
    auto vtkOutput = make_shared<mesa_pd::vtk::ParticleVtkOutput>(ps);
    vtkOutput->addOutput<data::SelectParticlePosition>("position");
+   vtkOutput->addOutput<data::SelectParticleRotation>("orientation");
    auto vtkWriter = walberla::vtk::createVTKOutput_PointData(vtkOutput,
                                                              "cnt",
                                                              1,
@@ -147,7 +148,7 @@ int main(int argc, char **argv)
 
    WALBERLA_LOG_INFO_ON_ROOT("setting up interaction models");
    kernel::InsertParticleIntoSparseLinkedCells ipilc;
-   kernel::cnt::AnisotropicVDWContact anisotropicVdwContact;
+   kernel::cnt::AnisotropicNewVDWContact anisotropicVdwContact;
    kernel::cnt::VBondContact vBondContact;
    kernel::cnt::ViscousDamping viscous_damping(filmSpecimen.viscousDamping * 1052.0_r,
                                                filmSpecimen.viscousDamping * 1052.0_r);
