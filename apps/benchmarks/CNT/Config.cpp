@@ -50,10 +50,11 @@ void saveConfig(const shared_ptr<data::ParticleStorage>& ps,
       sb << static_cast<double> (p.getPosition()[1]);
       sb << static_cast<double> (p.getPosition()[2]);
 
-      Vec3 orient = p.getRotation().getMatrix() * Vec3(1,0,0);
-      // Now orient has the shape (sin(th)cos(ph), sin(th)sin(ph), cos(th))
-      sb << static_cast<double> (std::acos(orient[2]));
-      sb << static_cast<double> (std::atan2(orient[1], orient[0]));
+      Quaternion q = p.getRotation().getQuaternion();
+      sb << static_cast<double> (q[0]);
+      sb << static_cast<double> (q[1]);
+      sb << static_cast<double> (q[2]);
+      sb << static_cast<double> (q[3]);
 
       sb << static_cast<double> (p.getLinearVelocity()[0]);
       sb << static_cast<double> (p.getLinearVelocity()[1]);
@@ -62,6 +63,15 @@ void saveConfig(const shared_ptr<data::ParticleStorage>& ps,
       sb << static_cast<double> (p.getAngularVelocity()[0]);
       sb << static_cast<double> (p.getAngularVelocity()[1]);
       sb << static_cast<double> (p.getAngularVelocity()[2]);
+
+      sb << static_cast<double> (p.getOldForce()[0]);
+      sb << static_cast<double> (p.getOldForce()[1]);
+      sb << static_cast<double> (p.getOldForce()[2]);
+
+      sb << static_cast<double> (p.getOldTorque()[0]);
+      sb << static_cast<double> (p.getOldTorque()[1]);
+      sb << static_cast<double> (p.getOldTorque()[2]);
+
    }
 
    switch (io_mode)
@@ -74,7 +84,7 @@ void saveConfig(const shared_ptr<data::ParticleStorage>& ps,
          WALBERLA_ROOT_SECTION()
          {
             uint_t dataSize = sizeof(mpi::RecvBuffer::ElementType) * rb.size();
-            size_t size     = rb.size() / 104;
+            size_t size     = rb.size() / 168;
             std::ofstream binfile;
             binfile.open(filename + ".sav", std::ios::out | std::ios::binary);
             binfile.write((char*) &size, sizeof(size_t));
