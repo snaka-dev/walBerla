@@ -46,7 +46,8 @@ int64_t generateCNTs(const FilmSpecimen& spec,
                      const domain::IDomain& domain);
 
 int64_t loadCNTs(const std::string& filename,
-                 const shared_ptr<data::ParticleStorage>& ps);
+                 const shared_ptr<data::ParticleStorage>& ps,
+                 const domain::IDomain& domain);
 
 } //namespace mesa_pd
 } //namespace walberla

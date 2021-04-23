@@ -116,7 +116,6 @@ int64_t generateCNTs(const FilmSpecimen& spec,
 {
    auto myRank = mpi::MPIManager::instance()->rank();
 
-   //auto CNT_length = 2_r * spec.spacing * real_c(spec.numSegs);
    // Fixed random seed is necessary for coordinated generation on all MPI proc.
    auto rand0_1 = math::RealRandom<real_t>(static_cast<std::mt19937::result_type>(spec.seed));
    // Create an assembly of CNTs
@@ -137,7 +136,8 @@ int64_t generateCNTs(const FilmSpecimen& spec,
 }
 
 int64_t loadCNTs(const std::string& filename,
-                 const shared_ptr<data::ParticleStorage>& ps)
+                 const shared_ptr<data::ParticleStorage>& ps,
+                 const domain::IDomain& domain)
 {
    WALBERLA_LOG_INFO_ON_ROOT(GREEN << "Loading configuration (binary format): " << filename);
    const auto numProcesses = mpi::MPIManager::instance()->numProcesses();
@@ -154,15 +154,13 @@ int64_t loadCNTs(const std::string& filename,
       if (i != rank) continue; //bad practice but with the current file format we have to do this
       std::ifstream binfile;
       binfile.open(filename.c_str(), std::ios::in | std::ios::binary);
-      int size;
-      binfile.read((char *) &size, sizeof(int));
+      size_t size;
+      binfile.read((char *) &size, sizeof(size_t));
       std::cout << RED << "size read form binary file is" << size << RESET << std::endl;
-      for (int id = 0; id < size; id++)
+      for (size_t id = 0; id < size; id++)
       {
-         int ID;
-         int sID;
-         int cID;
-         int gID;
+         int64_t sID;
+         int64_t cID;
          double x;
          double y;
          double z;
@@ -174,10 +172,8 @@ int64_t loadCNTs(const std::string& filename,
          double wx;
          double wy;
          double wz;
-         binfile.read((char *) &ID, sizeof(int));
-         binfile.read((char *) &sID, sizeof(int));
-         binfile.read((char *) &cID, sizeof(int));
-         binfile.read((char *) &gID, sizeof(int));
+         binfile.read((char *) &sID, sizeof(int64_t));
+         binfile.read((char *) &cID, sizeof(int64_t));
          binfile.read((char *) &x, sizeof(double));
          binfile.read((char *) &y, sizeof(double));
          binfile.read((char *) &z, sizeof(double));
@@ -194,25 +190,26 @@ int64_t loadCNTs(const std::string& filename,
          pos[1] = real_c(y);
          pos[2] = real_c(z);
 
-         data::Particle &&sp = *ps->create();
-         sp.setPosition(pos);
-         sp.setOwner(rank);
-         sp.setInteractionRadius(kernel::cnt::outer_radius);
-         sp.setSegmentID(sID);
-         sp.setClusterID(cID);
-         sp.getRotationRef().rotate( Vec3(0_r, 1_r, 0_r), -0.5_r * math::pi + real_c(theta));
-         sp.getRotationRef().rotate( Vec3(0_r, 0_r, 1_r), real_c(phi));
-         sp.setLinearVelocity( Vec3(real_c(vx), real_c(vy), real_c(vz)) );
-         sp.setAngularVelocity( Vec3(real_c(wx), real_c(wy), real_c(wz)) );
-         numParticles++;
+         if (domain.isContainedInProcessSubdomain(uint_c(rank), pos))
+         {
+            data::Particle&& sp = *ps->create();
+            sp.setPosition(pos);
+            sp.setOwner(rank);
+            sp.setInteractionRadius(kernel::cnt::outer_radius);
+            sp.setSegmentID(sID);
+            sp.setClusterID(cID);
+            sp.getRotationRef().rotate(Vec3(0_r, 1_r, 0_r), -0.5_r * math::pi + real_c(theta));
+            sp.getRotationRef().rotate(Vec3(0_r, 0_r, 1_r), real_c(phi));
+            sp.setLinearVelocity(Vec3(real_c(vx), real_c(vy), real_c(vz)));
+            sp.setAngularVelocity(Vec3(real_c(wx), real_c(wy), real_c(wz)));
+            numParticles++;
+         }
       }
    }
-
-   mpi::reduceInplace(numParticles, mpi::SUM);
-   WALBERLA_LOG_INFO_ON_ROOT("#particles created: " << numParticles);
 
    return numParticles;
 }
 
 } //namespace mesa_pd
 } //namespace walberla
+

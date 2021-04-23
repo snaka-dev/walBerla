@@ -126,7 +126,7 @@ int main(int argc, char **argv)
       numParticles = generateCNTs(filmSpecimen, ps, *domain);
    } else
    {
-      numParticles = loadCNTs(filmSpecimen.initialConfigurationFile, ps);
+      numParticles = loadCNTs(filmSpecimen.initialConfigurationFile, ps, *domain);
    }
    walberla::mpi::reduceInplace(numParticles, walberla::mpi::SUM);
    WALBERLA_LOG_INFO_ON_ROOT("#particles created: " << numParticles);
@@ -304,7 +304,7 @@ int main(int argc, char **argv)
          WALBERLA_LOG_INFO_ON_ROOT(CYAN << "            SAVING CONFIG                  " << RESET);
          saveConfig(ps,
                     filmSpecimen.confFolder + "/conf_" + std::to_string((i + 1) * 0.00002) + "ns",
-                    IO_MODE::USE_MPI_IO);
+                    IO_MODE::REDUCE_TO_ROOT);
          loopTP["save config"].end();
       }
    }

@@ -74,9 +74,10 @@ void saveConfig(const shared_ptr<data::ParticleStorage>& ps,
          WALBERLA_ROOT_SECTION()
          {
             uint_t dataSize = sizeof(mpi::RecvBuffer::ElementType) * rb.size();
+            size_t size     = rb.size() / 104;
             std::ofstream binfile;
-            binfile.open(filename + ".sav",
-                         std::ios::out | std::ios::binary);
+            binfile.open(filename + ".sav", std::ios::out | std::ios::binary);
+            binfile.write((char*) &size, sizeof(size_t));
             binfile.write(reinterpret_cast< const char * >(rb.ptr()), numeric_cast<std::streamsize>(dataSize));
             binfile.close();
          }
