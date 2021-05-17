@@ -81,6 +81,21 @@ class Scenario:
                 wlb.log_warning("Sqlite DB writing failed: try {}/{}  {}".format(num_try + 1, num_tries, str(e)))
 
 
+# -------------------------------------- Profiling -----------------------------------
+def profiling():
+    """Tests different communication overlapping strategies"""
+    wlb.log_info_on_root("Running 2 timesteps for profiling")
+    wlb.log_info_on_root("")
+
+    scenarios = wlb.ScenarioManager()
+    cells = (256, 256, 256)
+    cuda_enabled_mpi = False
+
+    scenarios.add(Scenario(cellsPerBlock=cells, timeStepStrategy='noOverlap',
+                           communicationScheme='UniformGPUScheme_Baseline',
+                           innerOuterSplit=(1, 1, 1), timesteps=2, cudaEnabledMPI=cuda_enabled_mpi,
+                           outerIterations=1, warmupSteps=0))
+
 # -------------------------------------- Functions trying different parameter sets -----------------------------------
 
 
@@ -90,6 +105,8 @@ def overlap_benchmark():
     wlb.log_info_on_root("")
 
     scenarios = wlb.ScenarioManager()
+    cells = (256, 256, 256)
+    cuda_enabled_mpi = False
     inner_outer_splits = [(1, 1, 1), (4, 1, 1), (8, 1, 1), (16, 1, 1), (32, 1, 1),
                           (4, 4, 1), (8, 8, 1), (16, 16, 1), (32, 32, 1),
                           (4, 4, 4), (8, 8, 8), (16, 16, 16), (32, 32, 32)]
@@ -97,8 +114,11 @@ def overlap_benchmark():
     # 'GPUPackInfo_Baseline', 'GPUPackInfo_Streams'
     for comm_strategy in ['UniformGPUScheme_Baseline', 'UniformGPUScheme_Memcpy']:
         # no overlap
-        scenarios.add(Scenario(timeStepStrategy='noOverlap', communicationScheme=comm_strategy,
-                               innerOuterSplit=(1, 1, 1)))
+        scenarios.add(Scenario(timeStepStrategy='noOverlap',
+                               communicationScheme=comm_strategy,
+                               innerOuterSplit=(1, 1, 1),
+                               timesteps=num_time_steps(cells),
+                               cudaEnabledMPI=cuda_enabled_mpi))
 
         # overlap
         for overlap_strategy in ['simpleOverlap', 'complexOverlap']:
@@ -106,7 +126,8 @@ def overlap_benchmark():
                 scenario = Scenario(timeStepStrategy=overlap_strategy,
                                     communicationScheme=comm_strategy,
                                     innerOuterSplit=inner_outer_split,
-                                    timesteps=num_time_steps((256, 128, 128)))
+                                    timesteps=num_time_steps(cells),
+                                    cudaEnabledMPI=cuda_enabled_mpi)
                 scenarios.add(scenario)
 
 

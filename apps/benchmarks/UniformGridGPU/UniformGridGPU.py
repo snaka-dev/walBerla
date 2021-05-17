@@ -21,7 +21,7 @@ if compile_time_block_size:
 else:
     sweep_block_size = (TypedSymbol("cudaBlockSize0", np.int32),
                         TypedSymbol("cudaBlockSize1", np.int32),
-                        1)
+                        TypedSymbol("cudaBlockSize2", np.int32))
 
 sweep_params = {'block_size': sweep_block_size}
 
@@ -40,7 +40,7 @@ options_dict = {
     'mrt': {
         'method': 'mrt',
         'stencil': 'D3Q19',
-        'relaxation_rates': [omega, 1.3, 1.4, 1.2, 1.1, 1.15, 1.234, 1.4235],
+        'relaxation_rates': [omega, 1, 1, 1, 1, 1, 1, 1],
     },
     'mrt_full': {
         'method': 'mrt',
@@ -77,7 +77,9 @@ options_dict = {
 }
 
 info_header = """
-#include "stencil/D3Q{q}.h"\nusing Stencil_T = walberla::stencil::D3Q{q};
+#include "stencil/D3Q{q}.h"
+using Stencil_T = walberla::stencil::D3Q{q};
+using CommunicationStencil_T = walberla::stencil::D3Q{q};
 const char * infoStencil = "{stencil}";
 const char * infoConfigName = "{configName}";
 const bool infoCseGlobal = {cse_global};
@@ -119,7 +121,7 @@ with CodeGeneration() as ctx:
 
     stencil_str = options['stencil']
     q = int(stencil_str[stencil_str.find('Q') + 1:])
-    pdfs, velocity_field = ps.fields("pdfs({q}), velocity(3) : double[3D]".format(q=q), layout='fzyx')
+    pdfs, velocity_field = ps.fields(f"pdfs({q}), velocity(3) : double[3D]", layout='fzyx')
     options['optimization']['symbolic_field'] = pdfs
 
     vp = [
@@ -132,6 +134,7 @@ with CodeGeneration() as ctx:
         ('double', 'omega_6'),
         ('int32_t', 'cudaBlockSize0'),
         ('int32_t', 'cudaBlockSize1'),
+        ('int32_t', 'cudaBlockSize2'),
     ]
     lb_method = create_lb_method(**options)
     update_rule = create_lb_update_rule(lb_method=lb_method, **options)
@@ -139,12 +142,6 @@ with CodeGeneration() as ctx:
     if not noopt:
         update_rule = insert_fast_divisions(update_rule)
         update_rule = insert_fast_sqrts(update_rule)
-
-    # CPU lattice model - required for macroscopic value computation, VTK output etc.
-    options_without_opt = options.copy()
-    del options_without_opt['optimization']
-    generate_lattice_model(ctx, 'UniformGridGPU_LatticeModel', create_lb_collision_rule(lb_method=lb_method,
-                                                                                        **options_without_opt))
 
     # gpu LB sweep & boundaries
     generate_sweep(ctx, 'UniformGridGPU_LbKernel', update_rule,

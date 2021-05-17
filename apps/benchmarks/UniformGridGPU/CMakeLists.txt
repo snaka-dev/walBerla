@@ -12,8 +12,7 @@ foreach (config srt trt mrt smagorinsky entropic smagorinsky_noopt entropic_kbc_
     waLBerla_generate_target_from_python(NAME UniformGridGPUGenerated_${config}
           FILE UniformGridGPU.py
           CODEGEN_CFG ${config}
-          OUT_FILES UniformGridGPU_LatticeModel.cpp UniformGridGPU_LatticeModel.h
-          UniformGridGPU_LbKernel.cu UniformGridGPU_LbKernel.h
+          OUT_FILES UniformGridGPU_LbKernel.cu UniformGridGPU_LbKernel.h
           UniformGridGPU_NoSlip.cu UniformGridGPU_NoSlip.h
           UniformGridGPU_UBB.cu UniformGridGPU_UBB.h
           UniformGridGPU_PackInfo.cu UniformGridGPU_PackInfo.h
