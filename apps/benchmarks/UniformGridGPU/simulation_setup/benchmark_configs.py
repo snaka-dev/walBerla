@@ -91,7 +91,7 @@ def profiling():
     cells = (256, 256, 256)
     cuda_enabled_mpi = False
 
-    scenarios.add(Scenario(cellsPerBlock=cells, timeStepStrategy='noOverlap',
+    scenarios.add(Scenario(cellsPerBlock=cells, timeStepStrategy='kernelOnlyNoInit',
                            communicationScheme='UniformGPUScheme_Baseline',
                            innerOuterSplit=(1, 1, 1), timesteps=2, cudaEnabledMPI=cuda_enabled_mpi,
                            outerIterations=1, warmupSteps=0))
@@ -262,6 +262,7 @@ else:
     wlb.log_info_on_root("Batch run of benchmark scenarios, saving result to {}".format(DB_FILE))
     # Select the benchmark you want to run
     single_gpu_benchmark()
+    # profiling()
     # benchmarks different CUDA block sizes and domain sizes and measures single
     # GPU performance of compute kernel (no communication)
     # communication_compare(): benchmarks different communication routines, with and without overlap
