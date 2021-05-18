@@ -18,7 +18,7 @@ if compile_time_block_size:
 else:
     sweep_block_size = (TypedSymbol("cudaBlockSize0", np.int32),
                         TypedSymbol("cudaBlockSize1", np.int32),
-                        1)
+                        TypedSymbol("cudaBlockSize2", np.int32))
 
 sweep_params = {'block_size': sweep_block_size}
 
@@ -37,7 +37,7 @@ options_dict = {
     'mrt': {
         'method': 'mrt',
         'stencil': 'D3Q19',
-        'relaxation_rates': [omega, 1.3, 1.4, omega, 1.2, 1.1],
+        'relaxation_rates': [omega, 1, 1, 1, 1, 1, 1],
     },
     'entropic': {
         'method': 'mrt',
@@ -56,7 +56,9 @@ options_dict = {
 
 
 info_header = """
-#include "stencil/D3Q{q}.h"\nusing Stencil_T = walberla::stencil::D3Q{q};
+#include "stencil/D3Q{q}.h"
+using Stencil_T = walberla::stencil::D3Q{q};
+using CommunicationStencil_T = walberla::stencil::D3Q{q};
 const char * infoStencil = "{stencil}";
 const char * infoConfigName = "{configName}";
 const bool infoCseGlobal = {cse_global};
@@ -87,7 +89,8 @@ with CodeGeneration() as ctx:
 
     vp = [
         ('int32_t', 'cudaBlockSize0'),
-        ('int32_t', 'cudaBlockSize1')
+        ('int32_t', 'cudaBlockSize1'),
+        ('int32_t', 'cudaBlockSize2')
     ]
     lb_method = create_lb_method(**options)
 
