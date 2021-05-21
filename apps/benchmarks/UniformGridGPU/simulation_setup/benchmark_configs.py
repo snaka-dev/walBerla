@@ -209,7 +209,7 @@ def single_gpu_benchmark():
     wlb.log_info_on_root("")
 
     scenarios = wlb.ScenarioManager()
-    block_sizes = [(i, i, i) for i in (64, 128, 256, 384)] + [(512, 512, 128)]
+    block_sizes = [(i, i, i) for i in (64, 128, 192, 256, 320, 384)]
     cuda_blocks = [(32, 1, 1), (64, 1, 1), (128, 1, 1), (256, 1, 1), (512, 1, 1),
                    (32, 2, 1), (64, 2, 1), (128, 2, 1), (256, 2, 1),
                    (32, 4, 1), (64, 4, 1), (128, 4, 1),
@@ -217,11 +217,12 @@ def single_gpu_benchmark():
                    (32, 16, 1)]
     for block_size in block_sizes:
         for cuda_block_size in cuda_blocks:
-            scenario = Scenario(cells_per_block=block_size,
-                                gpuBlockSize=cuda_block_size,
-                                timeStepStrategy='kernelOnly',
-                                timesteps=num_time_steps(block_size))
-            scenarios.add(scenario)
+            for time_step_strategy in ['kernelOnly', 'noOverlap']:
+                scenario = Scenario(cells_per_block=block_size,
+                                    gpuBlockSize=cuda_block_size,
+                                    timeStepStrategy=time_step_strategy,
+                                    timesteps=num_time_steps(block_size))
+                scenarios.add(scenario)
 
 
 # -------------------------------------- Optional job script generation for PizDaint ---------------------------------
@@ -304,9 +305,9 @@ if __name__ == '__main__':
 else:
     wlb.log_info_on_root("Batch run of benchmark scenarios, saving result to {}".format(DB_FILE))
     # Select the benchmark you want to run
-    # single_gpu_benchmark()
+    single_gpu_benchmark()
     # profiling()
-    benchmark_all()
+    # benchmark_all()
     # benchmarks different CUDA block sizes and domain sizes and measures single
     # GPU performance of compute kernel (no communication)
     # communication_compare(): benchmarks different communication routines, with and without overlap
