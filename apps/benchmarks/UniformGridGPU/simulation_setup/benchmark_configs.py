@@ -18,7 +18,7 @@ import sqlite3
 # Number of time steps run for a workload of 128^3 per GPU
 # if double as many cells are on the GPU, half as many time steps are run etc.
 # increase this to get more reliable measurements
-TIME_STEPS_FOR_128_BLOCK = 200
+TIME_STEPS_FOR_128_BLOCK = 500
 DB_FILE = "gpu_benchmark.sqlite3"
 
 BASE_CONFIG = {
@@ -78,7 +78,7 @@ class Scenario:
                 storeSingle(result, "runs", DB_FILE)
                 break
             except sqlite3.OperationalError as e:
-                wlb.log_warning("Sqlite DB writing failed: try {}/{}  {}".format(num_try + 1, num_tries, str(e)))
+                wlb.log_warning(f"Sqlite DB writing failed: try {num_try + 1}/{num_tries}  {str(e)}")
 
 
 # -------------------------------------- Profiling -----------------------------------
@@ -96,7 +96,51 @@ def profiling():
                            innerOuterSplit=(1, 1, 1), timesteps=2, cudaEnabledMPI=cuda_enabled_mpi,
                            outerIterations=1, warmupSteps=0))
 
+
 # -------------------------------------- Functions trying different parameter sets -----------------------------------
+def benchmark_all():
+    """Tests different communication overlapping strategies"""
+    wlb.log_info_on_root("Running different communication overlap strategies")
+    wlb.log_info_on_root("")
+
+    scenarios = wlb.ScenarioManager()
+    block_sizes = [(i, i, i) for i in (64, 128, 192, 256, 320, 384)]
+    cuda_enabled_mpi = False
+
+    inner_outer_splits = [(1, 1, 1), (4, 1, 1), (8, 1, 1), (16, 1, 1), (32, 1, 1),
+                          (4, 4, 1), (8, 8, 1), (16, 16, 1), (32, 32, 1),
+                          (4, 4, 4), (8, 8, 8), (16, 16, 16), (32, 32, 32)]
+
+    cuda_blocks = [(32, 1, 1), (64, 1, 1), (128, 1, 1), (256, 1, 1), (512, 1, 1),
+                   (32, 2, 1), (64, 2, 1), (128, 2, 1), (256, 2, 1),
+                   (32, 4, 1), (64, 4, 1), (128, 4, 1),
+                   (32, 8, 1), (64, 8, 1),
+                   (32, 16, 1)]
+
+    # 'GPUPackInfo_Baseline', 'GPUPackInfo_Streams'
+    for block_size in block_sizes:
+        for cuda_block_size in cuda_blocks:
+            for comm_strategy in ['UniformGPUScheme_Baseline', 'UniformGPUScheme_Memcpy']:
+                # no overlap
+                scenarios.add(Scenario(timeStepStrategy='noOverlap',
+                                       gpuBlockSize=cuda_block_size,
+                                       communicationScheme=comm_strategy,
+                                       innerOuterSplit=(1, 1, 1),
+                                       timesteps=num_time_steps(block_size),
+                                       cudaEnabledMPI=cuda_enabled_mpi))
+
+                # overlap
+                for overlap_strategy in ['simpleOverlap', 'complexOverlap']:
+                    for inner_outer_split in inner_outer_splits:
+                        if any([inner_outer_split[i] * 2 >= block_size[i] for i in range(len(inner_outer_split))]):
+                            continue
+                        scenario = Scenario(timeStepStrategy=overlap_strategy,
+                                            gpuBlockSize=cuda_block_size,
+                                            communicationScheme=comm_strategy,
+                                            innerOuterSplit=inner_outer_split,
+                                            timesteps=num_time_steps(block_size),
+                                            cudaEnabledMPI=cuda_enabled_mpi)
+                        scenarios.add(scenario)
 
 
 def overlap_benchmark():
@@ -228,7 +272,6 @@ do
 done
 """
 
-
 all_executables = ('UniformGridBenchmarkGPU_mrt_d3q27',
                    'UniformGridBenchmarkGPU_smagorinsky_d3q27',
                    'UniformGridBenchmarkGPU_cumulant'
@@ -262,7 +305,8 @@ else:
     wlb.log_info_on_root("Batch run of benchmark scenarios, saving result to {}".format(DB_FILE))
     # Select the benchmark you want to run
     # single_gpu_benchmark()
-    profiling()
+    # profiling()
+    benchmark_all()
     # benchmarks different CUDA block sizes and domain sizes and measures single
     # GPU performance of compute kernel (no communication)
     # communication_compare(): benchmarks different communication routines, with and without overlap
