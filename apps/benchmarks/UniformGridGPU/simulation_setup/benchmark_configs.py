@@ -104,7 +104,7 @@ def benchmark_all():
     wlb.log_info_on_root("")
 
     scenarios = wlb.ScenarioManager()
-    block_sizes = [(i, i, i) for i in (64, 128, 192, 256, 320, 384)]
+    cell_sizes = [(i, i, i) for i in (64, 128, 192, 256, 320, 384)]
     cuda_enabled_mpi = False
 
     inner_outer_splits = [(1, 1, 1), (4, 1, 1), (8, 1, 1), (16, 1, 1), (32, 1, 1),
@@ -118,7 +118,7 @@ def benchmark_all():
                    (32, 16, 1)]
 
     # 'GPUPackInfo_Baseline', 'GPUPackInfo_Streams'
-    for block_size in block_sizes:
+    for cells in cell_sizes:
         for cuda_block_size in cuda_blocks:
             for comm_strategy in ['UniformGPUScheme_Baseline', 'UniformGPUScheme_Memcpy']:
                 # no overlap
@@ -126,19 +126,19 @@ def benchmark_all():
                                        gpuBlockSize=cuda_block_size,
                                        communicationScheme=comm_strategy,
                                        innerOuterSplit=(1, 1, 1),
-                                       timesteps=num_time_steps(block_size),
+                                       timesteps=num_time_steps(cells),
                                        cudaEnabledMPI=cuda_enabled_mpi))
 
                 # overlap
                 for overlap_strategy in ['simpleOverlap', 'complexOverlap']:
                     for inner_outer_split in inner_outer_splits:
-                        if any([inner_outer_split[i] * 2 >= block_size[i] for i in range(len(inner_outer_split))]):
+                        if any([inner_outer_split[i] * 2 >= cells[i] for i in range(len(inner_outer_split))]):
                             continue
                         scenario = Scenario(timeStepStrategy=overlap_strategy,
                                             gpuBlockSize=cuda_block_size,
                                             communicationScheme=comm_strategy,
                                             innerOuterSplit=inner_outer_split,
-                                            timesteps=num_time_steps(block_size),
+                                            timesteps=num_time_steps(cells),
                                             cudaEnabledMPI=cuda_enabled_mpi)
                         scenarios.add(scenario)
 
@@ -181,25 +181,30 @@ def communication_compare():
     wlb.log_info_on_root("")
 
     scenarios = wlb.ScenarioManager()
-    for block_size in [(128, 128, 128), (32, 32, 32), (64, 64, 64), (256, 256, 256)]:
-        for comm_strategy in ['UniformGPUScheme_Baseline', 'UniformGPUScheme_Memcpy']:
+    cuda_enabled_mpi = False
+    for cells in [(384, 384, 384)]:
+        for comm_strategy in ['GPUPackInfo_Baseline', 'GPUPackInfo_Streams',
+                              'UniformGPUScheme_Baseline', 'UniformGPUScheme_Memcpy',
+                              'MPIDatatypes', 'MPIDatatypesFull']:
 
-            sc = Scenario(cells_per_block=block_size,
+            sc = Scenario(cells_per_block=cells,
                           gpuBlockSize=(128, 1, 1),
                           timeStepStrategy='noOverlap',
                           communicationScheme=comm_strategy,
-                          timesteps=num_time_steps(block_size))
+                          timesteps=num_time_steps(cells),
+                          cudaEnabledMPI=cuda_enabled_mpi)
             scenarios.add(sc)
             for inner_outer_split in [(4, 1, 1), (8, 1, 1), (16, 1, 1), (32, 1, 1)]:
                 # ensure that the inner part of the domain is still large enough
-                if 3 * inner_outer_split[0] > block_size[0]:
+                if any([inner_outer_split[i] * 2 >= cells[i] for i in range(len(inner_outer_split))]):
                     continue
-                sc = Scenario(cells_per_block=block_size,
+                sc = Scenario(cells_per_block=cells,
                               gpuBlockSize=(128, 1, 1),
                               timeStepStrategy='simpleOverlap',
                               innerOuterSplit=inner_outer_split,
                               communicationScheme=comm_strategy,
-                              timesteps=num_time_steps(block_size))
+                              timesteps=num_time_steps(cells),
+                              cudaEnabledMPI=cuda_enabled_mpi)
                 scenarios.add(sc)
 
 
@@ -209,19 +214,22 @@ def single_gpu_benchmark():
     wlb.log_info_on_root("")
 
     scenarios = wlb.ScenarioManager()
-    block_sizes = [(i, i, i) for i in (64, 128, 192, 256, 320, 384)]
+    cell_sizes = [(i, i, i) for i in (64, 128, 192, 256, 320, 384)]
     cuda_blocks = [(32, 1, 1), (64, 1, 1), (128, 1, 1), (256, 1, 1), (512, 1, 1),
                    (32, 2, 1), (64, 2, 1), (128, 2, 1), (256, 2, 1),
                    (32, 4, 1), (64, 4, 1), (128, 4, 1),
                    (32, 8, 1), (64, 8, 1),
                    (32, 16, 1)]
-    for block_size in block_sizes:
+
+    cuda_enabled_mpi = False
+    for cells in cell_sizes:
         for cuda_block_size in cuda_blocks:
             for time_step_strategy in ['kernelOnly', 'noOverlap']:
-                scenario = Scenario(cells_per_block=block_size,
+                scenario = Scenario(cells_per_block=cells,
                                     gpuBlockSize=cuda_block_size,
                                     timeStepStrategy=time_step_strategy,
-                                    timesteps=num_time_steps(block_size))
+                                    timesteps=num_time_steps(cells),
+                                    cudaEnabledMPI=cuda_enabled_mpi)
                 scenarios.add(scenario)
 
 

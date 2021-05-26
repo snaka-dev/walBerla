@@ -210,7 +210,7 @@ int main( int argc, char **argv )
         for ( int i = 0; i < warmupSteps; ++i )
             timeLoop.singleStep();
 
-        double  remainingTimeLoggerFrequency = parameters.getParameter< double >( "remainingTimeLoggerFrequency", -1.0 ); // in seconds
+        real_t remainingTimeLoggerFrequency = parameters.getParameter< real_t >( "remainingTimeLoggerFrequency", -1.0 ); // in seconds
         if ( remainingTimeLoggerFrequency > 0 )
         {
             auto logger = timing::RemainingTimeLogger( timeLoop.getNrOfTimeSteps() * uint_c(outerIterations), remainingTimeLoggerFrequency );

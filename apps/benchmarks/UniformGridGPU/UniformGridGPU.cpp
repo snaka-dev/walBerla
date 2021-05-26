@@ -167,7 +167,7 @@ int main( int argc, char **argv )
                                                     gpuBlockSize[0], gpuBlockSize[1], gpuBlockSize[2],
                                                     Cell(innerOuterSplit[0], innerOuterSplit[1], innerOuterSplit[2]) );
       lbKernel.setOuterPriority( streamHighPriority );
-      UniformGridGPU_Communication< CommunicationStencil_T, cuda::GPUField< double > >
+      UniformGridGPU_Communication< CommunicationStencil_T, cuda::GPUField< real_t > >
          gpuComm( blocks, pdfFieldGpuID, (CommunicationSchemeType) communicationScheme, cudaEnabledMPI );
 
       auto defaultStream = cuda::StreamRAII::newPriorityStream( streamLowPriority );
@@ -294,7 +294,7 @@ int main( int argc, char **argv )
       for(int i=0; i < warmupSteps; ++i )
          timeLoop.singleStep();
 
-      auto remainingTimeLoggerFrequency = parameters.getParameter< double >( "remainingTimeLoggerFrequency", -1.0 ); // in seconds
+      auto remainingTimeLoggerFrequency = parameters.getParameter< real_t >( "remainingTimeLoggerFrequency", -1.0 ); // in seconds
       if (remainingTimeLoggerFrequency > 0) {
           auto logger = timing::RemainingTimeLogger( timeLoop.getNrOfTimeSteps() * uint_c( outerIterations ), remainingTimeLoggerFrequency );
           timeLoop.addFuncAfterTimeStep( logger, "remaining time logger" );
