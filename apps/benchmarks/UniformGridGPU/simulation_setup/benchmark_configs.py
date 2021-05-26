@@ -11,7 +11,6 @@ import os
 import waLBerla as wlb
 from waLBerla.tools.config import block_decomposition
 from waLBerla.tools.sqlitedb import sequenceValuesToScalars, checkAndUpdateSchema, storeSingle
-from copy import deepcopy
 import sys
 import sqlite3
 
@@ -21,19 +20,6 @@ import sqlite3
 TIME_STEPS_FOR_128_BLOCK = 500
 DB_FILE = "gpu_benchmark.sqlite3"
 
-BASE_CONFIG = {
-    'DomainSetup': {
-        'cellsPerBlock': (256, 128, 128),
-        'periodic': (1, 1, 1),
-    },
-    'Parameters': {
-        'omega': 1.8,
-        'cudaEnabledMPI': False,
-        'warmupSteps': 5,
-        'outerIterations': 3,
-    }
-}
-
 
 def num_time_steps(block_size):
     cells = block_size[0] * block_size[1] * block_size[2]
@@ -42,19 +28,57 @@ def num_time_steps(block_size):
 
 
 class Scenario:
-    def __init__(self, cells_per_block=(256, 128, 128), **kwargs):
-        self.config_dict = deepcopy(BASE_CONFIG)
-        self.config_dict['Parameters'].update(kwargs)
-        self.config_dict['DomainSetup']['blocks'] = block_decomposition(wlb.mpi.numProcesses())
-        self.config_dict['DomainSetup']['cellsPerBlock'] = cells_per_block
+    def __init__(self, cells_per_block=(256, 128, 128), periodic=(1, 1, 1), cuda_blocks=(256, 1, 1),
+                 timesteps=None, time_step_strategy="normal", omega=1.8, cuda_enabled_mpi=False,
+                 inner_outer_split=(1, 1, 1), warmup_steps=5, outer_iterations=3, init_shear_flow=False,
+                 communication_scheme="UniformGPUScheme_Baseline"):
+
+        self.blocks = block_decomposition(wlb.mpi.numProcesses())
+
+        self.cells_per_block = cells_per_block
+        self.periodic = periodic
+
+        self.time_step_strategy = time_step_strategy
+        self.omega = omega
+        self.timesteps = timesteps if timesteps else num_time_steps(cells_per_block)
+        self.cuda_enabled_mpi = cuda_enabled_mpi
+        self.inner_outer_split = inner_outer_split
+        self.init_shear_flow = init_shear_flow
+        self.warmup_steps = warmup_steps
+        self.outer_iterations = outer_iterations
+        self.cuda_blocks = cuda_blocks
+        self.communication_scheme = communication_scheme
+
+        self.vtk_write_frequency = 0
+
+        self.config_dict = self.config(print_dict=False)
 
     @wlb.member_callback
-    def config(self, **kwargs):
+    def config(self, print_dict=True):
         from pprint import pformat
-        wlb.log_info_on_root("Scenario:\n" + pformat(self.config_dict))
-        # Write out the configuration as text-based prm:
-        # print(toPrm(self.config_dict))
-        return self.config_dict
+        config_dict = {
+            'DomainSetup': {
+                'blocks': self.blocks,
+                'cellsPerBlock': self.cells_per_block,
+                'periodic': self.periodic,
+            },
+            'Parameters': {
+                'omega': self.omega,
+                'cudaEnabledMPI': self.cuda_enabled_mpi,
+                'warmupSteps': self.warmup_steps,
+                'outerIterations': self.outer_iterations,
+                'timeStepStrategy': self.time_step_strategy,
+                'timesteps': self.timesteps,
+                'initShearFlow': self.init_shear_flow,
+                'gpuBlockSize': self.cuda_blocks,
+                'communicationScheme': self.communication_scheme,
+                'innerOuterSplit': self.inner_outer_split,
+                'vtkWriteFrequency': self.vtk_write_frequency
+            }
+        }
+        if print_dict:
+            wlb.log_info_on_root("Scenario:\n" + pformat(config_dict))
+        return config_dict
 
     @wlb.member_callback
     def results_callback(self, **kwargs):
@@ -91,10 +115,10 @@ def profiling():
     cells = (256, 256, 256)
     cuda_enabled_mpi = False
 
-    scenarios.add(Scenario(cellsPerBlock=cells, timeStepStrategy='kernelOnly',
-                           communicationScheme='UniformGPUScheme_Baseline',
-                           innerOuterSplit=(1, 1, 1), timesteps=2, cudaEnabledMPI=cuda_enabled_mpi,
-                           outerIterations=1, warmupSteps=0))
+    scenarios.add(Scenario(cells_per_block=cells, time_step_strategy='kernelOnly',
+                           communication_scheme='UniformGPUScheme_Baseline',
+                           inner_outer_split=(1, 1, 1), timesteps=2, cuda_enabled_mpi=cuda_enabled_mpi,
+                           outer_iterations=1, warmup_steps=0))
 
 
 # -------------------------------------- Functions trying different parameter sets -----------------------------------
@@ -122,24 +146,22 @@ def benchmark_all():
         for cuda_block_size in cuda_blocks:
             for comm_strategy in ['UniformGPUScheme_Baseline', 'UniformGPUScheme_Memcpy']:
                 # no overlap
-                scenarios.add(Scenario(timeStepStrategy='noOverlap',
-                                       gpuBlockSize=cuda_block_size,
-                                       communicationScheme=comm_strategy,
-                                       innerOuterSplit=(1, 1, 1),
-                                       timesteps=num_time_steps(cells),
-                                       cudaEnabledMPI=cuda_enabled_mpi))
+                scenarios.add(Scenario(time_step_strategy='noOverlap',
+                                       cuda_blocks=cuda_block_size,
+                                       communication_scheme=comm_strategy,
+                                       inner_outer_split=(1, 1, 1),
+                                       cuda_enabled_mpi=cuda_enabled_mpi))
 
                 # overlap
                 for overlap_strategy in ['simpleOverlap', 'complexOverlap']:
                     for inner_outer_split in inner_outer_splits:
                         if any([inner_outer_split[i] * 2 >= cells[i] for i in range(len(inner_outer_split))]):
                             continue
-                        scenario = Scenario(timeStepStrategy=overlap_strategy,
-                                            gpuBlockSize=cuda_block_size,
-                                            communicationScheme=comm_strategy,
-                                            innerOuterSplit=inner_outer_split,
-                                            timesteps=num_time_steps(cells),
-                                            cudaEnabledMPI=cuda_enabled_mpi)
+                        scenario = Scenario(time_step_strategy=overlap_strategy,
+                                            cuda_blocks=cuda_block_size,
+                                            communication_scheme=comm_strategy,
+                                            inner_outer_split=inner_outer_split,
+                                            cuda_enabled_mpi=cuda_enabled_mpi)
                         scenarios.add(scenario)
 
 
@@ -158,20 +180,18 @@ def overlap_benchmark():
     # 'GPUPackInfo_Baseline', 'GPUPackInfo_Streams'
     for comm_strategy in ['UniformGPUScheme_Baseline', 'UniformGPUScheme_Memcpy']:
         # no overlap
-        scenarios.add(Scenario(timeStepStrategy='noOverlap',
-                               communicationScheme=comm_strategy,
-                               innerOuterSplit=(1, 1, 1),
-                               timesteps=num_time_steps(cells),
-                               cudaEnabledMPI=cuda_enabled_mpi))
+        scenarios.add(Scenario(time_step_strategy='noOverlap',
+                               communication_scheme=comm_strategy,
+                               inner_outer_split=(1, 1, 1),
+                               cuda_enabled_mpi=cuda_enabled_mpi))
 
         # overlap
         for overlap_strategy in ['simpleOverlap', 'complexOverlap']:
             for inner_outer_split in inner_outer_splits:
-                scenario = Scenario(timeStepStrategy=overlap_strategy,
-                                    communicationScheme=comm_strategy,
-                                    innerOuterSplit=inner_outer_split,
-                                    timesteps=num_time_steps(cells),
-                                    cudaEnabledMPI=cuda_enabled_mpi)
+                scenario = Scenario(time_step_strategy=overlap_strategy,
+                                    communication_scheme=comm_strategy,
+                                    inner_outer_split=inner_outer_split,
+                                    cuda_enabled_mpi=cuda_enabled_mpi)
                 scenarios.add(scenario)
 
 
@@ -188,23 +208,21 @@ def communication_compare():
                               'MPIDatatypes', 'MPIDatatypesFull']:
 
             sc = Scenario(cells_per_block=cells,
-                          gpuBlockSize=(128, 1, 1),
-                          timeStepStrategy='noOverlap',
-                          communicationScheme=comm_strategy,
-                          timesteps=num_time_steps(cells),
-                          cudaEnabledMPI=cuda_enabled_mpi)
+                          cuda_blocks=(128, 1, 1),
+                          time_step_strategy='noOverlap',
+                          communication_scheme=comm_strategy,
+                          cuda_enabled_mpi=cuda_enabled_mpi)
             scenarios.add(sc)
             for inner_outer_split in [(4, 1, 1), (8, 1, 1), (16, 1, 1), (32, 1, 1)]:
                 # ensure that the inner part of the domain is still large enough
                 if any([inner_outer_split[i] * 2 >= cells[i] for i in range(len(inner_outer_split))]):
                     continue
                 sc = Scenario(cells_per_block=cells,
-                              gpuBlockSize=(128, 1, 1),
-                              timeStepStrategy='simpleOverlap',
-                              innerOuterSplit=inner_outer_split,
-                              communicationScheme=comm_strategy,
-                              timesteps=num_time_steps(cells),
-                              cudaEnabledMPI=cuda_enabled_mpi)
+                              cuda_blocks=(128, 1, 1),
+                              time_step_strategy='simpleOverlap',
+                              inner_outer_split=inner_outer_split,
+                              communication_scheme=comm_strategy,
+                              cuda_enabled_mpi=cuda_enabled_mpi)
                 scenarios.add(sc)
 
 
@@ -226,10 +244,9 @@ def single_gpu_benchmark():
         for cuda_block_size in cuda_blocks:
             for time_step_strategy in ['kernelOnly', 'noOverlap']:
                 scenario = Scenario(cells_per_block=cells,
-                                    gpuBlockSize=cuda_block_size,
-                                    timeStepStrategy=time_step_strategy,
-                                    timesteps=num_time_steps(cells),
-                                    cudaEnabledMPI=cuda_enabled_mpi)
+                                    cuda_blocks=cuda_block_size,
+                                    time_step_strategy=time_step_strategy,
+                                    cuda_enabled_mpi=cuda_enabled_mpi)
                 scenarios.add(scenario)
 
 
