@@ -112,7 +112,7 @@ def profiling():
     wlb.log_info_on_root("")
 
     scenarios = wlb.ScenarioManager()
-    cells = (256, 256, 256)
+    cells = (128, 128, 128)
     cuda_enabled_mpi = False
 
     scenarios.add(Scenario(cells_per_block=cells, time_step_strategy='kernelOnly',
@@ -331,7 +331,7 @@ else:
     wlb.log_info_on_root("Batch run of benchmark scenarios, saving result to {}".format(DB_FILE))
     # Select the benchmark you want to run
     # single_gpu_benchmark()  # test different cell sizes and cuda block layouts. Suitable for single node runs.
-    # profiling()  # very small run with only two timesteps. Suitable for profiling.
+    profiling()  # very small run with only two timesteps. Suitable for profiling.
     # benchmark_all()  # benchmark all different variants. This benchmark takes a long time
-    communication_compare()  # benchmarks different communication routines, with and without overlap
+    # communication_compare()  # benchmarks different communication routines, with and without overlap
     # overlap_benchmark()  # benchmarks different communication overlap options

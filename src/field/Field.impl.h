@@ -364,21 +364,21 @@ namespace field {
                                     std::numeric_limits< cell_idx_t >::max(),
                                     "The data type 'cell_idx_t' is too small for your field size! Your field is too large.\nYou may have to set 'cell_idx_t' to an 'int64_t'." );
 
-         ffact_ = cell_idx_c(xAllocSize_ * yAllocSize_ * zAllocSize_);
-         zfact_ = cell_idx_c(xAllocSize_ * yAllocSize_);
-         yfact_ = cell_idx_c(xAllocSize_);
+         ffact_ = size_t(xAllocSize_) * size_t(yAllocSize_) * size_t(zAllocSize_);
+         zfact_ = size_t(xAllocSize_) * size_t(yAllocSize_);
+         yfact_ = size_t(xAllocSize_);
          xfact_ = 1;
       } else {
          values_ = allocator_->allocate(zSize_, ySize_, xSize_, fSize_, yAllocSize_, xAllocSize_, fAllocSize_);
          zAllocSize_ = zSize_;
 
          WALBERLA_CHECK_LESS_EQUAL( fSize_ + xSize_ * fAllocSize_ + ySize_ * fAllocSize_ * xAllocSize_ + zSize_ * fAllocSize_ * xAllocSize_ * yAllocSize_,
-                                    std::numeric_limits< cell_idx_t >::max(),
+                                    std::numeric_limits< size_t >::max(),
                                     "The data type 'cell_idx_t' is too small for your field size! Your field is too large.\nYou may have to set 'cell_idx_t' to an 'int64_t'." );
 
-         zfact_ = cell_idx_c(fAllocSize_ * xAllocSize_ * yAllocSize_);
-         yfact_ = cell_idx_c(fAllocSize_ * xAllocSize_);
-         xfact_ = cell_idx_c(fAllocSize_);
+         zfact_ = size_t (fAllocSize_) * size_t(xAllocSize_) * size_t(yAllocSize_);
+         yfact_ = size_t(fAllocSize_) * size_t(xAllocSize_);
+         xfact_ = size_t (fAllocSize_);
          ffact_ = 1;
       }
 
@@ -721,7 +721,7 @@ namespace field {
    {
       assertValidCoordinates( x, y, z, f );
 
-      const cell_idx_t index = f*ffact_+ x*xfact_+ y*yfact_+ z*zfact_;
+      const size_t index = f*size_t(ffact_) + size_t(x)*size_t(xfact_) + size_t(y)*size_t(yfact_) + size_t(z)*size_t(zfact_);
 
       WALBERLA_ASSERT_LESS( int64_c(index) + int64_c(valuesWithOffset_ - values_), int64_c(allocSize_) );
       WALBERLA_ASSERT_GREATER_EQUAL( int64_c(index) + int64_c(valuesWithOffset_ - values_), int64_c(0) );
@@ -1102,7 +1102,7 @@ namespace field {
       xSize_ = xs;
       ySize_ = ys;
       zSize_ = zs;
-      const auto offset = xOff_*xfact_+ yOff_*yfact_+ zOff_*zfact_;
+      const size_t offset = size_t(xOff_)*size_t(xfact_) + size_t(yOff_)*size_t(yfact_) + size_t(zOff_)*size_t(zfact_);
       valuesWithOffset_ = values_ + offset;
    }
 
