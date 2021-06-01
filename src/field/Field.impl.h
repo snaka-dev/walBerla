@@ -361,8 +361,8 @@ namespace field {
          fAllocSize_ = fSize_;
 
          WALBERLA_CHECK_LESS_EQUAL( fSize_ * xAllocSize_ * yAllocSize_ * zAllocSize_ + xSize_ + ySize_ * xAllocSize_ + zSize_ * xAllocSize_ * yAllocSize_,
-                                    std::numeric_limits< cell_idx_t >::max(),
-                                    "The data type 'cell_idx_t' is too small for your field size! Your field is too large.\nYou may have to set 'cell_idx_t' to an 'int64_t'." );
+                                    std::numeric_limits< size_t >::max(),
+                                    "The data type 'size_t' is too small for your field size! Your field is too large.\nYou may have to set 'cell_idx_t' to an 'int64_t'." );
 
          ffact_ = size_t(xAllocSize_) * size_t(yAllocSize_) * size_t(zAllocSize_);
          zfact_ = size_t(xAllocSize_) * size_t(yAllocSize_);
@@ -374,7 +374,7 @@ namespace field {
 
          WALBERLA_CHECK_LESS_EQUAL( fSize_ + xSize_ * fAllocSize_ + ySize_ * fAllocSize_ * xAllocSize_ + zSize_ * fAllocSize_ * xAllocSize_ * yAllocSize_,
                                     std::numeric_limits< size_t >::max(),
-                                    "The data type 'cell_idx_t' is too small for your field size! Your field is too large.\nYou may have to set 'cell_idx_t' to an 'int64_t'." );
+                                    "The data type 'size_t' is too small for your field size! Your field is too large.\nYou may have to set 'cell_idx_t' to an 'int64_t'." );
 
          zfact_ = size_t (fAllocSize_) * size_t(xAllocSize_) * size_t(yAllocSize_);
          yfact_ = size_t(fAllocSize_) * size_t(xAllocSize_);
