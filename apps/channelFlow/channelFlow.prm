@@ -1,0 +1,45 @@
+
+Parameters 
+{
+	omega           1.8;
+	initialVelocity < 0.001, 0, 0 >;
+	timesteps       10;
+}
+
+DomainSetup
+{
+   blocks        <  1,    1, 1 >;
+   cellsPerBlock <  5, 5, 1 >;
+   periodic      <  1,    0, 1 >;
+}
+
+Boundaries 
+{
+	Border { direction S,N;  walldistance -1;  NoSlip    {} }
+}
+
+VTK 
+{
+   fluid_field
+   {
+      writeFrequency 1;
+      
+      inclusion_filters {
+         DomainFilter;
+      }
+      
+      writers {
+         Velocity;
+         Density;
+      }
+   }
+   
+   flag_field
+   {
+      writeFrequency 10000000; // write only once
+      
+      writers {
+         FlagField;
+      }
+   }
+}
