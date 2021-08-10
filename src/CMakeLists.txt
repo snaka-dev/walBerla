@@ -20,5 +20,6 @@
 ## modules that have been added via waLBerla_add_module
 #waLBerla_write_module_statistics ( "${walberla_BINARY_DIR}/moduleStatistics.json" )
 
-add_subdirectory(core)
+add_subdirectory( core )
+add_subdirectory( stencil )
 
