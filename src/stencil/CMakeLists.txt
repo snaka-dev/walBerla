@@ -8,7 +8,6 @@ add_library( stencil INTERFACE )
 target_sources( stencil
       PRIVATE
       AABBQuadrant.h
-      all.h
       D2CornerStencil.h
       D2Q4.h
       D2Q5.h

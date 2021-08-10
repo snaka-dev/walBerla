@@ -21,5 +21,6 @@
 #waLBerla_write_module_statistics ( "${walberla_BINARY_DIR}/moduleStatistics.json" )
 
 add_subdirectory( core )
+add_subdirectory( domain_decomposition )
 add_subdirectory( stencil )
 

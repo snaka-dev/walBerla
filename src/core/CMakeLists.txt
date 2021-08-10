@@ -39,7 +39,6 @@ target_sources( core
          RandomUUID.cpp
          Sleep.cpp
          Abort.h
-         all.h
          AllSet.h
          Any.h
          Array.h
