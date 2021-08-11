@@ -6,7 +6,7 @@ mark_as_advanced( WALBERLA_BLOCKFOREST_PRIMITIVE_BLOCKID )
 configure_file( CMakeDefs.in.h CMakeDefs.h )
 
 add_library( blockforest )
-target_link_libraries( blockforest PRIVATE communication core domain_decomposition stencil )
+target_link_libraries( blockforest PUBLIC communication core domain_decomposition stencil )
 target_sources( blockforest
       PRIVATE
       AABBRefinementSelection.h

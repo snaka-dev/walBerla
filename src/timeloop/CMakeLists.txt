@@ -5,7 +5,7 @@
 ###################################################################################################
 
 add_library( timeloop )
-target_link_libraries( timeloop PRIVATE core domain_decomposition )
+target_link_libraries( timeloop PUBLIC core domain_decomposition )
 target_sources( timeloop
       PRIVATE
       ITimeloop.h

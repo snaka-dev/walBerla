@@ -5,7 +5,7 @@
 ###################################################################################################
 
 add_library( domain_decomposition )
-target_link_libraries( domain_decomposition PRIVATE core )
+target_link_libraries( domain_decomposition PUBLIC core )
 target_sources( domain_decomposition
       PRIVATE
       BlockCounter.h
