@@ -16,7 +16,9 @@ if (WALBERLA_BUILD_WITH_CUDA)
     waLBerla_add_executable(NAME benchmark_multiphase
             FILES benchmark_multiphase.cpp InitializerFunctions.cpp multiphase_codegen.py
             DEPENDS blockforest core cuda field postprocessing lbm geometry timeloop gui BenchmarkPhaseFieldCodeGenGPU)
-    set_target_properties(benchmark_multiphase PROPERTIES CXX_VISIBILITY_PRESET hidden)
+    if( TARGET benchmark_multiphase )
+        set_target_properties( benchmark_multiphase PROPERTIES CXX_VISIBILITY_PRESET hidden )
+    endif()
 else ()
     waLBerla_generate_target_from_python(NAME BenchmarkPhaseFieldCodeGenCPU
             FILE multiphase_codegen.py
@@ -32,6 +34,8 @@ else ()
     waLBerla_add_executable(NAME benchmark_multiphase
             FILES benchmark_multiphase.cpp InitializerFunctions.cpp multiphase_codegen.py
             DEPENDS blockforest core field postprocessing lbm geometry timeloop gui BenchmarkPhaseFieldCodeGenCPU)
-    set_target_properties(benchmark_multiphase PROPERTIES CXX_VISIBILITY_PRESET hidden)
+    if( TARGET benchmark_multiphase )
+        set_target_properties( benchmark_multiphase PROPERTIES CXX_VISIBILITY_PRESET hidden )
+    endif()
 endif (WALBERLA_BUILD_WITH_CUDA)
 

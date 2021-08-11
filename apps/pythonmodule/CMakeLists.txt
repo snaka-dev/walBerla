@@ -1,6 +1,7 @@
 # waLBerla Python module
-
-
+if( NOT TARGET python_coupling )
+    message( WARNING "python module ist not build since the python_coupling target is non-existent" )
+else()
 if ( WALBERLA_BUILD_WITH_PYTHON )
     if ( WALBERLA_BUILD_WITH_CUDA )
         set(PYTHON_MODULE_DEPENDENCIES blockforest boundary domain_decomposition core field python_coupling timeloop vtk cuda)
@@ -31,4 +32,5 @@ if ( WALBERLA_BUILD_WITH_PYTHON )
 
     add_custom_target( pythonModule        ALL ${PYTHON_EXECUTABLE} setup.py build   DEPENDS walberla_cpp )
     add_custom_target( pythonModuleInstall     ${PYTHON_EXECUTABLE} setup.py install --user DEPENDS walberla_cpp )
+endif()
 endif()

@@ -165,7 +165,7 @@ waLBerla_execute_test( NAME TimingPoolTest PROCESSES 3  )
 waLBerla_compile_test( FILES timing/TimingTreeTest.cpp )
 waLBerla_execute_test( NAME TimingTreeTest PROCESSES 3)
 
-waLBerla_compile_test( FILES timing/SweepTimeloopTimerReduction.cpp DEPENDS timeloop blockforest )
+waLBerla_compile_test( FILES timing/SweepTimeloopTimerReduction.cpp DEPENDS blockforest domain_decomposition timeloop)
 waLBerla_execute_test( NAME SweepTimeloopTimerReduction PROCESSES 9  )
 
 

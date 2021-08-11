@@ -1307,7 +1307,7 @@ else()
 endif()
 
 
-#add_subdirectory ( apps )
+add_subdirectory ( apps )
 
 waLBerla_export()
 
