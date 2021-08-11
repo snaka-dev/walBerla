@@ -26,7 +26,7 @@
 #include "python_coupling/export/VTKExport.h"
 #include "python_coupling/helper/ModuleInit.h"
 
-#include "stencil/D2Q5.h"
+#include "stencil/all.h"
 
 #ifdef WALBERLA_BUILD_WITH_CUDA
  #include "python_coupling/export/CUDAExport.h"

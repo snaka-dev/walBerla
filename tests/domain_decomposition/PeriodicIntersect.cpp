@@ -19,15 +19,17 @@
 //
 //======================================================================================================================
 
+#include "core/all.h"
+#include "domain_decomposition/all.h"
 #include "blockforest/all.h"
 
-#include "core/Environment.h"
-#include "core/debug/Debug.h"
-#include "core/debug/TestSubsystem.h"
 #include "core/math/AABB.h"
 #include "core/math/Random.h"
+#include "core/debug/Debug.h"
+#include "core/debug/TestSubsystem.h"
 
 #include "stencil/D3Q27.h"
+
 
 namespace walberla {
 

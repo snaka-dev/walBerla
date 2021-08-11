@@ -18,14 +18,15 @@
 //
 //======================================================================================================================
 
-#include "blockforest/BlockForest.h"
-#include "blockforest/Initialization.h"
-
-#include "core/debug/TestSubsystem.h"
-#include "core/logging/Logging.h"
-#include "core/math/IntegerFactorization.h"
 
 #include <memory>
+
+#include "blockforest/all.h"
+#include "core/all.h"
+#include "core/math/IntegerFactorization.h"
+#include "domain_decomposition/all.h"
+
+#include "core/debug/TestSubsystem.h"
 
 namespace walberla {
 using namespace walberla::blockforest;
