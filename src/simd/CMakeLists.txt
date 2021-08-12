@@ -8,7 +8,7 @@
 add_library( simd INTERFACE )
 target_link_libraries( simd INTERFACE core )
 target_sources( simd
-      PRIVATE
+      INTERFACE
       AVX.h
       SSE4.h
       Scalar.h
