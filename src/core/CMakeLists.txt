@@ -26,7 +26,9 @@ include( math/math.cmake )
 include( logging/logging.cmake )
 
 add_library( core )
-
+if( MPI_FOUND )
+   target_link_libraries( core PUBLIC MPI::MPI_CXX )
+endif()
 target_sources( core
       PRIVATE
          Abort.cpp
@@ -38,6 +40,7 @@ target_sources( core
          MemoryUsage.cpp
          RandomUUID.cpp
          Sleep.cpp
+         waLBerlaBuildInfo.cpp
          Abort.h
          AllSet.h
          Any.h

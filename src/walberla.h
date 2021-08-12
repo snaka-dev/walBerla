@@ -21,8 +21,11 @@
 
 #pragma once
 
+#include "blockforest/all.h"
 #include "boundary/all.h"
 #include "communication/all.h"
+#include "core/all.h"
+#include "domain_decomposition/all.h"
 #include "field/all.h"
 #include "gather/all.h"
 #include "geometry/all.h"
@@ -31,4 +34,6 @@
 #include "pde/all.h"
 #include "pe_coupling/all.h"
 #include "postprocessing/all.h"
+#include "stencil/all.h"
+#include "timeloop/all.h"
 #include "vtk/all.h"

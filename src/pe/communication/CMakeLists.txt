@@ -19,3 +19,4 @@ target_sources( pe
     RigidBodyRemovalInformationNotification.h
     NotificationType.h     
     )
+add_subdirectory( rigidbody )

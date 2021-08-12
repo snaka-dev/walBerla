@@ -17,3 +17,4 @@ target_sources( lbm
     Adaptors.h
     PressureTensor.h     
     )
+add_subdirectory( initializer )

@@ -98,8 +98,10 @@ target_sources( gui
       Gui.cpp
       )
 
-add_subdirectory( MainWindow )
-add_subdirectory( BlockViewText )
-add_subdirectory( BlockView3D )
-add_subdirectory( BlockSliceView )
-
+#TODO: this needs some additional refactoring. Does not resamble the mechanism from above!
+if( WALBERLA_ENABLE_GUI )
+    add_subdirectory( MainWindow )
+    add_subdirectory( BlockViewText )
+    add_subdirectory( BlockView3D )
+    add_subdirectory( BlockSliceView )
+endif()
