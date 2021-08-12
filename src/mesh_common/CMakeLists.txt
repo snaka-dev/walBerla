@@ -10,7 +10,7 @@ if ( OPENMESH_CORE_FOUND )
    target_link_directories( mesh_common INTERFACE OpenMeshCore)
 endif()
 target_sources( mesh_common
-      PRIVATE
+      INTERFACE
       DistanceFunction.h
       QHull.h
       MeshOperations.h

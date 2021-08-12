@@ -6,7 +6,7 @@
 
 add_library( stencil INTERFACE )
 target_sources( stencil
-      PRIVATE
+      INTERFACE
       AABBQuadrant.h
       D2CornerStencil.h
       D2Q4.h
