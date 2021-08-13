@@ -6,7 +6,7 @@
 
 
 add_library( boundary )
-target_link_libraries( boundary PUBLIC core communication domain_decomposition field python_coupling stencil )
+target_link_libraries( boundary PUBLIC core communication domain_decomposition field stencil )
 target_sources( boundary
       PRIVATE
       BoundaryHandling.h

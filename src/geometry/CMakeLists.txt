@@ -11,7 +11,7 @@ target_sources( geometry
       InitBoundaryHandling.h
       GeometricalFunctions.cpp
       )
-target_link_libraries(geometry PUBLIC core domain_decomposition boundary field python_coupling stencil PRIVATE lodepng)
+target_link_libraries(geometry PUBLIC core domain_decomposition boundary field stencil PRIVATE lodepng)
 
 add_subdirectory( bodies )
 add_subdirectory( containment_octree )

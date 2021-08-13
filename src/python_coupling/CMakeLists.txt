@@ -1,20 +1,18 @@
-if( WALBERLA_BUILD_WITH_PYTHON )
-   add_library( python_coupling )
-   target_link_libraries( python_coupling PUBLIC pybind11::embed core communication domain_decomposition stencil field blockforest vtk cuda )
-   set_target_properties( python_coupling PROPERTIES CXX_VISIBILITY_PRESET hidden )
-   target_sources( python_coupling
-         PRIVATE
-         Manager.cpp
-         PythonWrapper.h
-         DictWrapper.impl.h
-         DictWrapper.h
-         CreateConfig.h
-         PythonCallback.cpp
-         Manager.h
-         PythonCallback.h
-         CreateConfig.cpp
-         )
+ add_library( python_coupling )
+ target_link_libraries( python_coupling PUBLIC pybind11::embed core communication domain_decomposition stencil field blockforest vtk cuda )
+ set_target_properties( python_coupling PROPERTIES CXX_VISIBILITY_PRESET hidden )
+ target_sources( python_coupling
+       PRIVATE
+       Manager.cpp
+       PythonWrapper.h
+       DictWrapper.impl.h
+       DictWrapper.h
+       CreateConfig.h
+       PythonCallback.cpp
+       Manager.h
+       PythonCallback.h
+       CreateConfig.cpp
+       )
 
-   add_subdirectory( export )
-   add_subdirectory( helper )
-endif()
+ add_subdirectory( export )
+ add_subdirectory( helper )

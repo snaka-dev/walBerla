@@ -5,7 +5,7 @@
 ###################################################################################################
 
 add_library( mesh )
-target_link_libraries( mesh PUBLIC blockforest boundary core domain_decomposition python_coupling field geometry pe stencil mesh_common )
+target_link_libraries( mesh PUBLIC blockforest boundary core domain_decomposition field geometry pe stencil mesh_common )
 if ( OPENMESH_CORE_FOUND )
    target_link_directories( mesh PUBLIC OpenMeshCore)
 endif()

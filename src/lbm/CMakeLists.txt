@@ -14,7 +14,6 @@ target_link_libraries( lbm
       domain_decomposition
       field
       geometry
-      python_coupling
       gui
       stencil
       timeloop
