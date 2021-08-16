@@ -18,7 +18,7 @@ waLBerla_generate_target_from_python(NAME PhaseFieldCodeGenCPU
 
 waLBerla_add_executable(NAME multiphaseCPU
         FILES multiphase.cpp PythonExports.cpp InitializerFunctions.cpp multiphase_codegen.py
-        DEPENDS blockforest core field postprocessing lbm geometry timeloop gui PhaseFieldCodeGenCPU)
+        DEPENDS blockforest core field postprocessing python_coupling lbm geometry timeloop gui PhaseFieldCodeGenCPU)
 
 if( TARGET multiphaseCPU )
    set_target_properties( multiphaseCPU PROPERTIES CXX_VISIBILITY_PRESET hidden )
