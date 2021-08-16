@@ -12,7 +12,7 @@ if (WALBERLA_BUILD_WITH_CUDA)
             FlowAroundSphereCodeGen_PackInfoOdd.cu FlowAroundSphereCodeGen_PackInfoOdd.h
             FlowAroundSphereCodeGen_InfoHeader.h)
     waLBerla_add_executable( NAME FlowAroundSphereCodeGen FILE FlowAroundSphereCodeGen.cpp
-            DEPENDS blockforest boundary core domain_decomposition field geometry timeloop vtk FlowAroundSphereGenerated)
+            DEPENDS blockforest boundary core domain_decomposition field geometry python_coupling timeloop vtk FlowAroundSphereGenerated)
     if( TARGET FlowAroundSphereCodeGen )
         set_target_properties( FlowAroundSphereCodeGen PROPERTIES CXX_VISIBILITY_PRESET hidden )
     endif()
@@ -28,7 +28,7 @@ else ()
             FlowAroundSphereCodeGen_PackInfoOdd.cpp FlowAroundSphereCodeGen_PackInfoOdd.h
             FlowAroundSphereCodeGen_InfoHeader.h)
     waLBerla_add_executable( NAME FlowAroundSphereCodeGen FILE FlowAroundSphereCodeGen.cpp
-            DEPENDS blockforest boundary core domain_decomposition field geometry timeloop vtk FlowAroundSphereGenerated)
+            DEPENDS blockforest boundary core domain_decomposition field geometry python_coupling timeloop vtk FlowAroundSphereGenerated)
     if( TARGET FlowAroundSphereCodeGen )
         set_target_properties( FlowAroundSphereCodeGen PROPERTIES CXX_VISIBILITY_PRESET hidden )
     endif()
