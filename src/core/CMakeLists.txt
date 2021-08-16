@@ -29,6 +29,7 @@ add_library( core )
 if( MPI_FOUND )
    target_link_libraries( core PUBLIC MPI::MPI_CXX )
 endif()
+target_link_libraries( core PUBLIC ${SERVICE_LIBS} )
 target_sources( core
       PRIVATE
          Abort.cpp
