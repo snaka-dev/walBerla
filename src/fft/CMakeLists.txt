@@ -5,7 +5,7 @@
 ###################################################################################################
 
 add_library( fft )
-target_link_libraries( fft PUBLIC core blockforest field ${FFT_REQUIRED_LIBRARIES} )
+target_link_libraries( fft PUBLIC core blockforest field )
 target_sources( fft
       PRIVATE
       Fft.h
