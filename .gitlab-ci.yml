@@ -16,7 +16,7 @@ stages:
 ##    Build templates                                                        ##
 ##                                                                           ##
 ###############################################################################
-
+#TODO: fix cmake version in docker images
 .build_template:
    script:
       - pip install -I cmake==3.16.3
