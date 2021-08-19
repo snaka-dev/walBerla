@@ -1,5 +1,8 @@
  add_library( python_coupling )
- target_link_libraries( python_coupling PUBLIC pybind11::embed core communication domain_decomposition stencil field blockforest vtk cuda )
+ target_link_libraries( python_coupling PUBLIC pybind11::embed core communication domain_decomposition stencil field blockforest vtk )
+ if( WALBERLA_BUILD_WITH_CUDA )
+  target_link_libraries( python_coupling PUBLIC cuda )
+ endif()
  set_target_properties( python_coupling PROPERTIES CXX_VISIBILITY_PRESET hidden )
  target_sources( python_coupling
        PRIVATE
