@@ -4,10 +4,10 @@
 #
 ###################################################################################################
 
-add_library( executiontree INTERFACE)
-target_link_libraries( executiontree INTERFACE core domain_decomposition timeloop )
+add_library( executiontree )
+target_link_libraries( executiontree PUBLIC core domain_decomposition timeloop )
 target_sources( executiontree
-      INTERFACE
+      PRIVATE
       ExecutionTreeSweep.h
       ExecutionTree.cpp
       ExecutionTree.h
