@@ -22,7 +22,6 @@ target_link_libraries( lbm
 target_sources( lbm
       PRIVATE
       PerformanceEvaluation.h
-      SuViscoelasticity.h
       BlockForestEvaluation.h
       IntelCompilerOptimization.h
       PerformanceLogger.h
