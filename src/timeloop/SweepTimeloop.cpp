@@ -114,17 +114,25 @@ void SweepTimeloop::doTimeStep(const Set<SUID> &selectors, WcTimingPool &timing)
 
       for( BlockStorage::iterator bi = blockStorage_.begin(); bi != blockStorage_.end(); ++bi )
       {
+         Sweep selectedSweep;
          std::string sweepName;
-         Sweep * selectedSweep = s.sweep.getUnique( selectors + bi->getState(), sweepName );
+         size_t numSweeps = s.sweep.get(selectedSweep, sweepName, selectors + bi->getState());
 
-         if( !selectedSweep )
+         // ensure that no more than one sweep has been added to a single SweepAdder object
+         if (numSweeps == size_t(0)) {
             continue;
+         } else {
+            if (numSweeps > size_t(1)) {
+               WALBERLA_ABORT("Only one sweep must be added to a single SweepAdder object. This error might be caused "
+                              "by e.g. \"timeloop.add() << Sweep(A) << Sweep(B);\".")
+            }
+         }
 
          WALBERLA_LOG_PROGRESS("Running sweep \"" << sweepName << "\" on block " << bi->getId() );
 
          // loop over all blocks
          timing[sweepName].start();
-            (selectedSweep->function_)( bi.get() );
+         (selectedSweep.function_)( bi.get() );
          timing[sweepName].end();
       }
 
