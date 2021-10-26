@@ -51,25 +51,37 @@ using GPUScalarField_T = cuda::GPUField< Type_T >;
 using CommSchemeType   = blockforest::communication::UniformBufferedScheme< StencilType >;
 using GPUPackInfoType  = cuda::communication::GPUPackInfo< GPUFieldType >;
 
+const Set< SUID > requiredBlockSelector("communication");
+const Set< SUID > incompatibleBlockSelector("no communication");
+
+void suidAssignmentFunction( SetupBlockForest & forest ) {
+
+   for( auto sblock : forest ) {
+      if( forest.atDomainXMinBorder( sblock ) ) {
+         sblock.addState(incompatibleBlockSelector);
+      } else {
+         sblock.addState(requiredBlockSelector);
+      }
+   }
+}
+
 void initScalarField(std::shared_ptr< StructuredBlockStorage >& blocks, const BlockDataID& fieldID)
 {
    for (auto& block : *blocks)
    {
       Type_T val;
-      if (blocks->atDomainXMinBorder(block)) { val = Type_T(0); }
-      else if (blocks->atDomainXMaxBorder(block))
-      {
-         val = Type_T(2);
-      }
-      else
-      {
+      if (blocks->atDomainXMinBorder(block)) {
+         val = Type_T(-1);
+      } else if (blocks->atDomainXMaxBorder(block)) {
          val = Type_T(1);
+      } else {
+         val = Type_T(0);
       }
 
       auto* field = block.getData< ScalarField_T >(fieldID);
       WALBERLA_ASSERT_NOT_NULLPTR(field)
 
-      const auto cells = field->xyzSizeWithGhostLayer();
+      const auto cells = field->xyzSize();
 
       for (auto cell : cells)
       {
@@ -78,28 +90,31 @@ void initScalarField(std::shared_ptr< StructuredBlockStorage >& blocks, const Bl
    }
 }
 
-std::shared_ptr< StructuredBlockForest > createUniformBlockGrid(
-   const AABB& domainAABB, const uint_t numberOfXBlocks, const uint_t numberOfYBlocks, const uint_t numberOfZBlocks,
-   const uint_t numberOfXCellsPerBlock, const uint_t numberOfYCellsPerBlock, const uint_t numberOfZCellsPerBlock,
-   const uint_t maxBlocksPerProcess /*= 0*/, const bool includeMetis /*= true*/, const bool forceMetis /*= false*/,
-   const bool xPeriodic /*= false*/, const bool yPeriodic /*= false*/, const bool zPeriodic /*= false*/,
-   const bool keepGlobalBlockInformation /*= false*/)
+std::shared_ptr< StructuredBlockForest > createSelectorBlockGrid (
+   const uint_t numberOfXBlocks,             const uint_t numberOfYBlocks,        const uint_t numberOfZBlocks,
+   const uint_t numberOfXCellsPerBlock,      const uint_t numberOfYCellsPerBlock, const uint_t numberOfZCellsPerBlock,
+   const real_t dx,
+   const bool xPeriodic, const bool yPeriodic, const bool zPeriodic,
+   const bool keepGlobalBlockInformation )
 {
    // initialize SetupBlockForest = determine domain decomposition
 
    SetupBlockForest sforest;
 
-   sforest.addWorkloadMemorySUIDAssignmentFunction(uniformWorkloadAndMemoryAssignment);
+   sforest.addWorkloadMemorySUIDAssignmentFunction(suidAssignmentFunction);
 
+   AABB domainAABB{ real_c(0), real_c(0), real_c(0),
+                    dx * real_c( numberOfXBlocks * numberOfXCellsPerBlock ),
+                    dx * real_c( numberOfYBlocks * numberOfYCellsPerBlock ),
+                    dx * real_c( numberOfZBlocks * numberOfZCellsPerBlock ) };
    sforest.init(domainAABB, numberOfXBlocks, numberOfYBlocks, numberOfZBlocks, xPeriodic, yPeriodic, zPeriodic);
 
    // calculate process distribution
 
-   const memory_t memoryLimit = (maxBlocksPerProcess == 0) ? numeric_cast< memory_t >(sforest.getNumberOfBlocks()) :
-                                                             numeric_cast< memory_t >(maxBlocksPerProcess);
+   const memory_t memoryLimit = numeric_cast< memory_t >(sforest.getNumberOfBlocks());
 
    GlobalLoadBalancing::MetisConfiguration< SetupBlock > metisConfig(
-      includeMetis, forceMetis,
+      true, false,
       std::bind(cellWeightedCommunicationCost, std::placeholders::_1, std::placeholders::_2, numberOfXCellsPerBlock,
                 numberOfYCellsPerBlock, numberOfZCellsPerBlock));
 
@@ -125,44 +140,43 @@ int main(int argc, char** argv)
    debug::enterTestMode();
    walberla::Environment walberlaEnv(argc, argv);
 
-   const Vector3< uint_t > cells = Vector3< uint_t >(2, 2, 2);
+   const Vector3<uint_t> nBlocks { 3, 1, 1 };
+   const Vector3<uint_t> cells { 2, 2, 1 };
+   Vector3<real_t> domainSize;
+   for( uint_t d = 0; d < 3; ++d ) {
+      domainSize[d] = real_c(cells[d] * nBlocks[d]);
+   }
 
-   const Set< SUID > requiredBlockSelectors("filled");
-   const Set< SUID > incompatibleBlockSelectors("empty");
-
-   auto blocks = blockforest::createUniformBlockGrid(3, 1, 1, cells[0], cells[1], cells[2], 1, false, true, true, true);
+   auto blocks = blockforest::createSelectorBlockGrid(nBlocks[0], nBlocks[1], nBlocks[2],
+                                                      cells[0], cells[1], cells[2], 1, false, true, true, true);
 
    BlockDataID fieldID = field::addToStorage< ScalarField_T >(blocks, "scalar", Type_T(0), field::fzyx, uint_t(1));
    initScalarField(blocks, fieldID);
 
    BlockDataID gpuFieldID = cuda::addGPUFieldToStorage< GPUScalarField_T >(blocks, fieldID, "GPU scalar");
 
-   // Setup communication schemes for synchronous GPUPackInfo
-   cuda::communication::UniformGPUScheme< Stencil_T > communication(blocks, );
+   // Setup communication schemes for GPUPackInfo
+   cuda::communication::UniformGPUScheme< Stencil_T > communication(blocks, requiredBlockSelector, incompatibleBlockSelector);
    communication.addPackInfo(std::make_shared< cuda::communication::GPUPackInfo< GPUScalarField_T > >(gpuFieldID));
 
-   // Perform one communication step for each scheme
-   syncCommScheme();
-   asyncCommScheme();
+   // Perform one communication step
+   communication();
 
-   // Check results
-   FieldType syncFieldCpu(cells[0], cells[1], cells[2], 1, fieldLayouts[fieldLayoutIndex],
-                          make_shared< cuda::HostFieldAllocator< DataType > >());
-   FieldType asyncFieldCpu(cells[0], cells[1], cells[2], 1, fieldLayouts[fieldLayoutIndex],
-                           make_shared< cuda::HostFieldAllocator< DataType > >());
+   // Copy communicated data back to CPU
+   cuda::fieldCpy<ScalarField_T, GPUScalarField_T>( blocks, fieldID, gpuFieldID );
 
-   for (auto block = blocks->begin(); block != blocks->end(); ++block)
-   {
-      auto syncGPUFieldPtr = block->getData< GPUFieldType >(syncGPUFieldId);
-      cuda::fieldCpy(syncFieldCpu, *syncGPUFieldPtr);
+   // Check for correct data in ghost layers of middle block
+   auto middleBlock = blocks->getBlock( domainSize[0] / real_c(2), domainSize[1] / real_c(2), domainSize[2] / real_c(2) );
+   auto * field = middleBlock->getData<ScalarField_T>(fieldID);
+   WALBERLA_ASSERT_NOT_NULLPTR(field)
 
-      auto asyncGPUFieldPtr = block->getData< GPUFieldType >(asyncGPUFieldId);
-      cuda::fieldCpy(asyncFieldCpu, *asyncGPUFieldPtr);
+   // check for missing communication with left neighbour (first block, incompatible selector)
+   WALBERLA_ASSERT_EQUAL(field->get(-1, 0, 0), 0, "Communication with left neighbor detected.")
+   WALBERLA_ASSERT_EQUAL(field->get(-1, 1, 0), 0, "Communication with left neighbor detected.")
 
-      for (auto syncIt = syncFieldCpu.beginWithGhostLayerXYZ(), asyncIt = asyncFieldCpu.beginWithGhostLayerXYZ();
-           syncIt != syncFieldCpu.end(); ++syncIt, ++asyncIt)
-         WALBERLA_CHECK_EQUAL(*syncIt, *asyncIt);
-   }
+   // check for correct communication with right neighbor (third block, required selector)
+   WALBERLA_ASSERT_EQUAL(field->get(cell_idx_t(nCells[2]), 0, 0), 1, "Communication with left neighbor detected.")
+   WALBERLA_ASSERT_EQUAL(field->get(cell_idx_t(nCells[2]), 1, 0), 1, "Communication with left neighbor detected.")
 
    return EXIT_SUCCESS;
 }
