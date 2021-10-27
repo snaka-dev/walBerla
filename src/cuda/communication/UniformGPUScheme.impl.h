@@ -86,12 +86,19 @@ namespace communication {
          for( auto &iBlock : *forest )
          {
             auto block = dynamic_cast< Block * >( &iBlock );
+
+            if( !selectable::isSetSelected( block->getState(), requiredBlockSelectors_, incompatibleBlockSelectors_ ) )
+               continue;
+
             for( auto dir = Stencil::beginNoCenter(); dir != Stencil::end(); ++dir )
             {
                const auto neighborIdx = blockforest::getBlockNeighborhoodSectionIndex( *dir );
                if( block->getNeighborhoodSectionSize( neighborIdx ) == uint_t( 0 ))
                   continue;
                auto nProcess = mpi::MPIRank( block->getNeighborProcess( neighborIdx, uint_t( 0 )));
+
+               if( !selectable::isSetSelected( block->getNeighborState( neighborIdx, uint_t(0) ), requiredBlockSelectors_, incompatibleBlockSelectors_ ) )
+                  continue;
 
                for( auto &pi : packInfos_ )
                {
