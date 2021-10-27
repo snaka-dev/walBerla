@@ -61,6 +61,7 @@ void suidAssignmentFunction( blockforest::SetupBlockForest & forest ) {
       } else {
          sblock.addState(requiredBlockSelector);
       }
+      sblock.setWorkload(walberla::numeric_cast<walberla::workload_t>(1));
    }
 }
 
