@@ -171,12 +171,12 @@ int main(int argc, char** argv)
    cuda::fieldCpy( *cpuField, *gpuField );
 
    // check for missing communication with left neighbour (first block, incompatible selector)
-   WALBERLA_ASSERT_EQUAL(field->get(-1, 0, 0), 0, "Communication with left neighbor detected.")
-   WALBERLA_ASSERT_EQUAL(field->get(-1, 1, 0), 0, "Communication with left neighbor detected.")
+   WALBERLA_ASSERT_EQUAL(cpuField->get(-1, 0, 0), 0, "Communication with left neighbor detected.")
+   WALBERLA_ASSERT_EQUAL(cpuField->get(-1, 1, 0), 0, "Communication with left neighbor detected.")
 
    // check for correct communication with right neighbor (third block, required selector)
-   WALBERLA_ASSERT_EQUAL(field->get(cell_idx_t(nCells[2]), 0, 0), 1, "No communication with right neighbor detected.")
-   WALBERLA_ASSERT_EQUAL(field->get(cell_idx_t(nCells[2]), 1, 0), 1, "No communication with right neighbor detected.")
+   WALBERLA_ASSERT_EQUAL(cpuField->get(cell_idx_t(nCells[2]), 0, 0), 1, "No communication with right neighbor detected.")
+   WALBERLA_ASSERT_EQUAL(cpuField->get(cell_idx_t(nCells[2]), 1, 0), 1, "No communication with right neighbor detected.")
 
    return EXIT_SUCCESS;
 }
