@@ -81,7 +81,7 @@ void initScalarField(std::shared_ptr< StructuredBlockForest >& blocks, const Blo
       auto* field = block.getData< ScalarField_T >(fieldID);
       WALBERLA_ASSERT_NOT_NULLPTR(field)
 
-      const auto cells = field->xyzSize();
+      const auto cells = field->xyzSizeWithGhostLayer();
 
       for (auto cell : cells)
       {
@@ -162,22 +162,21 @@ int main(int argc, char** argv)
    // Perform one communication step
    communication();
 
+   // Copy to CPU
+   cuda::fieldCpy< ScalarField_T, GPUScalarField_T >( blocks, fieldID, gpuFieldID );
+
    // Check for correct data in ghost layers of middle block
    auto middleBlock = blocks->getBlock( domainSize[0] / real_c(2), domainSize[1] / real_c(2), domainSize[2] / real_c(2) );
-   auto * cpuField = middleBlock->getData<ScalarField_T>(fieldID);
-   auto * gpuField = middleBlock->getData<GPUScalarField_T>(gpuFieldID);
+   auto cpuField = middleBlock->getData<ScalarField_T>(fieldID);
    WALBERLA_ASSERT_NOT_NULLPTR(cpuField)
-   WALBERLA_ASSERT_NOT_NULLPTR(gpuField)
-
-   cuda::fieldCpy( *cpuField, *gpuField );
 
    // check for missing communication with left neighbour (first block, incompatible selector)
    WALBERLA_ASSERT_EQUAL(cpuField->get(-1, 0, 0), 0, "Communication with left neighbor detected.")
    WALBERLA_ASSERT_EQUAL(cpuField->get(-1, 1, 0), 0, "Communication with left neighbor detected.")
 
    // check for correct communication with right neighbor (third block, required selector)
-   WALBERLA_ASSERT_EQUAL(cpuField->get(cell_idx_t(cells[2]), 0, 0), 1, "No communication with right neighbor detected.")
-   WALBERLA_ASSERT_EQUAL(cpuField->get(cell_idx_t(cells[2]), 1, 0), 1, "No communication with right neighbor detected.")
+   WALBERLA_ASSERT_EQUAL(cpuField->get(cell_idx_t(cells[0]), 0, 0), 1, "No communication with right neighbor detected.")
+   WALBERLA_ASSERT_EQUAL(cpuField->get(cell_idx_t(cells[0]), 1, 0), 1, "No communication with right neighbor detected.")
 
    return EXIT_SUCCESS;
 }
