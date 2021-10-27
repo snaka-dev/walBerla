@@ -20,17 +20,18 @@
 //
 //========================================================================================================================
 
+#include <blockforest/GlobalLoadBalancing.h>
 #include <blockforest/Initialization.h>
-#include <blockforest/communication/UniformBufferedScheme.h>
+#include <blockforest/SetupBlockForest.h>
 #include <core/DataTypes.h>
 #include <core/debug/TestSubsystem.h>
 #include <core/math/Random.h>
-#include <core/mpi/Environment.h>
+#include <core/Environment.h>
 #include <cuda/AddGPUFieldToStorage.h>
 #include <cuda/ErrorChecking.h>
 #include <cuda/FieldCopy.h>
 #include <cuda/GPUField.h>
-#include <cuda/communication/GPUPackInfo.h>
+#include <cuda/communication/MemcpyPackInfo.h>
 #include <cuda/communication/UniformGPUScheme.h>
 #include <cuda_runtime.h>
 #include <domain_decomposition/BlockDataID.h>
@@ -48,15 +49,13 @@ using Type_T = int;
 using Stencil_T        = stencil::D3Q27;
 using ScalarField_T    = field::GhostLayerField< Type_T, 1 >;
 using GPUScalarField_T = cuda::GPUField< Type_T >;
-using CommSchemeType   = blockforest::communication::UniformBufferedScheme< StencilType >;
-using GPUPackInfoType  = cuda::communication::GPUPackInfo< GPUFieldType >;
 
 const Set< SUID > requiredBlockSelector("communication");
 const Set< SUID > incompatibleBlockSelector("no communication");
 
-void suidAssignmentFunction( SetupBlockForest & forest ) {
+void suidAssignmentFunction( blockforest::SetupBlockForest & forest ) {
 
-   for( auto sblock : forest ) {
+   for( auto & sblock : forest ) {
       if( forest.atDomainXMinBorder( sblock ) ) {
          sblock.addState(incompatibleBlockSelector);
       } else {
@@ -65,7 +64,7 @@ void suidAssignmentFunction( SetupBlockForest & forest ) {
    }
 }
 
-void initScalarField(std::shared_ptr< StructuredBlockStorage >& blocks, const BlockDataID& fieldID)
+void initScalarField(std::shared_ptr< StructuredBlockForest >& blocks, const BlockDataID& fieldID)
 {
    for (auto& block : *blocks)
    {
@@ -113,9 +112,9 @@ std::shared_ptr< StructuredBlockForest > createSelectorBlockGrid (
 
    const memory_t memoryLimit = numeric_cast< memory_t >(sforest.getNumberOfBlocks());
 
-   GlobalLoadBalancing::MetisConfiguration< SetupBlock > metisConfig(
+   blockforest::GlobalLoadBalancing::MetisConfiguration< SetupBlock > metisConfig(
       true, false,
-      std::bind(cellWeightedCommunicationCost, std::placeholders::_1, std::placeholders::_2, numberOfXCellsPerBlock,
+      std::bind(blockforest::cellWeightedCommunicationCost, std::placeholders::_1, std::placeholders::_2, numberOfXCellsPerBlock,
                 numberOfYCellsPerBlock, numberOfZCellsPerBlock));
 
    sforest.calculateProcessDistribution_Default(uint_c(MPIManager::instance()->numProcesses()), memoryLimit, "hilbert",
@@ -147,28 +146,29 @@ int main(int argc, char** argv)
       domainSize[d] = real_c(cells[d] * nBlocks[d]);
    }
 
-   auto blocks = blockforest::createSelectorBlockGrid(nBlocks[0], nBlocks[1], nBlocks[2],
-                                                      cells[0], cells[1], cells[2], 1, false, true, true, true);
+   auto blocks = createSelectorBlockGrid(nBlocks[0], nBlocks[1], nBlocks[2],
+                                         cells[0], cells[1], cells[2], 1, false, true, true, true);
 
    BlockDataID fieldID = field::addToStorage< ScalarField_T >(blocks, "scalar", Type_T(0), field::fzyx, uint_t(1));
    initScalarField(blocks, fieldID);
 
-   BlockDataID gpuFieldID = cuda::addGPUFieldToStorage< GPUScalarField_T >(blocks, fieldID, "GPU scalar");
+   BlockDataID gpuFieldID = cuda::addGPUFieldToStorage< ScalarField_T >(blocks, fieldID, "GPU scalar");
 
    // Setup communication schemes for GPUPackInfo
    cuda::communication::UniformGPUScheme< Stencil_T > communication(blocks, requiredBlockSelector, incompatibleBlockSelector);
-   communication.addPackInfo(std::make_shared< cuda::communication::GPUPackInfo< GPUScalarField_T > >(gpuFieldID));
+   communication.addPackInfo(std::make_shared< cuda::communication::MemcpyPackInfo< GPUScalarField_T > >(gpuFieldID));
 
    // Perform one communication step
    communication();
 
-   // Copy communicated data back to CPU
-   cuda::fieldCpy<ScalarField_T, GPUScalarField_T>( blocks, fieldID, gpuFieldID );
-
    // Check for correct data in ghost layers of middle block
    auto middleBlock = blocks->getBlock( domainSize[0] / real_c(2), domainSize[1] / real_c(2), domainSize[2] / real_c(2) );
-   auto * field = middleBlock->getData<ScalarField_T>(fieldID);
-   WALBERLA_ASSERT_NOT_NULLPTR(field)
+   auto * cpuField = middleBlock->getData<ScalarField_T>(fieldID);
+   auto * gpuField = middleBlock->getData<GPUScalarField_T>(gpuFieldID);
+   WALBERLA_ASSERT_NOT_NULLPTR(cpuField)
+   WALBERLA_ASSERT_NOT_NULLPTR(gpuField)
+
+   cuda::fieldCpy( *cpuField, *gpuField );
 
    // check for missing communication with left neighbour (first block, incompatible selector)
    WALBERLA_ASSERT_EQUAL(field->get(-1, 0, 0), 0, "Communication with left neighbor detected.")
